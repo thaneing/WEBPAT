@@ -1,0 +1,526 @@
+﻿@using Microsoft.AspNetCore.Http;
+@{
+    Boolean CheckPermision(string usertype, string permision, string page)
+    {
+
+
+
+        if (usertype != "3") //เช็คว่าเป็น SupperAdmin ไหม หากเป็น ไม่ใช่ User SupperAdmin ให้เช็คตาม Page
+        {
+            var data = permision;
+            string[] words = data.Split(',');
+            foreach (string word in words)
+            {
+                if (word == page)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        else
+        {
+            return true;   //กรณี เป็น Suppoer Admin ให้ Pass Only
+        }
+
+    }
+
+}
+
+
+@{
+    ViewData["Title"] = "Setting";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .purple-btn {
+        text-align: center;
+        color: #fff;
+        background-color: #ae63e4;
+        border: none;
+        border-radius: 3px;
+    }
+
+        .purple-btn:hover {
+            background-color: #a361d3
+        }
+
+    .selmon {
+        text-align: center;
+        color: #fff;
+        background-color: #FF6347;
+        border: none;
+        border-radius: 3px;
+    }
+
+        .selmon:hover {
+            background-color: #ef5e44
+        }
+
+    .sky-btn {
+        text-align: center;
+        color: #fff;
+        background-color: #60afdc;
+        border: none;
+        border-radius: 3px;
+    }
+
+        .sky-btn:hover {
+            background-color: #5da7d1
+        }
+
+    .green-btn {
+        text-align: center;
+        color: #fff;
+        background-color: #85c446;
+        border: none;
+        border-radius: 3px;
+    }
+
+        .green-btn:hover {
+            background-color: #7eb745;
+        }
+
+    .aqua-btn {
+        text-align: center;
+        color: #fff;
+        background-color: #2e9fff;
+        border: none;
+        border-radius: 3px;
+    }
+
+        .aqua-btn:hover {
+            background-color: #2e97ef;
+        }
+
+    #size {
+        width: 160px;
+        height: 100px;
+        margin-top: 20px;
+    }
+
+</style>
+
+<div class="row">
+    <div class="col-lg-8 col-md-8 col-xs-12 col-sm-12 col-lg-offset-2 col-md-offset-2">
+        <div class="tabs-container">
+            <ul class="nav nav-tabs">
+                <li class="active" id="tab1"><a data-toggle="tab" href="#tab-1">Setting </a></li>
+                <li class="" id="tab2"><a data-toggle="tab" href="#tab-2">Administrator Setting</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="tab-1" class="tab-pane active">
+                    <div class="panel-body">
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "61";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="Users" asp-action="Create"><button class="btn btn-success" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">เพิ่มข้อมูลสมาชิก</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "33";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="Users" asp-action="Index"><button class="btn btn-primary" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">ข้อมูลสมาชิก</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "42";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <!--1-->
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="TitleOfUsers" asp-action="Index"><button class="btn btn-warning" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">คำนำหน้า</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "159";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="Nationalities" asp-action="Index"> <button class="btn btn-danger" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">สัญชาติ</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "169";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="Religions" asp-action="Index"><button class="selmon" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">ศาสนา</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "164";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="Povinces" asp-action="Index"><button class="purple-btn" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">ภูมิลำเนา</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "89";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <!--2-->
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="Bloods" asp-action="Index"><button class="sky-btn" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">หมู่โลหิต</span></button></a>
+                                </div>
+                            }
+                        } 
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "99";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="Majors" asp-action="Index"><button class="green-btn" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">สาขาเรียน</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "104";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="Faculties" asp-action="Index"><button class="aqua-btn" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">คณะ</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "84";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="Universities" asp-action="Index"><button class="btn btn-warning" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">สถาบันการศึกษา</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "114";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <!--3-->
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="TypeCongrates" asp-action="Index"> <button class="btn btn-danger" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">ระดับการศึกษา</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "22";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="Positions" asp-action="Index"><button class="selmon" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">ตำแหน่ง</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "62";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="Departments" asp-action="Index"> <button class="btn btn-primary" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">ฝ่าย</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "67";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="Department1" asp-action="Index"> <button class="purple-btn" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">แผนก</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "17";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="Levels" asp-action="Index"><button class="sky-btn" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">ระดับตำแหน่ง</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "174";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="Branches" asp-action="Index"><button class="green-btn" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">หน่วยงาน</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "79";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="HRRecruiteGroups" asp-action="Index"><button class="btn btn-warning" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">ประเภท<br />การรับสมัคร</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "109";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="TypeOfResigns" asp-action="Index"><button class="aqua-btn" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">สาเหตุที่เปลี่ยนงาน</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "119";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="TypeOfSalaries" asp-action="Index"> <button class="selmon" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">ช่วงเงินเดือน</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "129";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="AppStatus" asp-action="Index"> <button class="btn btn-danger" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">ผลการติดต่อ</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "124";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="AppTelTypes" asp-action="Index"><button class="selmon" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">ประเภทการนัด</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "134";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="AppResults" asp-action="Index"><button class="btn btn-primary" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">ผลการนัด</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "139";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="AppEtcs" asp-action="Index"> <button class="purple-btn" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">หมายเหตุการนัด</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "150";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="AppRooms" asp-action="Index"><button class="btn btn-success" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">สถานที่นัด</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "144";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="AppSuccesses" asp-action="Index"><button class="purple-btn" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">สถานะสัมภาษณ์</span></button></a>
+
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "12";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="Organizs" asp-action="Index"><button class="green-btn" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">ผังองค์กรและ<br />อัตรากำลัง</span></button></a>
+
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "7";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="BlogCats" asp-action="Index"><button class="btn btn-warning" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">หมวดหมู่ข่าวสาร</span></button></a>
+
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "94";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="HRRecruiteStatus" asp-action="Index"><button class="selmon" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">สถานะRecruite</span></button></a>
+                                </div>
+
+                            }
+                        }
+
+                      
+                    </div>
+                </div>
+                <div id="tab-2" class="tab-pane">
+                    <div class="panel-body">
+
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "27";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4" id="admin">
+                                    <a asp-controller="Permisions" asp-action="Index"><button class="btn btn-success" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">สิทธื์การเข้าใช้งาน</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "36";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4" id="admin">
+                                    <a asp-controller="CheckUsers" asp-action="Index"><button class="btn btn-primary" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">สถานะผู้ใช้</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "47";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4" id="admin">
+                                    <a asp-controller="TypeOfUsers" asp-action="Index"><button class="btn btn-warning" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">ประเภทผู้ใช้งาน</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "72";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4" id="admin">
+                                    <a asp-controller="WebModuls" asp-action="Index"><button class="btn btn-danger" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">ตั้งค่า Module</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "194";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4" id="admin">
+                                    <a asp-controller="LineAPIs" asp-action="Index"><button class="selmon" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">ตั้งค่า LineAlert</span></button></a>
+                                </div>
+                            }
+                        }
+
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "194";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="ManualCats" asp-action="Index"><button class="purple-btn" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">หมวดหมู่คู่มือ</span></button></a>
+                                </div>
+
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <!--2-->
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="Manuals" asp-action="Index"><button class="sky-btn" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">คู่มือ</span></button></a>
+                                </div>
+                            }
+                        }
+
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "201";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <!--2-->
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="MonitorUsers" asp-action="ResetPassword"><button class="selmon" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">Reset Password</span></button></a>
+                                </div>
+                            }
+                        }
+                        @if (@Context.Session.GetString("Userid") != null)
+                        {
+                            var page = "";
+                            if (CheckPermision(@Context.Session.GetString("TypeOfUserId"), @Context.Session.GetString("PermisionAction"), page) == true)
+                            {
+                                <!--2-->
+                                <div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+                                    <a asp-controller="MapSites" asp-action="Index"><button class="green-btn" id="size"><i class="fa fa-th-list" style="font-size:40px"></i> <br /><span style="font-size:18px">แผนที่หน่วยงาน</span></button></a>
+                                </div>
+                            }
+                        }
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+         if ($('#admin').length == 0) {
+            $('#tab2').hide();
+        }
+    </script>
+}

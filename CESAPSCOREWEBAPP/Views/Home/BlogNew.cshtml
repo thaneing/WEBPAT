@@ -1,0 +1,210 @@
+﻿
+
+
+@{
+    ViewData["Title"] = "ข่าว";
+}
+@{
+    IEnumerable<Blog> blogs = ViewData["Blog"] as IEnumerable<Blog>;
+}
+
+@{
+    IEnumerable<BlogPic> blogPics = ViewData["BlogPic"] as IEnumerable<BlogPic>;
+    IEnumerable<BlogFile> blogFiles = ViewData["BlogFile"] as IEnumerable<BlogFile>;
+}
+}
+
+
+<style>
+    .hide-bullets {
+        list-style: none;
+        margin-left: -40px;
+        margin-top: 20px;
+    }
+
+    .thumbnail {
+        padding: 0;
+    }
+
+    .carousel-inner > .item > img, .carousel-inner > .item > a > img {
+        width: 100%;
+    }
+
+    .col-sm-3 a {
+        border: 1px solid transparent;
+        border-radius: 0;
+        transition: all 3s ease;
+    }
+
+        .col-sm-3 a:hover {
+            border: 1px solid #ff4647;
+            border-radius: 100% 60% / 30% 10%;
+            background: linear-gradient(rgba(56,123,131,0.7),rgba(56,123,131,0.7));
+        }
+</style>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">ข่าวประชาสัมพันธ์</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+
+
+                    @foreach (Blog blog in blogs)
+                    {
+                        <article class="post-preview">
+                            <center>
+                                <a asp-controller="Home" asp-action="BlogNew" asp-route-id="@blog.BlogId">
+                                    <h2 class="post-title">@blog.BlogTitle</h2>
+
+                                </a>
+                            </center>
+                            <p class="post-meta" style="text-align:right">
+
+                                Posted by :
+                                <b>
+                                    @blog.BlogCreateBy
+                                </b>
+                                POST DATE :
+                                <b>
+                                    @blog.BlogCreateDate
+                                </b>
+
+                            </p>
+                        </article>
+
+                        <hr>
+                    }
+
+                       <div class="col-xs-7">
+                            <div id="main_area">
+                                <!-- Slider -->
+                                <div class="row">
+
+                                    <div class="col-sm-3" id="slider-thumbs">
+                                        <!-- Bottom switcher of slider -->
+                                        <ul class="hide-bullets">
+                                            <li class="col-sm-12">
+
+                                                @foreach (Blog blog in blogs)
+                                                {
+                                                    <a class="thumbnail" id="carousel-selector-0">
+                                                        <img src="~/images/BlogTitle/512/@blog.BlogPicTitle" />
+                                                    </a>
+                                                }
+                                            </li>
+
+                                            @{ int i = 1;
+                                                foreach (BlogPic blogPic in blogPics)
+                                                {
+                                                    <li class="col-sm-12">
+                                                        <a class="thumbnail" id="carousel-selector-@i"><img src="~/images/Board/512/@blogPic.BlogPicName" /></a>
+                                                    </li>
+                                                    i += 1;
+                                                }
+                                            }
+
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <div class="col-xs-12" id="slider">
+                                            <!-- Top part of the slider -->
+                                            <div class="row">
+                                                <div class="col-sm-12" id="carousel-bounding-box">
+                                                    <div class="carousel slide" id="myCarousel">
+                                                        <!-- Carousel items -->
+                                                        <div class="carousel-inner">
+
+                                                            @foreach (Blog blog in blogs)
+                                                            {
+                                                                <div class="active item" data-slide-number="0">
+                                                                    <img src="~/images/BlogTitle/512/@blog.BlogPicTitle" />
+                                                                </div>
+                                                            }
+
+                                                            @{ int j = 1;
+                                                                foreach (BlogPic blogPic in blogPics)
+                                                                {
+                                                                    <div class="item" data-slide-number="@j">
+                                                                        <img src="~/images/Board/512/@blogPic.BlogPicName" />
+                                                                    </div>
+                                                                    j += 1;
+                                                                }
+                                                            }
+
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--/Slider-->
+                                </div>
+
+                            </div>
+                        </div>
+             
+   
+
+                       <div class="col-xs-5">
+                           @foreach (Blog blog in blogs)
+                           {
+
+                               <article class="post-preview">
+                                   @Html.Raw(blog.BlogDetail)
+                               </article>
+                               @foreach (BlogFile blogFile in blogFiles)
+                               {
+                                   <ul>
+                                       <li><a href="~/File/Board/@blogFile.BlogFileName"><i class="fa fa-download "></i>@blogFile.BlogFileName</a></li>
+                                   </ul>
+                               }
+                           }
+                       </div>
+                        </div>
+
+
+                   
+
+
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        jQuery(document).ready(function ($) {
+
+            $('#myCarousel').carousel({
+                interval: 5000
+            });
+
+            //Handles the carousel thumbnails
+            $('[id^=carousel-selector-]').click(function () {
+                var id_selector = $(this).attr("id");
+                try {
+                    var id = /-(\d+)$/.exec(id_selector)[1];
+                    console.log(id_selector, id);
+                    jQuery('#myCarousel').carousel(parseInt(id));
+                } catch (e) {
+                    console.log('Regex failed!', e);
+                }
+            });
+            // When the carousel slides, auto update the text
+            $('#myCarousel').on('slid.bs.carousel', function (e) {
+                var id = $('.item.active').data('slide-number');
+                $('#carousel-text').html($('#slide-content-' + id).html());
+            });
+        });
+
+    </script>
+
+}

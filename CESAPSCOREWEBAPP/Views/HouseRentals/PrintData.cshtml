@@ -1,0 +1,616 @@
+﻿
+
+
+@{
+    ViewData["Title"] = "พิมพ์รายงานค่าเช่าห้อง";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+             + "<li>"
+             + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+             + "</li>"
+             + "<li>"
+            + "<a href='/HouseRentals/Index' data-toggle='tooltip' data-placement='top' title='List'>รายการเช่าห้องพัก</a>"
+             + "</li>"
+             + "<li class='active'>"
+             + "<b><a data-toggle='tooltip' data-placement='top' title='Add'>" + @ViewData["Title"] + "</a></b>"
+             + "</li>"
+             + "</ol>";
+}
+
+<style>
+    /* Only for the demo */
+    .hasmenu {
+        border: 1px solid #008;
+        margin: 3px;
+        padding: 5px;
+        width: 30px;
+    }
+
+    /* Optionally define a fixed width for menus */
+    .ui-menu {
+        width: 220px;
+    }
+        /* Allow to use <kbd> elements inside the title to define shortcut hints. */
+        .ui-menu kbd {
+            padding-left: 1em;
+            float: right;
+        }
+
+    /* An ugly trick to use a filter icon */
+    .ui-icon-volume-off.ui-icon-filter {
+        -ms-transform: rotate(270deg);
+        -webkit-transform: rotate(270deg);
+        transform: rotate(270deg);
+    }
+</style>
+
+
+<div class="spiner-example" id="popup" style="display:none">
+    <div class="sk-spinner sk-spinner-three-bounce">
+        <div class="sk-bounce1"></div>
+        <div class="sk-bounce2"></div>
+        <div class="sk-bounce3"></div>
+    </div>
+</div>
+<div class="col-sm-12 col-lg-12 col-md-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>เงื่อนไขการค้นหา</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>หน่วยงาน : </label>
+                        <select class="form-control" asp-items="ViewBag.JobNo" id="joblist"></select>
+                    </div>
+                </div>
+
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label class="control-label">งวดที่</label>
+                        <div class="input-group date" id="dpt9">
+                            <input type="text" class="form-control" autocomplete="off" value="@ViewBag.StartDate" id="txtStart" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                @*<button class="btn btn-primary dim btn-dim" type="button" onclick="SearchData();"><i class="fa fa-search"></i> Search</button>*@
+                <button class="btn btn-primary dim btn-dim" type="button" onclick="PrintData();"><i class="fa fa-print"></i> Print All</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-12 col-lg-12 col-md-12">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>รายละเอียด </h5>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    @*<p>
+                            <a asp-action="Create" class="btn btn-primary">Create</a>
+                        </p>*@
+                    <div class="table-responsive">
+                        <table id='example1' class="table table-striped table-bordered table-hover dataTables-example">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        วันที่จ่าย
+                                    </th>
+                                    <th>
+                                        งวด
+                                    </th>
+                                    <th>
+                                        รหัสพนักงาน
+                                    </th>
+                                    <th>
+                                        ชื่อ-สกุล
+                                    </th>
+                                    <th>
+                                        ตำแหน่ง
+                                    </th>
+                                    <th>
+                                        หน่วยงาน
+                                    </th>
+
+                                    <th>
+                                        การพัก
+                                    </th>
+                                    <th>
+                                        ชื่อหอพัก
+                                    </th>
+
+                                    <th>
+                                        ห้อง
+                                    </th>
+                                    <th>
+                                        เงินประกัน
+                                    </th>
+                                    <th>
+                                        ล่วงหน้า
+                                    </th>
+                                    <th>
+                                        ค่าที่พัก
+                                    </th>
+
+
+
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Modal*@
+<!-- Modal Month Details-->
+<div id="myModalDetails" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">รายการละเอียด</h4>
+            </div>
+
+            <div class="modal-body">
+                <div style="font-size:13px">
+                    <div class="form-group">
+                        <h2 id="empName"></h2>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">รหัสพนักงาน </label>
+                        <span id="empId"> </span>
+                        <label class="control-label">ตำแหน่ง </label>
+                        <span id="empPos"></span>
+                        <label class="control-label">หน่วยงาน</label>
+                        <span id="site"> </span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">ชื่อหอพัก </label>
+                        <span id="houseName"></span>
+                        <label class="control-label">เลขที่หอพัก </label>
+                        <span id="roomNo"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">วันที่เช่า </label>
+                        <span id="posDate"> </span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">ค่าที่พัก </label>
+                        <span id="price"></span> <label class="control-label">บาท </label>
+                        <label class="control-label"></label>
+                        <span id="thaibath"> </span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">เงินประกัน </label>
+                        <span id="Deposit"></span> <label class="control-label">บาท </label>
+                        <label class="control-label"></label>
+                        <span id="DepositText"> </span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">เงินล่วงหน้า </label>
+                        <span id="Advance"></span> <label class="control-label">บาท </label>
+                        <label class="control-label"></label>
+                        <span id="AdvancedText"> </span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">หมายเหตุ </label>
+                        <span id="etc"> </span>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">ประเภทห้องพัก </label>
+                        <span id="type"> </span>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">สถานะ </label>
+                        <span id="status"></span>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        $('#dpt9').datetimepicker({
+            format: 'YYYY-MM',
+        }).on("dp.change", function (selectedDate) {
+            SearchData();
+        });
+
+
+    </script>
+
+    <script>
+        SearchData();
+        function SearchData() {
+
+            var job = document.getElementById("joblist").value;
+            var month = document.getElementById("txtStart").value;
+
+            //job = 'HO';
+            //month = '2019-10';
+
+
+            var dataType = 'application/json; charset=utf-8';
+            table = $('#example1').DataTable({
+                destroy: true,
+                jQueryUI: true,
+                dom: 'l<"H"Rf>t<"F"ip>',
+                columnDefs:
+                    [
+
+                        {
+                            targets: 9,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 10,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 11,
+                            className: 'dt-body-right'
+                        }
+                    ],
+                "language": {
+                    "decimal": ",",
+                    "thousands": "."
+                },
+
+                //scrollY: 500,
+                //deferRender: true,
+                //scrollCollapse: true,
+                //scroller: {
+                //    loadingIndicator: true
+                //},
+                //responsive: true,
+                //fixedHeader: true,
+                //select: {
+                //    style: 'os',
+                //    blurable: true
+                //},
+                dom: 'Bfrtip',
+                //stateSave: true,
+                buttons: [
+
+                    {
+                        extend: 'colvis',
+                        text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                        //messageTop: item + " " + itemName,
+                        titleAttr: 'Hide',
+                        postfixButtons: ['colvisRestore']
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                        exportOptions: {
+                            columns: ':visible'
+                        },
+                        titleAttr: 'PDF',
+                        pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                        orientation: 'landscape',
+                        // title: 'รายงานใบสั้งงานตาม Vendor No :' + item + ' Vendor Name :' + itemName,
+                        // messageTop: item + " " + itemName,
+                        customize: function (doc) {
+                            doc.defaultStyle = {
+                                font: 'THSarabun',
+                                fontSize: '12',
+
+                            };
+                            var now = new Date();
+                            var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                            doc['footer'] = (function (page, pages) {
+                                return {
+                                    columns:
+                                        [
+                                            {
+                                                alignment: 'center',
+                                                text: ['Created on: ', { text: jsDate.toString() }]
+                                            },
+                                            {
+                                                alignment: 'right',
+                                                text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                            }
+                                        ],
+                                    margin: 10
+                                }
+                            });
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        //title: 'รายงานใบสั้งงานตาม Vendor No :' + item + ' Vendor Name :' + itemName,
+                        exportOptions: {
+                            columns: ':visible'
+                        },
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        titleAttr: 'Excel',
+                        //messageTop: item + " " + itemName,
+                        autoFilter: true
+                    },
+
+                    {
+                        extend: 'selectAll'
+                    },
+                    {
+                        extend: 'selectNone'
+                    }
+                    ,
+                    {
+                        extend: 'print',
+                        text: 'Print selected'
+                    }
+                ],
+                select: true,
+                "ajax": {
+                    //"url": "/HouseRentals/PrintData/?Month=" + month,
+                    "url": "/HouseRentals/GetForPrintData/?Job=" + job + "&Month=" + month,
+                    "contentType": dataType,
+                    "type": "GET",
+                    "data": function (response) {
+                        return JSON.stringify(response.data);
+                    }
+
+                },
+
+                "columns": [
+                    { "data": "Paymentdate" },
+                    { "data": "Period" },
+                    { "data": "EmpId" },
+                    { "data": "EmpName" },
+                    { "data": "EmpPosition" },
+                    { "data": "Site" },
+                    {
+                        "data": "TypeRooms",
+                        render: function (data, type, row) {
+                            if (data === 0) {
+                                return 'เดี่ยว';
+                            } else {
+                                return 'คู่';
+                            }
+                        }
+                    },
+                    { "data": "HouseName" },
+                    { "data": "RoomNumber" },
+                    { "data": "Deposit", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "Advanced", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "Price", render: $.fn.dataTable.render.number(',', '.', 2, '') }
+
+
+                ]
+            });
+
+
+            $(document).contextmenu({
+                delegate: ".dataTable tr",
+                menu: [
+                    { title: "Show", cmd: "show", uiIcon: "ui-icon-search" },
+                    { title: "Filter", cmd: "filter", uiIcon: "ui-icon-volume-off ui-icon-filter" },
+                    { title: "Remove filter", cmd: "nofilter", uiIcon: "ui-icon-volume-off ui-icon-filter" },
+                    { title: "Print bill", cmd: "print", uiIcon: "ui-icon-print" }
+                ],
+                select: function (event, ui) {
+                    //var data = table.data();
+
+                    console.log(ui.target[0]._DT_CellIndex.row);
+                    console.log(ui.target[0]._DT_CellIndex.column);
+
+                    var row = ui.target[0]._DT_CellIndex.row;
+                    var colum = ui.target[0]._DT_CellIndex.column
+                    var data = table.row(row).data()
+                    var celltext = ui.target.text();
+                    switch (ui.cmd) {
+
+                        case "show":
+                            //console.log(data.ID);
+                            //url = '/HouseRentals/Details/' + data.ID;
+                            //window.location.href = url;
+                            $('#myModalDetails').modal();
+                            console.log(data.ID);
+                            //เรียกไฟล์ที่ Upload ขึ้นมา Show
+                            $.ajax({
+                                type: "GET",
+                                dataType: 'json',
+                                contentType: 'application/json; charset=utf-8',
+                                data: { id: data.ID },
+                                url: "/HouseRentals/ShowDetails/",
+
+                                success: function (response) {
+                                    //$("#files").html(response.listFile);
+                                    document.getElementById("empId").innerHTML = response.EmpID;
+                                    document.getElementById("empName").innerHTML = response.EmpName;
+                                    document.getElementById("empPos").innerHTML = response.EmpPosition;
+                                    document.getElementById("site").innerHTML = response.Site;
+                                    document.getElementById("houseName").innerHTML = response.HouseName;
+                                    document.getElementById("roomNo").innerHTML = response.RoomNumber;
+                                    document.getElementById("posDate").innerHTML = response.PostingDate;
+                                    document.getElementById("price").innerHTML = response.Price;
+                                    document.getElementById("etc").innerHTML = response.Etc;
+                                    //document.getElementById("thaibath").innerHTML = response.Thaibath;
+                                    document.getElementById("Deposit").innerHTML = response.Deposit;
+                                    //document.getElementById("DepositText").innerHTML = response.DepositText;
+                                    document.getElementById("Advance").innerHTML = response.Advance;
+                                    //document.getElementById("AdvancedText").innerHTML = response.AdvancedText;
+
+                                    var types = response.TypeRooms;
+
+                                    if (types == 0) {
+                                        document.getElementById("type").innerHTML = "เดี่ยว";
+                                    }
+                                    else {
+                                        document.getElementById("type").innerHTML = "คู่";
+                                    }
+
+                                    var status = response.Statuss;
+                                    //alert(a);
+                                    if (status == 0) {
+                                        document.getElementById("status").innerHTML = "<label class='label label-warning' style='font-size:12px'>รออนุมัติ</label>";
+                                    } else if (status == 1) {
+                                        document.getElementById("status").innerHTML = "<label class='label label-success' style='font-size:12px'>อนุมัติ</label>";
+                                    } else {
+                                        document.getElementById("status").innerHTML = "<label class='label label-danger' style='font-size:12px'>ยกเลิก</label>";
+                                    }
+
+
+
+                                },
+
+                                failure: function (response) {
+                                    alert("fail");
+                                }
+                            });
+                            break;
+
+                        case "filter":
+                            table
+                                .column(colum)
+                                .search('^' + celltext + '$', true)
+                                .draw();
+                            break;
+                        case "nofilter":
+                            table
+                                .search('')
+                                .columns().search('')
+                                .draw();
+                            break;
+
+                        case "print":
+                            url = '/HouseRentals/HouseReportid/?Job=' + job + '&Month=' + month + '&id=' + data.ID;
+                            window.location.href = url;
+                            break;
+                    }
+                },
+                beforeOpen: function (event, ui) {
+                    var $menu = ui.menu,
+                        $target = ui.target,
+                        extraData = ui.extraData;
+
+                }
+            });
+
+
+        }
+
+        $(document).ready(function () {
+            $('#joblist').on('change', function () {
+                SearchData();
+
+            });
+
+        });
+    </script>
+
+
+    <script>
+        function PrintData() {
+            var job = document.getElementById("joblist").value;
+            var month = document.getElementById("txtStart").value;
+            $.ajax({
+                type: "GET",
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                //data: { id: data.ID },
+                url: "/HouseRentals/Checkdata/?Job=" + job + "&Month=" + month,
+
+                success: function (response) {
+                    //$("#show").html(response.listshow);
+                    var data = response.check;
+                    //console.log(data);
+                    //alert(data);
+                    if (data == 0) {
+
+                        url = '/HouseRentals/HouseReport?Job=' + job + "&Month=" + month;
+                        window.location.href = url;
+                    }
+                    else {
+                        swal({
+                            title: "ไม่มีข้อมูล !!",
+                            text: "ไม่สามารถปริ้น Slip ได้ กรุณาตรวจสอบอีกครั้ง",
+                            icon: "error",
+                            button: "ตกลง",
+                        });
+                    }
+
+                },
+                failure: function (response) {
+                    alert("fail");
+                }
+            });
+
+
+            checkdata();
+        }
+        function checkdata() {
+
+            $.ajax({
+                type: "GET",
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                //data: { id: data.ID },
+                url: "/HouseRentals/Checkdata/?Job=" + job + "&Month=" + month,
+
+                success: function (response) {
+                    //$("#show").html(response.listshow);
+                    var data = response.count;
+                    if (count < 0) {
+                        swal({
+                            title: "ไม่ถูกต้อง",
+                            text: "ไม่มีข้อมูล",
+                            icon: "error",
+                            button: "ตกลง",
+                        });
+                        return false;
+                        return false;
+                    }
+
+                },
+                failure: function (response) {
+                    alert("fail");
+                }
+            });
+        }
+    </script>
+    <script>
+        $("#joblist").select2();
+    </script>
+
+
+}
+

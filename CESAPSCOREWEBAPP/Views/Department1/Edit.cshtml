@@ -1,0 +1,57 @@
+﻿@model CESAPSCOREWEBAPP.Models.Department1
+
+@{
+    ViewData["Title"] = "แก้ไขแผนก";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+                 + "<li>"
+                 + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+                 + "</li>"
+                 + "<li>"
+                 + "<a href='/Department1/Index' data-toggle='tooltip' data-placement='top' title='List'>รายการแผนก</a>"
+                 + "</li>"
+                 + "<li class='active'>"
+                 + "<b><a data-toggle='tooltip' data-placement='top' title='Add Department'>" + @ViewData["Title"] + "</a></b>"
+                 + "</li>"
+                 + "</ol>";
+}
+
+
+<form asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Department1Id" />
+    <div class="col-sm-6 col-lg-6 col-md-6 col-lg-offset-3">
+        <div class="ibox ">
+            <div class="ibox-title">
+                <h5>@ViewData["Title"]</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+
+                <div class="row">
+                    <div class="col-lg-12">
+
+                        <div class="form-group">
+                            <label class="control-label">ชื่อแผนก</label>
+                            <input asp-for="Department1Name" class="form-control" />
+                            <span asp-validation-for="Department1Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <input type="submit" value="บันทึก" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Save" />
+            <a asp-action="Index" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Back to List">กลับรายการ</a>
+        </div>
+
+    </div>
+</form>

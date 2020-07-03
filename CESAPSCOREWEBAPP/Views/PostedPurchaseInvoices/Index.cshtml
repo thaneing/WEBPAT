@@ -1,0 +1,621 @@
+﻿@using Microsoft.AspNetCore.Http;
+@{
+    IEnumerable<SourceAutoComplete> sourceAutoCompletes = ViewData["SourceAutoCompletes"] as IEnumerable<SourceAutoComplete>;
+
+    ViewData["Title"] = "GR Invoices";
+}
+
+<style>
+
+
+    .fixscoll {
+        overflow-y: auto;
+        height: 500px;
+        
+    }
+</style>
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>Search</h5>
+
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-2 col-md-4">
+                    <div class="form-group">
+                        <label>หน่วยงาน : </label>
+
+                        <input name="site" autocomplete="off" id="site" value="@ViewBag.Site" class="typeahead_1 form-control" />
+                        @*<select class="form-control" asp-items="ViewBag.JobNo" id="joblist" onchange="showListHistory(this)"></select>*@
+                    </div>
+                </div>
+                <div class="col-lg-2 col-xs-4">
+                    <label>จากวันที่ : </label>
+                    <div class="form-group">
+                        <div class="input-group date" id="dtp1">
+                            <input type="text" class="form-control" name="Startdate" id="StartDate1" value="@ViewBag.StartDate" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-xs-4">
+                    <label>ถึง : </label>
+                    <div class="form-group">
+                        <div class="input-group date" id="dtp2">
+                            <input type="text" class="form-control" name="Enddate" id="StartDate2" value="@ViewBag.EndDate" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <button class="btn btn-primary dim btn-dim" type="button" onclick="SearchData();"><i class="fa fa-search"></i> Search</button>
+                <button class="btn btn-success dim btn-dim" type="button" onclick="Send();" id="sendmail" style="display:block"><i class="glyphicon glyphicon-envelope"></i> Send Mail</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>รายละเอียด </h5>
+
+        </div>
+        <div class="ibox-content">
+            <div class="table-responsive">
+                <table id='example' class="table table-striped table-bordered table-hover dataTables-example">
+                    <thead>
+                        <tr>
+                            <th align='center'>PostingDate</th>
+                            <th align='center'>Ref_ Receipt No_</th>
+                            <th align='center'>Document No.</th>
+                            <th align='center'>Order No.</th>
+                            <th align='center'>Buy-from Vendor Name</th>
+                            <th align='center'>Vendor Invoice No.</th>
+                            <th align='center'>Amount</th>
+                           @*<th align='center'>Progress Term</th>*@
+                        </tr>
+                    </thead>
+                    @*<tfoot align="right">
+                            <tr>
+                                <th style="text-align:right;" colspan="9"></th>
+
+                                <th style="text-align:right;"></th>
+                                <th colspan="3"></th>
+                                <th style="text-align:right;"></th>
+                            </tr>
+                        </tfoot>*@
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Email-->
+<div id="myModalEmail" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">ส่ง Email</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+
+                            <h3>แจ้งรายการใบรับสินค้า(GR) ที่บัญชีตั้งหนี้แล้ว</h3>
+                            <label>หน่วยงาน : </label> <span id="sitemail"></span>
+                            <label>E-mail From :</label> <span id="mail"> </span><span> <label> ผู้ส่ง : </label><span id="name"></span> </span>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-12">
+                        <div class="form-group row">
+                            <div class="col-lg-2"><b class="pull-right">ถึง :</b></div>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" id="tomail" />
+                                <span style="color:red" id="check"></span>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="form-group row">
+                            <div class="col-lg-2"><b class="pull-right">สำเนา : </b></div>
+                            <div class="col-lg-8">
+                                  <input type="text" class="form-control col-lg-5" id="tomailCC" />
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-12">
+                        <div class="form-group fixscoll">
+                            @*<p>รายละเอียด</p>*@
+                            <div class="table-responsive full-height-scroll">
+                                <table id="example2" class="table table-striped table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th align='center'>PostingDate</th>
+                                            <th align='center'>Ref_ Receipt No_</th>
+                                            <th align='center'>Document No.</th>
+                                            <th align='center'>Order No.</th>
+                                            <th align='center'>Buy-from Vendor Name</th>
+
+                                            <th align='center'>Vendor Invoice No.</th>
+                                            <th align='center'>Amount</th>
+
+                                            @*<th align='center'>Progress Term</th>*@
+                                        </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+               
+               
+            </div>
+            <div class="modal-footer">
+                <div class="col-lg-2 pull-right">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="tooltip" data-placement="top" title="Close">ยกเลิก</button>
+                </div>
+                <button type="button" class="btn btn-success" data-dismiss="modal" data-toggle="tooltip" data-placement="top" title="Send Mail" onclick="SendApproval();">ส่ง E-mail</button>
+                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>*@
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+@section Scripts{
+
+
+    <script>
+
+
+        $('#dtp1,#dtp2').datetimepicker({
+            format: 'DD/MM/YYYY',
+        });
+        SearchData();
+        function SearchData() {
+
+
+
+            var StartDate1 = document.getElementById("StartDate1").value;
+            var StartDate2 = document.getElementById("StartDate2").value;
+            var site = document.getElementById('site').value;
+            //alert(user);
+
+            //alert(item);
+            var dataType = 'application/json; charset=utf-8';
+            table = $('#example').DataTable({
+
+                destroy: true,
+                columnDefs:
+                    [
+
+                        {
+                            targets: 6,
+                            className: 'dt-body-right'
+                        }
+
+                    ],
+
+
+                "language": {
+                    "decimal": ",",
+                    "thousands": "."
+                },
+                "order": [[0, "desc"]],
+                "pageLength": 25,
+                responsive: true,
+                dom: 'Bfrtip',
+                buttons: [
+
+                    {
+                        extend: 'colvis',
+                        text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                        //messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                        titleAttr: 'Hide',
+                        postfixButtons: ['colvisRestore']
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                        titleAttr: 'PDF',
+                        pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                        //orientation: 'landscape',
+                        // messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                        customize: function (doc) {
+                            doc.defaultStyle = {
+                                font: 'THSarabun',
+                                fontSize: '12',
+
+                            };
+                            var now = new Date();
+                            var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                            doc['footer'] = (function (page, pages) {
+                                return {
+                                    columns:
+                                        [
+                                            {
+                                                alignment: 'center',
+                                                text: ['Created on: ', { text: jsDate.toString() }]
+                                            },
+                                            {
+                                                alignment: 'right',
+                                                text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                            }
+                                        ],
+                                    margin: 10
+                                }
+                            });
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        titleAttr: 'Excel',
+                        // messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                        autoFilter: true
+                    },
+                    {
+                        extend: 'copyHtml5',
+                        text: '<i class="fa fa-files-o"></i> Copy',
+                        titleAttr: 'Copy'
+
+                    },
+                    {
+                        text: 'JSON',
+                        action: function (e, dt, button, config) {
+                            var data = dt.buttons.exportData();
+                            $.fn.dataTable.fileSave(
+                                new Blob([JSON.stringify(data)]),
+                                'Export.json'
+                            );
+                        }
+                    },
+                    {
+                        extend: 'selectAll'
+                    },
+                    {
+                        extend: 'selectNone'
+                    }
+                ],
+                "ajax": {
+                    "url": "/PostedPurchaseInvoices/GetData?date1=" + StartDate1 + "&date2=" + StartDate2 + "&site=" + site,
+                    "contentType": dataType,
+                    "type": "GET",
+                    "data": function (response) {
+                        return JSON.stringify(response.data);
+                    }
+
+                },
+
+                "columns": [
+
+                    { "data": "PostingDate" },
+                    { "data": "RefReceiptNo" },
+                    { "data": "DocumentNo" },
+                    { "data": "OrderNo" },
+                    { "data": "VendorName" },
+                    
+                    { "data": "VendorInvoiceNo" },
+                    //{ "data": "ProgressTerm" }
+                    { "data": "Amount", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+
+
+                    //{ "data": "InitialEntryGlobalDim2" },
+                    // { "data": "CountDocument" },
+
+
+
+
+                ]
+            });
+
+        }
+
+
+
+    </script>
+
+    <script>
+        function Send() {
+
+
+
+            //$('#myModalEmail').modal();
+
+            var StartDate1 = document.getElementById("StartDate1").value;
+            var StartDate2 = document.getElementById("StartDate2").value;
+
+            var site = document.getElementById('site').value;
+            //alert(user);
+
+            //alert(item);
+            if (site == '') {
+                swal({
+                    title: "กรุณาเลือกหน่วยงานก่อน!",
+                    icon: "error",
+                    button: "ตกลง",
+                });
+                return false;
+            } else {
+                var dataType = 'application/json; charset=utf-8';
+                table2 = $('#example2').DataTable({
+
+                    destroy: true,
+                    columnDefs:
+                        [
+
+                            {
+                                targets: 6,
+                                className: 'dt-body-right'
+                            }
+
+                        ],
+
+
+                    "language": {
+                        "decimal": ",",
+                        "thousands": "."
+                    },
+                    "order": [[0, "desc"]],
+                    "pageLength": 25,
+                    responsive: true,
+                    dom: 'Bfrtip',
+                    buttons: [
+
+                        {
+                            extend: 'colvis',
+                            text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                            //messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                            titleAttr: 'Hide',
+                            postfixButtons: ['colvisRestore']
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                            titleAttr: 'PDF',
+                            pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                            //orientation: 'landscape',
+                            // messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                            customize: function (doc) {
+                                doc.defaultStyle = {
+                                    font: 'THSarabun',
+                                    fontSize: '12',
+
+                                };
+                                var now = new Date();
+                                var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                                doc['footer'] = (function (page, pages) {
+                                    return {
+                                        columns:
+                                            [
+                                                {
+                                                    alignment: 'center',
+                                                    text: ['Created on: ', { text: jsDate.toString() }]
+                                                },
+                                                {
+                                                    alignment: 'right',
+                                                    text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                                }
+                                            ],
+                                        margin: 10
+                                    }
+                                });
+                            }
+                        },
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fa fa-file-excel-o"></i> Excel',
+                            titleAttr: 'Excel',
+                            // messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                            autoFilter: true
+                        },
+                        {
+                            extend: 'copyHtml5',
+                            text: '<i class="fa fa-files-o"></i> Copy',
+                            titleAttr: 'Copy'
+
+                        },
+                        {
+                            text: 'JSON',
+                            action: function (e, dt, button, config) {
+                                var data = dt.buttons.exportData();
+                                $.fn.dataTable.fileSave(
+                                    new Blob([JSON.stringify(data)]),
+                                    'Export.json'
+                                );
+                            }
+                        },
+                        {
+                            extend: 'selectAll'
+                        },
+                        {
+                            extend: 'selectNone'
+                        }
+                    ],
+                    "ajax": {
+                        "url": "/PostedPurchaseInvoices/GetData?date1=" + StartDate1 + "&date2=" + StartDate2 + "&site=" + site,
+                        "contentType": dataType,
+                        "type": "GET",
+                        "data": function (response) {
+                            return JSON.stringify(response.data);
+                        }
+
+                    },
+
+                    "columns": [
+
+                        { "data": "PostingDate" },
+                        { "data": "RefReceiptNo" },
+                        { "data": "DocumentNo" },
+                        { "data": "OrderNo" },
+                        { "data": "VendorName" },
+                        { "data": "VendorInvoiceNo" },
+                        { "data": "Amount", render: $.fn.dataTable.render.number(',', '.', 2, '') }
+
+                        //{ "data": "ProgressTerm" }
+
+
+                        //{ "data": "InitialEntryGlobalDim2" },
+                        // { "data": "CountDocument" },
+
+
+
+
+                    ]
+                });
+
+                document.getElementById("sitemail").innerHTML = site;
+                //  alert(site);
+
+          
+                $.ajax({
+                    type: "GET",
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    //data: { id: data.ID },
+                    url: "/PostedPurchaseInvoices/Detailmail",
+
+                    success: function (response) {
+                        //$("#show").html(response.listshow);
+
+                        $('#myModalEmail').modal();
+                        document.getElementById("mail").innerHTML = response.email;
+                        document.getElementById("name").innerHTML = response.name;
+
+
+
+
+
+
+                    },
+                    failure: function (response) {
+                        alert("fail");
+                    }
+                });
+            }
+
+
+
+        }
+    </script>
+    <script>
+        function SendApproval() {
+
+
+
+            var tomail = document.getElementById('tomail').value;
+            var StartDate1 = document.getElementById("StartDate1").value;
+            var StartDate2 = document.getElementById("StartDate2").value;
+            var site = document.getElementById('site').value;
+            //var datamail = document.getElementById('example2');
+            var mailCC = document.getElementById('tomailCC').value;
+            //var Month = document.getElementById('txtStart').value;
+            
+
+            //alert(Job);
+            if (tomail == "") {
+                //document.getElementById('check').innerHTML = "กรุณาระบุ Email ผุ้รับก่อน !!";
+                swal({
+                    title: "กรุณาระบุ Email ผู้รับก่อน !!!",
+                    icon: "error",
+                    button: "ตกลง",
+                });
+                return false;
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    //data: {
+                    //    tomail: tomail
+                    //    //Job: Job,
+                    //    //Month: Month
+                    //},
+                    url: "/PostedPurchaseInvoices/SendApplov/?tomail=" + tomail + "&date1=" + StartDate1 + "&date2=" + StartDate2 + "&site=" + site + "&mailCC=" + mailCC,
+                    success: function (respons) {
+                        if (respons.check == 0) {
+                            swal({
+                                title: "ส่งข้อมูลเรียบร้อย!",
+                                icon: "success",
+                                button: "ตกลง",
+                            });
+                        
+                        }
+                        else {
+                            swal({
+                                title: "ส่งข้อมูลไม่สำเร็จ!",
+                                icon: "error",
+                                button: "ตกลง",
+                            });
+                            return false;
+                        }
+                    },
+                    error: function () {
+                        swal({
+                            title: "ส่งข้อมูลไม่สำเร็จ!",
+                            icon: "error",
+                            button: "ตกลง",
+                        });
+
+                    }
+
+                });
+            }
+          
+        }
+    </script>
+
+    <script>
+    var WebModels = @Html.Raw(Json.Serialize(sourceAutoCompletes));
+
+      //  var str = JSON.stringify(WebModels);
+        //console.log(JSON.stringify(WebModels));
+
+    //console.log(WebModels);
+       $('.typeahead_1').typeahead({
+                source: WebModels
+            });
+
+    </script>
+    <script>
+        var permission = "@Context.Session.GetString("PermisionAction")";
+        var type = @Context.Session.GetString("TypeOfUserId");
+
+        var n = permission.indexOf("277");
+
+        if (n == -1 && type !== 3) {
+            //alert("ไม่มีสิทธิ์");
+            document.getElementById("sendmail").style.display = "none";
+
+        } else if (type == 3) {
+            //alert("เป็น Supper Admin");
+            document.getElementById("sendmail").style.display = "block";
+        }
+
+        else {
+            //alert("มีสิทธิ์สำเร็จ");
+            document.getElementById("sendmail").style.display = "block";
+        }
+      
+    </script>
+}

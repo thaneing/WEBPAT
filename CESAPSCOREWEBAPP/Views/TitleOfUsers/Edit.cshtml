@@ -1,0 +1,60 @@
+﻿@model CESAPSCOREWEBAPP.Models.TitleOfUser
+
+<style>
+
+</style>
+
+@{
+    ViewData["Title"] = "แก้ไขคำนำหน้านาม";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+                   + "<li>"
+                   + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+                   + "</li>"
+                   + "<li>"
+                   + "<a href='/TitleOfUsers/Index' data-toggle='tooltip' data-placement='top' title='List'>รายการคำนำหน้านาม</a>"
+                   + "</li>"
+                   + "<li class='active'>"
+                   + "<b><a data-toggle='tooltip' data-placement='top' title='Add Title Of Users'>" + @ViewData["Title"] + "</a></b>"
+                   + "</li>"
+                   + "</ol>";
+}
+
+<form asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="col-lg-6 col-sm-12 col-md-12 col-lg-offset-3">
+        <div class="ibox ">
+            <div class="ibox-title">
+                <h5>@ViewData["Title"]</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <input type="hidden" asp-for="TitleOfUserId" />
+                <div class="form-group">
+                    <label class="control-label">คำนำหน้านาม</label>
+                    <input asp-for="TitleOfUserName" class="form-control" />
+                    <span asp-validation-for="TitleOfUserName" class="text-danger"></span>
+                </div>
+
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="บันทึก" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Save" />
+            <a asp-action="Index" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Back to List">กลับรายการ</a>
+        </div>
+    </div>
+   
+</form>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

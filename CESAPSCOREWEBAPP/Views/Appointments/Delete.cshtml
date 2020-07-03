@@ -1,0 +1,93 @@
+﻿@model CESAPSCOREWEBAPP.Models.Appointment
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Appointment</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.HRRecruiteID)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.HRRecruiteID)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AppTelDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AppTelDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AppDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AppDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AppCreateBy)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AppCreateBy)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AppCreateDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AppCreateDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AppUpdateBy)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AppUpdateBy)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AppUpdateDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AppUpdateDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.appTelTypes)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.appTelTypes.AppTelTypeId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.appStatuses)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.appStatuses.AppStatusId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.appResults)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.appResults.AppResultId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.appEtcs)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.appEtcs.AppEtcId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.appSuccesses)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.appSuccesses.AppSuccessId)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="AppId" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

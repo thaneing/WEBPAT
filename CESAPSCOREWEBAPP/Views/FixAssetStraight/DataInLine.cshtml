@@ -1,0 +1,349 @@
+﻿
+@using Microsoft.AspNetCore.Http;
+
+@{
+    ViewData["Title"] = "Depreciation Straight Line";
+
+
+}
+
+<style>
+    th {
+        font-size: 12px;
+    }
+
+    td {
+        font-size: 11px;
+    }
+</style>
+
+
+
+
+
+
+<div class="spiner-example" id="popup" style="display:none">
+    <div class="sk-spinner sk-spinner-three-bounce">
+        <div class="sk-bounce1"></div>
+        <div class="sk-bounce2"></div>
+        <div class="sk-bounce3"></div>
+    </div>
+</div>
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>Chart</h5>
+
+        </div>
+        <div class="ibox-content">
+
+            <div>
+                <button class="btn btn-success  dim btn-dim" type="button" onclick="updatedata();"><i class="fa fa-file-pdf-o"></i> Update Data</button>
+            </div>
+            <div id="pivotgrid-demo">
+                @(Html.DevExtreme().Chart()
+                    .ID("pivotgrid-chart")
+                    .CommonSeriesSettings(s => s.Type(SeriesType.Line))
+                    .Tooltip(t => t.Enabled(true).CustomizeTooltip("customize_tooltip").Format(Format.FixedPoint))
+
+                    .AdaptiveLayout(l => l.Width(450))
+                )
+
+                @(Html.DevExtreme().PivotGrid<FixAssetStraightAll>()
+                    .ID("pivotgrid")
+                    .AllowSortingBySummary(true)
+                    .AllowFiltering(true)
+                    .FieldPanel(p => p
+                        .ShowColumnFields(true)
+                        .ShowDataFields(true)
+                        .ShowFilterFields(true)
+                        .ShowRowFields(true)
+                        .AllowFieldDragging(true)
+                        .Visible(true)
+                    )
+                    .HeaderFilter(h => h
+                        .AllowSearch(true)
+                        //.ShowRelevantValues(true)
+                        .Width(300)
+                        .Height(400)
+                    )
+                    .ShowBorders(true)
+                    .ShowColumnGrandTotals(true)
+                    .ShowRowGrandTotals(true)
+                    .ShowRowTotals(true)
+                    .ShowColumnTotals(true)
+                    .FieldChooser(c => c.Enabled(true).Height(400))
+                    .Export(e => e.Enabled(true).FileName("Depreciation Straight Line Report"))
+                    .Scrolling(fc => fc.Mode(PivotGridScrollingMode.Virtual))
+                    .DataSource(d => d
+                        .Store(s => s.Mvc().Controller("FixAssetStraight").LoadAction("GenDataChartLine"))
+                        .Fields(fields =>
+                        {
+
+
+                            fields.AddFor(m => m.FAPostingGroup)
+                               .Width(120)
+                               .Area(PivotGridArea.Filter)
+                               .Caption("กลุ่ม");
+
+
+                            fields.AddFor(m => m.FAPostingGroup)
+                                .Caption("กลุ่ม")
+                                  .Area(PivotGridArea.Row);
+                            
+                            fields.AddFor(m => m.Description)
+                                .Caption("รายละเอียด")
+                                  .Area(PivotGridArea.Row);
+
+
+                            fields.AddFor(m => m.Amount)
+                                .Caption("ราคารวม");
+
+                            fields.AddFor(m => m.PriceEnd)
+                                .Caption("ราคาซาก");
+
+                            fields.AddFor(m => m.StraightLine)
+                                .Caption("ราคาค่าเสื่อม");
+
+                            fields.AddFor(m => m.Quantity)
+                                .Caption("จำนวนรวม");
+
+
+
+
+                            fields.AddFor(m => m.DateInMount)
+                                .DataType(PivotGridDataType.Date)
+                                .GroupInterval(PivotGridGroupInterval.Year)
+                                .Area(PivotGridArea.Column)
+                                .Caption("ปี");
+
+
+                            fields.AddFor(m => m.DateInMount)
+                                .DataType(PivotGridDataType.Date)
+                                .GroupInterval(PivotGridGroupInterval.Month)
+                                .Area(PivotGridArea.Column)
+                                .Caption("เดือน");
+
+
+
+                            fields.AddFor(m => m.StraightLine)
+                               .SummaryType(SummaryType.Sum)
+                               .Format(Format.FixedPoint)
+                               .Area(PivotGridArea.Data)
+                               .Caption("ค่าเสื่อม");
+
+
+
+                        })
+                    )
+                    .OnInitialized("bind_chart")
+                )
+            </div>
+
+
+
+
+
+
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+
+    <script>
+
+        ///อัพเดทตาราง NAV To Database Owner
+        function updatedata() {
+            var a = @Context.Session.GetString("TypeOfUserId");
+            var b = @Context.Session.GetInt32("Userid");
+           
+            console.log(a);
+             console.log(b);
+            if (a == "3" || b == 38) {
+                toastr.info("กำลังค้นหาข้อมูล");
+                document.getElementById("popup").style.display = "block";
+                $.ajax({
+                    type: 'GET',
+                    contentType: "application/json",
+                    dataType: 'JSON',
+
+                    url: '/FixAssetStraight/UpdateDataAll',
+
+                    complete: function () {
+                        toastr.success("Update ข้อมูลเรียบร้อย!");
+                        document.getElementById("popup").style.display = "none";
+                        location.reload();
+                    },
+                    success: function (response) {
+
+                    }
+                });
+            }
+            else {
+
+                swal({
+                    title: "ไม่ถูกต้อง",
+                    text: "คุณไม่มีสิทธิ์ในหน้านี้!!",
+                    icon: "error",
+                    button: "ตกลง",
+                });
+                return false;
+                
+            }
+           
+        }
+
+
+        function convertJsonDateToShortDate(data) {
+            const dateValue = new Date(data);
+            return moment(dateValue).format("YYYY-MM-DD");;
+        }
+
+
+    </script>
+
+
+
+
+    <script>
+        $('#dtp1,#dtp2').datetimepicker({
+            format: 'DD/MM/YYYY',
+        });
+    </script>
+    <script>
+        function Printdata() {
+
+            url = "/FixAssetStraight/AllInLineReports";
+            window.location.href = url;
+        }
+    </script>
+    <script>
+        function customize_tooltip(args) {
+            return {
+                html: args.seriesName + " | Total<div class='currency'>" + args.valueText + "</div>"
+            };
+        }
+
+        function bind_chart(e) {
+            e.component.bindChart($("#pivotgrid-chart"), {
+                dataFieldsDisplayMode: "splitPanes",
+                alternateDataFields: false
+            });
+            e.component.on("contentReady", contentReady);
+        }
+        function contentReady(e) {
+            e.component.off("contentReady", contentReady);
+            var dataSource = e.component.getDataSource()
+            dataSource.expandHeaderItem("row", ["North America"]);
+            dataSource.expandHeaderItem("column", [2013]);
+        }
+    </script>
+
+
+    <script>
+        $("body").addClass('mini-navbar');
+        SmoothlyMenu();
+        $("body").addClass('fixed-sidebar');
+        $('.sidebar-collapse').slimScroll({
+            height: '100%',
+            railOpacity: 0.9
+        });
+
+
+
+        //$("body").addClass('mini-navbar');
+        //SmoothlyMenu();
+
+
+
+        function cellPrepared(e) {
+            if (e.rowType === 'data') {
+                if (e.data.OrderDate < new Date(2014, 2, 3)) {
+                    e.cellElement.css({ color: '#AAAAAA' });
+                }
+                if (e.data.SaleAmount > 15000) {
+                    if (e.column.dataField === 'OrderNumber') {
+                        e.cellElement.css({ 'font-weight': 'bold' });
+                    }
+                    if (e.column.dataField === 'SaleAmount') {
+                        e.cellElement.css({ 'background-color': '#FFBB00', color: '#000000' });
+                    }
+                }
+            }
+
+            if (e.rowType === 'group') {
+                if (e.row.groupIndex === 0) {
+                    e.cellElement.css({ 'background-color': '#BEDFE6', 'color': '#000' });
+                }
+                if (e.row.groupIndex === 1) {
+                    e.cellElement.css({ 'background-color': '#C9ECD7', 'color': '#000' });
+                }
+                e.cellElement.children().css({ 'color': '#000' });
+            }
+
+            if (e.rowType === 'groupFooter' && e.column.dataField === 'SaleAmount') {
+                e.cellElement.css({ 'font-style': 'italic' });
+            }
+        }
+
+        function customizeExcelCell(options) {
+            var gridCell = options.gridCell;
+            if (!gridCell) {
+                return;
+            }
+
+            if (gridCell.rowType === 'data') {
+                if (gridCell.data.OrderDate < new Date(2014, 2, 3)) {
+                    options.font.color = '#AAAAAA';
+                }
+                if (gridCell.data.SaleAmount > 15000) {
+                    if (gridCell.column.dataField === 'OrderNumber') {
+                        options.font.bold = true;
+                    }
+                    if (gridCell.column.dataField === 'SaleAmount') {
+                        options.backgroundColor = '#FFBB00';
+                        options.font.color = '#000000';
+                    }
+                }
+            }
+
+            if (gridCell.rowType === 'group') {
+                if (gridCell.groupIndex === 0) {
+                    options.backgroundColor = '#BEDFE6';
+                }
+                if (gridCell.groupIndex === 1) {
+                    options.backgroundColor = '#C9ECD7';
+                }
+                if (gridCell.column.dataField === 'Employee') {
+                    options.value = gridCell.value + " (" + gridCell.groupSummaryItems[0].value + " items)";
+                    options.font.bold = false;
+                }
+                if (gridCell.column.dataField === 'SaleAmount') {
+                    options.value = gridCell.groupSummaryItems[0].value;
+                    options.numberFormat = "&quot;Max: &quot;$0.00";
+                }
+            }
+
+            if (gridCell.rowType === 'groupFooter' && gridCell.column.dataField === 'SaleAmount') {
+                options.value = options.gridCell.value;
+                options.numberFormat = "&quot;Sum: &quot;$0.00";
+                options.font.italic = true;
+            }
+
+            if (gridCell.rowType === 'totalFooter' && gridCell.column.dataField === 'SaleAmount') {
+                options.value = options.gridCell.value;
+                options.numberFormat = "&quot;Total Sum: &quot;$0.00";
+            }
+        }
+    </script>
+
+}
+
+
+
+

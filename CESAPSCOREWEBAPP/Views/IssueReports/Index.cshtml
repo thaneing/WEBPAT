@@ -1,0 +1,230 @@
+﻿
+@{
+
+    IEnumerable<SourceAutoComplete> sourceAutoCompletes = ViewData["SourceAutoCompletes"] as IEnumerable<SourceAutoComplete>;
+
+    ViewData["Title"] = "Issue Report";
+
+
+}
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>Search Jobs</h5>
+
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+
+                <div class="col-lg-2 col-md-4">
+                    <div class="form-group">
+                        <label>Job No. : </label>
+
+                        <input name="site" autocomplete="off" id="site" value="@ViewBag.Site" class="typeahead_1 form-control" />
+                        @*<select class="form-control" asp-items="ViewBag.JobNo" id="joblist" onchange="showListHistory(this)"></select>*@
+                    </div>
+                </div>
+                <button class="btn btn-primary dim btn-dim" type="button" onclick="SearchData();"><i class="fa fa-search"></i> Search</button>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>รายละเอียด </h5>
+
+        </div>
+        <div class="ibox-content">
+            <div class="table-responsive">
+                <table id='example' class="table table-striped table-bordered table-hover dataTables-example">
+                    <thead>
+                        <tr>
+                            <th align='center'>Item No.</th>
+                            <th align='center'>Description</th>
+                            <th align='center'>Job No.</th>
+                            <th align='center'>Unit Of Mesure</th>
+                            <th align='center'>Unit Cost AVG.</th>
+                            <th align='center'>Issue Qty.</th>
+                            <th align='center'>Return Qty.</th>
+                            <th align='center'>Diff</th>
+                            <th align='center'>Original Total Cost</th>
+                 
+
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        SearchData();
+        function SearchData() {
+            var sites = document.getElementById('site').value;
+            var dataType = 'application/json; charset=utf-8';
+            table = $('#example').DataTable({
+
+                destroy: true,
+                columnDefs:
+                    [
+
+    
+                        {
+                            targets: 5,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 6,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 7,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 8,
+                            className: 'dt-body-right'
+                        }
+
+                    ],
+
+
+                "language": {
+                    "decimal": ",",
+                    "thousands": "."
+                },
+
+                "pageLength": 25,
+                //responsive: true,
+                dom: 'Bfrtip',
+                buttons: [
+
+                    {
+                        extend: 'colvis',
+                        text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                        //messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                        titleAttr: 'Hide',
+                        postfixButtons: ['colvisRestore']
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                        titleAttr: 'PDF',
+                        pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                        //orientation: 'landscape',
+                        // messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                        customize: function (doc) {
+                            doc.defaultStyle = {
+                                font: 'THSarabun',
+                                fontSize: '12',
+
+                            };
+                            var now = new Date();
+                            var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                            doc['footer'] = (function (page, pages) {
+                                return {
+                                    columns:
+                                        [
+                                            {
+                                                alignment: 'center',
+                                                text: ['Created on: ', { text: jsDate.toString() }]
+                                            },
+                                            {
+                                                alignment: 'right',
+                                                text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                            }
+                                        ],
+                                    margin: 10
+                                }
+                            });
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        titleAttr: 'Excel',
+                        // messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                        autoFilter: true
+                    },
+                    {
+                        extend: 'copyHtml5',
+                        text: '<i class="fa fa-files-o"></i> Copy',
+                        titleAttr: 'Copy'
+
+                    },
+                    {
+                        text: 'JSON',
+                        action: function (e, dt, button, config) {
+                            var data = dt.buttons.exportData();
+                            $.fn.dataTable.fileSave(
+                                new Blob([JSON.stringify(data)]),
+                                'Export.json'
+                            );
+                        }
+                    },
+                    {
+                        extend: 'selectAll'
+                    },
+                    {
+                        extend: 'selectNone'
+                    }
+                ],
+                "ajax": {
+                    "url": "/IssueReports/Getdata?sites=" + sites,
+                    "contentType": dataType,
+                    "type": "GET",
+                    "data": function (response) {
+                        return JSON.stringify(response.data);
+                    }
+
+                },
+
+                "columns": [
+                    { "data": "ItemNo" },
+                    { "data": "Des" },
+                    { "data": "JobNo" },
+                    { "data": "UnitOfMesure" },
+                    { "data": "UnitCostAvg", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "IssueQty", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "ReturnQty", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "Diff", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                     { "data": "OTotal", render: $.fn.dataTable.render.number(',', '.', 2, '') }
+
+                ]
+            });
+
+
+        }
+
+    </script>
+
+    <script>
+    var WebModels = @Html.Raw(Json.Serialize(sourceAutoCompletes));
+
+      //  var str = JSON.stringify(WebModels);
+        //console.log(JSON.stringify(WebModels));
+
+    //console.log(WebModels);
+       $('.typeahead_1').typeahead({
+                source: WebModels
+            });
+
+    </script>
+
+}
+
+
+
+
+
+
+
+

@@ -1,0 +1,396 @@
+﻿@model CESAPSCOREWEBAPP.Models.User
+
+@{
+    ViewData["Title"] = "แก้ไขสิทธิ์การเข้าใช้งาน";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+                  + "<li>"
+                  + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+                  + "</li>"
+                  + "<li>"
+                  + "<a href='/Users/Index' data-toggle='tooltip' data-placement='top' title='List Members'>รายการสมาชิก</a>"
+                  + "</li>"
+                  + "<li class='active'>"
+                  + "<b><a data-toggle='tooltip' data-placement='top' title='AddUsername'>" + @ViewData["Title"] + "</a></b>"
+                  + "</li>"
+                  + "</ol>";
+}
+@{
+    IEnumerable<V_Job> jobNos = ViewData["JobNo"] as IEnumerable<V_Job>;
+    IEnumerable<UserJob> userJobbs = ViewData["UserJob"] as IEnumerable<UserJob>;
+     
+
+}
+
+<style>
+    #new {
+        height:615px;
+        overflow: auto;
+    }
+
+
+    .tableFixHead1 {
+        overflow-y: auto;
+        height: 460px;
+    }
+
+        .tableFixHead1 th {
+            position: sticky;
+            top: 0;
+        }
+
+
+    .tableFixHead {
+        overflow-y: auto;
+        height: 500px;
+    }
+
+        .tableFixHead th {
+            position: sticky;
+            top: 0;
+        }
+
+    /* Just common table stuff. Really. */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px 16px;
+    }
+
+    th {
+        background: #eee;
+    }
+     .size {
+        height: 650px;
+    }
+
+    .fixscoll {
+        overflow-y: auto;
+        height: 75px;
+    }
+</style>
+
+<div class="col-sm-12 col-lg-9 col-md-12 col-lg-offset-1">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>ข้อมูลผู้ใช้</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <input id="userid" type="hidden" value="@Html.DisplayFor(model => model.UserId)" />
+
+
+            <div class="box-body box-profile">
+
+                <div class="row">
+                    <div class="col-lg-5">
+                        <center><img class="profile-user-img img-responsive img-circle" src="~/images/Users/256/@Html.DisplayFor(model => model.Pic)" alt="User profile picture"></center>
+
+                        <h3 class="profile-username text-center">@Html.DisplayFor(model => model.TitleOfUsers.TitleOfUserName)@Html.DisplayFor(model => model.Firstname) @Html.DisplayFor(model => model.Lastname)</h3>
+                        <p class="text-muted text-center">@Html.DisplayFor(model => model.Nickname)-@Html.DisplayFor(model => model.Levels.LevelName)</p>
+                    </div>
+
+                    <br />
+                    <div class="col-lg-7">
+
+                        <ul class="list-group list-group-unbordered">
+                            <li class="list-group-item">
+                                <b>หน่วยงาน</b> <a class="pull-right">@Html.DisplayFor(model => model.Branchs.BranchName) </a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>ฝ่าย</b> <a class="pull-right">@Html.DisplayFor(model => model.Organizs.Departments.DepartmentName) </a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>แผนก</b> <a class="pull-right">@Html.DisplayFor(model => model.Organizs.Department1s.Department1Name) </a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>ตำแหน่ง</b> <a class="pull-right">@Html.DisplayFor(model => model.Organizs.Positions.PositionName) </a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Email</b> <a class="pull-right">@Html.DisplayFor(model => model.EmailContact)</a>
+                            </li>
+                            @*<li class="list-group-item">
+                    <b>Tel</b> <a class="pull-right">@Html.DisplayFor(model => model.MobileTel) หรือ @Html.DisplayFor(model => model.ExtTel) </a>
+                </li>*@
+                            <li class="list-group-item">
+                                <b>สถานะ</b> <a class="pull-right">@Html.DisplayFor(model => model.StatusUser.StatusUserName) </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+             
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-12 col-lg-9 col-md-12 col-lg-offset-1">
+    <div class="row">
+        <div class="col-sm-7 col-lg-7 col-md-7 ">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>สิทธิ์การเข้าถึง</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="tableFixHead1 table-responsive" id="new">
+                        <table id="mysite" class="table table-striped">
+                            <thead>
+
+                                <tr class="header">
+                                    <th>ค้นหา : <input id="myInput1" /> </th>
+                                </tr>
+                            </thead>
+
+                            <tbody id='mysite1'>
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" value="HO"
+                                               @{ var b = ""; foreach (UserJob userjob in userJobbs) { if (userjob.UserJobDetail == "HO") { b = "checked"; } } }
+                                               @b data-animal-type="HO" id="HO" onclick="saveData(this);" /> HO
+                                    </td>
+                                </tr>
+                                @foreach (V_Job jobno in jobNos)
+                                {
+                                    <tr>
+
+                                        <td>
+                                            <input @*class="i-checks"*@ type="checkbox" value="@jobno.JobNo"
+                                                   @{ var a = ""; foreach (UserJob userjob in userJobbs) { if (userjob.UserJobDetail == jobno.JobNo) { a = "checked"; } } }
+                                                   @a data-animal-type="@jobno.JobNo" id="@jobno.JobNo" onclick="saveData(this);">
+
+                                            @jobno.JobNo
+
+
+                                        </td>
+
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-5 col-lg-5 col-md-5">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>รายการที่เลือก</h5>
+
+                </div>
+                <div class="ibox-content size">
+                    <div>
+                        <span id="show"></span>
+
+                        <span id="test"></span>@*a*@
+                    </div>
+                    <div class="fixscoll full-height-scroll">
+                        <div id="external-events">
+                            <span id="selectItemHO" style="font-size:20px"></span>
+                            <span id="selectItem" style="font-size:20px"></span>
+
+                        
+                          
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+
+@section Scripts {
+
+
+    <script>
+
+        $(document).ready(function () {
+            $("#myInput1").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#mysite1 tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+            
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+     
+        });
+
+    </script>
+
+    <script>
+
+    </script>
+
+
+    <script>
+        function saveData(animal) {
+            var animalType = animal.getAttribute("data-animal-type");
+
+            var a = document.getElementById(animalType).checked;
+
+            var id = document.getElementById("userid").value;
+
+
+         var job = @Html.Raw(Json.Serialize(jobNos));
+        var str = JSON.stringify(job);
+        str = JSON.stringify(job, null, 4); // (Optional) beautiful indented output.
+        console.log(str); // Logs output to dev tools console.
+        permisiontext = "";
+            selectItem = "";
+                
+         j = 0;
+            var userjob = 'HO';
+            selectItem2 = "";
+
+              for (i in job) {
+                    if (document.getElementById(job[i].JobNo).checked == true) {
+                        permisiontext += job[i].JobNo + ",";
+
+                        selectItem += " <img src='/Images/check2.png'><span  style='font-size:14px' id='selectItem'> " + job[i].LocationCode + "</span><br/> ";
+                        j = j + 1;
+                    }
+
+                }
+                if (document.getElementById(userjob).checked == true) {
+
+                    selectItem2 += " <img src='/Images/check2.png'><span  style='font-size:14px' id='selectItem2'> " + userjob + "</span><br/> ";
+
+                }
+                permisiontext=permisiontext.substring(0,permisiontext.length-1)
+            document.getElementById("selectItem").innerHTML = selectItem;
+              
+           document.getElementById("selectItemHO").innerHTML = selectItem2;
+
+            if (a == true) {
+              
+
+                $.ajax({
+                    type: "POST",
+                    //dataType: 'json',
+                    // contentType: 'application/json; charset=utf-8',
+                    data: { id: id, job: animalType },
+                    url: "/UserJob/Add/" + id,
+                    success: function (response) {
+                        swal({
+                            title: "เลือกสำเร็จ!",
+                            text: "",
+                            icon: "success",
+                            button: "ตกลง",
+                        });
+
+                    },
+                    failure: function (response) {
+                        swal({
+                            title: "เลือกไม่สำเร็จ!",
+                            text: "กรุณาเลือกใหม่อีกครั้ง",
+                            icon: "warning",
+                            button: "ตกลง",
+                        });
+                    }
+                });
+              
+            } else {
+                
+                $.ajax({
+                    type: "POST",
+                    //dataType: 'json',
+                    // contentType: 'application/json; charset=utf-8',
+                    data: { id: id, job: animalType },
+                    url: "/UserJob/remove/" + id,
+                    success: function (response) {
+                         swal({
+                            title: "ลบสำเร็จ!",
+                            text: "",
+                            icon: "error",
+                            button: "ตกลง",
+                        });
+                    },
+                    failure: function (response) {
+                        swal({
+                            title: "ลบไม่สำเร็จ!",
+                            text: "กรุณาลองใหม่อีกครั้ง",
+                            icon: "warning",
+                            button: "ตกลง",
+                        });
+                    }
+                });
+                //});
+            }
+        }
+    </script>
+
+    <script>
+       
+            var job = @Html.Raw(Json.Serialize(jobNos));
+        var str = JSON.stringify(job);
+        str = JSON.stringify(job, null, 4); // (Optional) beautiful indented output.
+        console.log(str); // Logs output to dev tools console.
+        permisiontext = "";
+          selectItem = "";
+         j = 0;
+
+
+       //var data = "1,2,3,4,5,6,7,8,9,10";
+       //var res = data.split(",");
+
+       for (i in job)
+       {
+           if (document.getElementById(job[i].JobNo).checked == true)
+           {
+               permisiontext += job[i].JobNo + ",";
+
+               selectItem += " <img src='/Images/check2.png'><span  style='font-size:14px' id='selectItem'> " + job[i].LocationCode + "</span><br/> ";
+                        j = j + 1;
+           }
+        }
+        permisiontext=permisiontext.substring(0,permisiontext.length-1)
+        //alert(permisiontext);
+
+        //document.getElementById("typepermision").value =permisiontext;
+
+        document.getElementById("selectItem").innerHTML = selectItem;
+
+
+        ///HO
+            var userjob = 'HO';
+            selectItem2 = "";
+
+            if (document.getElementById(userjob).checked == true)
+           {
+             
+               selectItem2 += " <img src='/Images/check2.png'><span  style='font-size:14px' id='selectItem2'> " + userjob + "</span><br/> ";
+                     
+           }
+            document.getElementById("selectItemHO").innerHTML = selectItem2;
+    </script>
+
+
+}

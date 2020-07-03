@@ -1,0 +1,116 @@
+﻿@model CESAPSCOREWEBAPP.Models.Manual
+
+@{
+    ViewData["Title"] = "รายละอียดคู่มือ";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+                   + "<li>"
+                   + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+                   + "</li>"
+                   + "<li>"
+                   + "<a href='/Manuals/Index' data-toggle='tooltip' data-placement='top' title='List'>รายการคู่มือ</a>"
+                   + "</li>"
+                   + "<li class='active'>"
+                   + "<b><a data-toggle='tooltip' data-placement='top' title='Add Title Of Users'>" + @ViewData["Title"] + "</a></b>"
+                   + "</li>"
+                   + "</ol>";
+}
+@{
+    IEnumerable<PictureManual> PictureManuals = ViewData["manualPic"] as IEnumerable<PictureManual>;
+    IEnumerable<FileManal> FileManals = ViewData["manaulFile"] as IEnumerable<FileManal>;
+}
+
+<style>
+    .imglist{
+        width:200px;
+        height:200px
+    }
+</style>
+
+<div class="col-sm-6 col-lg-6 col-md-6">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>รายละเอียดคู่มือ</h5>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div>
+
+                    <ul class="list-group list-group-unbordered">
+                        <li class="list-group-item">
+                            <b>ชื่อคู่มือ</b> <span class="pull-right">@Html.DisplayFor(model => model.ManualName)</span>
+                        </li>
+                        <li class="list-group-item">
+                            <b>ลิงค์</b> <span class="pull-right">@Html.DisplayFor(model => model.ManualLink)</span>
+                        </li>
+                        <li class="list-group-item">
+                            <b>รายละเอียดคู่มือ</b> <span class="pull-right">@Html.DisplayFor(model => model.ManuaDetail)</span>
+                        </li>
+                        <li class="list-group-item">
+                            <b>วันที่สร้าง</b> <span class="pull-right">@Html.DisplayFor(model => model.ManualDate)</span>
+                        </li>
+                        <li class="list-group-item">
+                            <b>สร้างโดย</b> <span class="pull-right"> @Html.DisplayFor(model => model.ManualUser)</span>
+                        </li>
+                        <li class="list-group-item">
+                            <b>หมวดหมู่คู่มือ</b> <span class="pull-right"> @Html.DisplayFor(model => model.ManualCats.ManualCatName)</span>
+                        </li>
+                        <li class="list-group-item">
+                            <b>ไฟล์คู่มือ</b><br />
+                            <div>
+                                @{
+                                    foreach (FileManal manualFile in FileManals)
+                                    {
+                                        <ul>
+                                            <li>  
+                                                <div class="form-group" id="@manualFile.FileManalId">
+                                            <a href="~/File/Manual/@manualFile.FileManalName"><i class="fa fa-paperclip"></i>@manualFile.FileManalName</a> 
+                                            </div>
+                                            </li>
+                                        </ul>
+                                      
+                                    }
+                                }
+                            </div>
+                        </li>
+                    </ul>
+
+
+                </div>
+                <div class="pull-right">
+                    <a asp-action="Edit" asp-route-id="@Model.ManualId" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Edit">แก้ไข</a>
+                    <a asp-action="Index" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Back to List">กลับรายการ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-sm-6 col-lg-6 col-md-6">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>รูปคู่มือ</h5>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-12" >
+                    @{
+                        foreach (PictureManual manualpic in PictureManuals)
+                        {
+                            <div class="form-group row col-lg-4">
+
+                                <div  id="@manualpic.PictureManualId">
+
+                                    <img src="~/images/Manual/256/@manualpic.PictureManualName"  class="imglist"/>
+                                    @*<a class="btn btn-danger" data-id-type="@manualpic.PictureManualId" onclick="DeletePic(this);">ลบ</a>*@
+
+                                </div>
+                            </div>
+                        }
+                    }
+
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+

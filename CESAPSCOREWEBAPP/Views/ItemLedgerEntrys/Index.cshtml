@@ -1,0 +1,722 @@
+﻿@model IEnumerable<CESAPSCOREWEBAPP.Models.ItemLedgerEntry>
+
+@{
+
+
+    IEnumerable<V_Job> userJobbs = ViewData["JobNo"] as IEnumerable<V_Job>;
+}
+
+
+@{
+    ViewData["Title"] = "Item Metrix";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+               + "<li>"
+               + "<a href='../../Home/Index'>Home</a>"
+               + "</li>"
+               + "<li class='active'>"
+               + "<a>" + @ViewData["Title"] + "</a>"
+               + "</li>"
+               + "</ol>";
+
+}
+
+<style>
+    #new {
+        height: 215px;
+        /*overflow: auto;*/
+    }
+
+    .tableFixHead1 {
+        overflow-y: auto;
+        height: 180px;
+    }
+
+        .tableFixHead1 th {
+            position: sticky;
+            top: 0;
+        }
+
+
+
+
+    .tableFixHead {
+        overflow-y: auto;
+        height: 500px;
+    }
+
+        .tableFixHead th {
+            position: sticky;
+            top: 0;
+        }
+
+     Just common table stuff. Really. 
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px 16px;
+    }
+
+    th {
+        background: #eee;
+    }
+    #size{
+        width:80px;
+        height:60px;
+    }
+
+    .exportbtn{
+        color:white;
+        background:#1a8ac3;
+    }
+     .exportbtn{
+        color:white;
+        background:#1a8ac3;
+    }
+     .exportpdf{
+        color:white;
+        background:#024971;
+    }
+   
+</style>
+
+
+
+<div class="col-xs-6 col-sm-12 col-md-6 col-lg-6">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>Site <span style="color:darkgrey">(เลือกได้ไม่เกิน 15 หน่วยงาน)</span></h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="tableFixHead1">
+                <table id="mysite">
+                    <thead>
+                
+                        <tr class="header">
+                 
+                            <th>
+                             
+                                <div class="col-sm-10">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="myInput1" placeholder="&#xF002 Search.." style="font-family:Arial, FontAwesome"> <span class="input-group-btn">
+                                            @*<button type="button" class="btn btn-primary" onclick="clearchecked()">
+                                                UnCheck All
+                                            </button>*@
+                                        </span>
+                                    </div>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id='mysite1'>
+
+                        @foreach (V_Job userJob in userJobbs)
+                        {
+                            <tr>
+                                <td><input type="checkbox" id="@userJob.JobNo" data-animal-type="@userJob.JobNo" onclick="saveData('@userJob.JobNo');" /> @userJob.JobNo</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xs-6 col-sm-6  col-md-3 col-lg-3">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>Site Selected <span id="countsite" style="color:red">0</span> site</h5>
+            
+        </div>
+        <div class="ibox-content" id="new" style="overflow: auto;">
+            <div class="col-lg-12">
+                <button type="button" class="btn btn-warning pull-right" onclick="clearchecked()">
+                    Clear
+                </button>
+            </div>
+            <div id="external-events">
+                <p id="selectItem"></p>
+            </div>             
+        </div>
+    </div>
+</div>
+
+<div class="col-xs-6 col-sm-6  col-md-3 col-lg-3">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>Posting Date </h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content" id="new">
+
+            <div class="form-group">
+                <div class="input-group date" id="dtp1">
+                    <input type="text" class="form-control" id="txtStart" value="@ViewBag.StartDate" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+            @*<button class="btn btn-primary dim btn-large-dim pull-right" type="button" onclick="onsearchdata()" id="size"><i class="fa fa-search"></i></button>*@
+
+            <button class="btn btn-primary pull-right" type="button" onclick="onsearchdata()" ><i class="fa fa-search"></i> Search</button>
+
+            @*<button class="btn btn-success pull-right" onclick="onsearchdata()">Search</button>*@
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    @*<div class="spiner-example" id="popup" style="display:none">
+            <div class="sk-spinner sk-spinner-three-bounce">
+                <div class="sk-bounce1"></div>
+                <div class="sk-bounce2"></div>
+                <div class="sk-bounce3"></div>
+            </div>
+        </div>*@
+
+    <div class="ibox" id="ibox1">
+        <div class="ibox-title">
+            Detail
+        </div>
+        <div class="ibox-content">
+            <div class="sk-spinner sk-spinner-wave">
+                <div class="sk-rect1"></div>
+                <div class="sk-rect2"></div>
+                <div class="sk-rect3"></div>
+                <div class="sk-rect4"></div>
+                <div class="sk-rect5"></div>
+            </div>
+            <div class="table-responsive">
+                <p id="table1"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="myModal" class="modal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><span id="title"></span></h4>
+            </div>    <!-- Modal content-->
+            <div class="modal-body">
+                <table id="example" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Location</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                </table>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*รายการที่ Checkbox คลิก*@
+<input type="hidden" id="typepermision" />
+
+
+
+
+@section Scripts {
+
+
+    
+
+
+
+
+    <script>
+     
+        $('#dtp1').datetimepicker({
+            format: 'DD/MM/YYYY',
+        });
+    </script>
+
+    <script>
+        function clearchecked() {
+            //alert("dddd");
+            $('input[type=checkbox]').prop('checked', false);
+            saveData('');
+    
+        }
+    </script>
+
+
+    <script>
+            var permisiontext = "";
+            $(document).ready(function () {
+                $("#myInput1").on("keyup", function () {
+                    var value = $(this).val().toLowerCase();
+                    $("#mysite1 tr").filter(function () {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                    });
+                });
+            });
+
+
+            function saveData(dd) {
+
+                var stringValue = $('#txtStart').val().trim();
+                var day = stringValue.substr(0, 2);
+                var month = stringValue.substr(3, 2);
+                var year = stringValue.substr(6, 4);
+                var date2 = year + '-' + month + '-' + day + ' 23:59:59';
+
+                //var date1 = moment($('#dtp1').val(), "DD/MM/YYYY").toDate();
+                //alert(typeof (date1));
+                //alert(dd);
+
+
+
+                document.getElementById('table1').innerHTML = "";
+                var WebModels = @Html.Raw(Json.Serialize(userJobbs));
+                var str = JSON.stringify(WebModels);
+                str = JSON.stringify(WebModels, null, 4); // (Optional) beautiful indented output.
+                //console.log(str); // Logs output to dev tools console.
+                permisiontext = "";
+                selectItem = "";
+
+
+                j = 0;
+
+                //var data = "1,2,3,4,5,6,7,8,9,10";
+                //var res = data.split(",");
+
+                for (i in WebModels) {
+
+
+                    //ifdocument.getElementById(WebModels[i].JobNo).value == true) {
+                    //     alert(WebModels[i].JobNo);
+                    //}
+                    if (document.getElementById(WebModels[i].JobNo).checked == true) {
+                        if (j > 15) {
+                            document.getElementById(dd).checked = false;
+                            alert("มากกว่า 15 Site");
+                            return;
+                        }
+                        permisiontext += WebModels[i].JobNo + ",";
+
+
+                        selectItem += "<span class='badge badge-primary' style='site:18px' id='selectItem'>" + WebModels[i].JobNo + "</span>";
+                        j = j + 1;
+                    }
+                }
+
+
+                permisiontext = permisiontext.substring(0, permisiontext.length - 1)
+                //alert(permisiontext);
+
+                document.getElementById("countsite").innerHTML =j;
+                document.getElementById("typepermision").value = permisiontext;
+                document.getElementById("selectItem").innerHTML = selectItem;
+
+
+
+
+
+
+            }
+
+
+    function onsearchdata() {
+
+                $('#ibox1').children('.ibox-content').toggleClass('sk-loading');
+
+                var stringValue = $('#txtStart').val().trim();
+                var day = stringValue.substr(0, 2);
+                var month = stringValue.substr(3, 2);
+                var year = stringValue.substr(6, 4);
+                var date2 = year + '-' + month + '-' + day + ' 23:59:59';
+
+                //alert(date2);
+                //document.getElementById("popup").style.display = "block";
+                 toastr.info("กำลังค้นหาข้อมูล!");
+                 $.ajax({
+                    type: 'GET',
+                    contentType: "application/json",
+                    dataType: 'JSON',
+                    data: { Job: permisiontext, date1: date2 },
+                    url: '/ItemLedgerEntrys/ShowData/',
+                     complete: function () {
+                         toastr.success("ค้นหาข้อมูลเรียบร้อย!");
+                         //document.getElementById("popup").style.display = "none";
+                           $('#ibox1').children('.ibox-content').toggleClass('sk-loading');
+                     },
+                     success: function (response) {
+                         document.getElementById("table1").innerHTML = response.table;
+
+                         var doctype = "";
+                         if (document.getElementById('itemmetrix').rows[0].cells.length > 5) {
+                             doctype = "landscape";
+
+                         } else {
+                             doctype = "vertical";
+                         }
+
+                             // Setup - add a text input to each footer cell
+                            $('#itemmetrix tfoot tr').clone(true).appendTo( '#itemmetrix tfoot' );
+                            $('#itemmetrix tfoot tr:eq(1) td').each( function (i) {
+                                var title = $(this).text();
+                                $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+ 
+                                $( 'input', this ).on( 'keyup change', function () {
+                                    if ( table.column(i).search() !== this.value ) {
+                                        table
+                                            .column(i)
+                                            .search( this.value )
+                                            .draw();
+                                    }
+                                } );
+                            });
+
+
+ 
+
+
+
+                         var dataType = 'application/json; charset=utf-8';
+                         table = $('#itemmetrix').DataTable({
+                             destroy: true,
+                            
+                             "language": {
+                                 "decimal": ",",
+                                 "thousands": "."
+                             },
+
+                             //scrollY: 500,
+                             //deferRender: true,
+                             //scrollCollapse: true,
+                             //scroller: {
+                             //    loadingIndicator: true
+                             //},
+                             responsive: false,
+                             //fixedHeader: true,
+                             select: {
+                                 style: 'os',
+                                 blurable: true
+                             },
+                             dom: 'Bfrtip',
+                             //stateSave: true,
+                             buttons: [
+
+               
+                                 {
+                                     extend: 'pdfHtml5',
+                                     text: '<span style="color:white"><i class="fa fa-file-pdf-o"></i> PDF</span>',
+                                     titleAttr: 'PDF',
+                                     pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                                     orientation: doctype,
+                                     messageTop: "รายงานทรัพย์สินและสต๊อกคงเหลือถึง ณ วันที่ : "+ date2,
+                                     //className: 'exportbtn',
+                                    
+                                
+                                     //messageTop: item + " " + itemname,
+                                     customize: function (doc) {
+                                         doc.defaultStyle = {
+                                             font: 'THSarabun',
+                                             fontSize: '12',
+
+                                         };
+                                         var now = new Date();
+                                         var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                                         var row = 0;
+                            
+                                         //var colCount = document.getElementById('itemmetrix').rows[0].cells.length;
+
+                                            var info = table.page.info();
+                                            var rowstot = info.recordsTotal;
+                                             var rowsshown = info.recordsDisplay;
+                                         
+                                        //alert(rowstot);
+                                        // alert(rowsshown);
+
+
+                                         if (table.rows('.selected').data().length > 0) {
+                                             row = table.rows('.selected').data().length;
+                                         } else {
+                                             row = rowsshown;
+                                         }
+
+
+
+
+                                         //var rowCount = document.getElementById("itemmetrix").rows.length;
+                                         //alert(rows.length);
+                                         for (j = 2; j < response.columdata;j++) {
+                                             for (i = 0; i < row+1; i++) {
+                                               doc.content[2].table.body[i][j].alignment = 'right';
+                                           };
+                                         };
+
+                                       
+
+                                         doc['footer'] = (function (page, pages) {
+                                             return {
+                                                 columns:
+                                                     [
+                                                         {
+                                                             alignment: 'center',
+                                                             text: ['Created on: ', { text: jsDate.toString() }]
+                                                         },
+                                                         {
+                                                             alignment: 'right',
+                                                             text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                                         }
+                                                     ],
+                                                 margin: 10
+                                             }
+                                         });
+                                     }
+                                 },
+                                 {
+                                     extend: 'excelHtml5',
+                                     text: '<span style="color:white"><i class="fa fa-file-excel-o"></i> Excel</span>',
+                                     titleAttr: 'Excel',
+                                     messageTop: "รายงานทรัพย์สินและสต๊อกคงเหลือถึง ณ วันที่ : "+ date2,
+                                     autoFilter: true
+                                 },
+                                 {
+                                     extend: 'copyHtml5',
+                                     text: '<span style="color:white"><i class="fa fa-files-o"></i> Copy</span>',
+                                     titleAttr: 'Copy'
+
+                                 },
+                                 {
+                                     text: 'JSON',
+                                      titleAttr: 'json',
+                                     action: function (e, dt, button, config) {
+                                         var data = dt.buttons.exportData();
+                                         $.fn.dataTable.fileSave(
+                                             new Blob([JSON.stringify(data)]),
+                                             'Export.json'
+                                         );
+                                     }
+                                 },
+                    {
+                        extend: 'selectAll'
+                    },
+                    {
+                        extend: 'selectNone'
+                    }
+
+                             ]
+
+                         });
+                         
+                         $('.btn-default').addClass('exportbtn ');
+                         $('.buttons-pdf').addClass('btn btn-success');
+                         $('.buttons-excel').addClass('btn btn-success');
+                         $('.buttons-copy').addClass('btn btn-success');
+                         $('.buttons-json').addClass('btn btn-success');
+
+                    }
+                    ,error: function () {
+                        alert('โปรดตรวจสอบเงื่อนไขก่อนทำรายการ');
+                        //alert(location.protocol + '//'+location.host + this.url)
+                        //document.getElementById("popup").style.display = "none";
+                    }
+
+                }); ///
+            }
+
+
+
+
+
+    </script>
+
+    <script>
+        $("#searchCityOfBirth").on('focusout', function () {
+            $.ajax({
+                url: "/ItemLedgerEntrys/GetProvinceOfBirth",
+                type: "GET",
+                dataType: "json",
+                data: { fetch: $("#searchCityOfBirth").val() },
+                success: function (query) {
+                    $("#searchProvinceOfBirth").val(query[0]);
+                },
+            });
+        });
+
+    </script>
+    <script>
+        function selectDetail(appid) {
+ 
+            var item = appid.getAttribute("data-animal-type");
+            var date1 = appid.getAttribute("data-date1-type");
+            var itemname = appid.getAttribute("data-itemname-type");
+
+            document.getElementById("title").innerHTML = item + " " + itemname;
+
+
+            //alert(item);
+            var dataType = 'application/json; charset=utf-8';
+            table = $('#example').DataTable({
+                destroy: true,
+                columnDefs:
+                    [
+                        {
+                            targets: -1,
+                            className: 'dt-body-right'
+                        }
+                    ],
+                "language": {
+                    "decimal": ",",
+                    "thousands": "."
+                },
+
+                //scrollY: 500,
+                //deferRender: true,
+                //scrollCollapse: true,
+                //scroller: {
+                //    loadingIndicator: true
+                //},
+                responsive: true,
+                //fixedHeader: true,
+                //select: {
+                //    style: 'os',
+                //    blurable: true
+                //},
+                dom: 'Bfrtip',
+                //stateSave: true,
+                buttons: [
+
+                    //{
+                    //    extend: 'colvis',
+                    //    text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                    //    messageTop: item + " " + itemname,
+                    //    titleAttr: 'Hide',
+                    //    postfixButtons: ['colvisRestore']
+                    //},
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<span style="color:white"><i class="fa fa-file-pdf-o"></i> PDF</span>',
+                        titleAttr: 'PDF',
+                        pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                        //orientation: 'landscape',
+                        messageTop: item + " " + itemname,
+                        customize: function (doc) {
+                            doc.defaultStyle = {
+                                font: 'THSarabun',
+                                fontSize: '12',
+
+                            };
+                            var now = new Date();
+                            var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                            doc['footer'] = (function (page, pages) {
+                                return {
+                                    columns:
+                                        [
+                                            {
+                                                alignment: 'center',
+                                                text: ['Created on: ', { text: jsDate.toString() }]
+                                            },
+                                            {
+                                                alignment: 'right',
+                                                text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                            }
+                                        ],
+                                    margin: 10
+                                }
+                            });
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<span style="color:white"><i class="fa fa-file-excel-o"></i> Excel</span>',
+                        titleAttr: 'Excel',
+                        messageTop: item + " " + itemname,
+                        autoFilter: true
+                    },
+                    {
+                        extend: 'copyHtml5',
+                        text: '<span style="color:white"><i class="fa fa-files-o"></i> Copy </span>',
+                        titleAttr: 'Copy'
+
+                    },
+                    {
+                        text: 'JSON',
+                        action: function (e, dt, button, config) {
+                            var data = dt.buttons.exportData();
+                            $.fn.dataTable.fileSave(
+                                new Blob([JSON.stringify(data)]),
+                                'Export.json'
+                            );
+                        }
+                    }
+                    //,
+                    //{
+                    //    extend: 'selectAll'
+                    //},
+                    //{
+                    //    extend: 'selectNone'
+                    //}
+                ],
+                "ajax": {
+                    "url": "/ItemLedgerEntrys/ItemBySite/?itemno=" + item + "&date1=" + date1,
+                    "contentType": dataType,
+                    "type": "GET",
+                    "data": function (response) {
+                        return JSON.stringify(response.data);
+                    }
+
+                },
+
+                "columns": [
+                    { "data": "LocationCode" },
+                    { "data": "Total" }
+
+
+
+                ]
+
+
+
+
+            });
+                $('.btn-default').addClass('exportbtn ');
+                         $('.buttons-pdf').addClass('btn btn-success');
+                         $('.buttons-excel').addClass('btn btn-success');
+                         $('.buttons-copy').addClass('btn btn-success');
+            $('#myModal').modal();
+        }
+
+
+
+
+
+    </script>
+
+
+
+
+
+
+}

@@ -1,0 +1,82 @@
+﻿@model CESAPSCOREWEBAPP.Models.HouseRental
+
+@{
+    ViewData["Title"] = "รายละเอียดการเช่า";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+             + "<li>"
+             + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+             + "</li>"
+             + "<li>"
+            + "<a href='/HouseRentals/Index' data-toggle='tooltip' data-placement='top' title='List'>รายการเช่าห้องพัก</a>"
+             + "</li>"
+             + "<li class='active'>"
+             + "<b><a data-toggle='tooltip' data-placement='top' title='Add Case BPC'>" + @ViewData["Title"] + "</a></b>"
+             + "</li>"
+             + "</ol>";
+}
+
+<div>
+    <div class="col-sm-6 col-lg-6 col-md-6 col-lg-offset-3" >
+        <div class="ibox ">
+            <div class="ibox-title">
+                <h5>รายละเอียด</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <h2>  @Html.DisplayFor(model => model.EmpName)</h2>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">รหัสพนักงาน </label>
+                            <label>  @Html.DisplayFor(model => model.EmpId)</label>
+                            <label class="control-label">ตำแหน่ง </label>
+                            <label>   @Html.DisplayFor(model => model.EmpPosition)</label>
+                            <label class="control-label">หน่วยงาน</label>
+                            <label>  @Html.DisplayFor(model => model.Site)</label>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">ชื่อหอพัก </label>
+                            <label>  @Html.DisplayFor(model => model.HouseName)</label>
+                            <label class="control-label">เลขที่หอพัก </label>
+                            <label>  @Html.DisplayFor(model => model.RoomNumber)</label>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">วันที่เช่า </label>
+                            <label class="control-label">  @Html.DisplayFor(model => model.PostingDate)</label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">ราคา </label>
+                            <label>  @Html.DisplayFor(model => model.Price) บาท</label>
+                            <label class="control-label">จำนวนเงิน </label>
+                            <label>  @Html.DisplayFor(model => model.Thaibath)</label>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">รายละเอียด </label>
+                            <label class="control-label">  @Html.DisplayFor(model => model.Etc)</label>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">ประเภทห้องพัก </label>
+                            <label class="control-label">  @Html.DisplayFor(model => model.TypeRooms)</label>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">สถานะ </label>
+                            <label class="control-label">  @Html.DisplayFor(model => model.Statuss)</label>
+
+                        </div>
+                        <div class="form-group">
+                            <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Save">แก้ไข</a>
+                            <a asp-action="Index" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Back to List">กลับรายการ</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

@@ -1,0 +1,286 @@
+﻿@model CESAPSCOREWEBAPP.Models.Permision
+
+
+@{
+
+    IEnumerable<WebModul> webModuls = ViewData["WebModuls"] as IEnumerable<WebModul>;
+     IEnumerable<Permision> permisionss = ViewData["WebModuls"] as IEnumerable<Permision>;
+
+}
+
+@{
+    ViewData["Title"] = "แก้ไขข้อมูลสิทธิ์การเข้าถึง";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+        + "<li>"
+        + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+        + "</li>"
+        + "<li>"
+        + "<a href='/Permisions/Index' data-toggle='tooltip' data-placement='top' title='List'>รายการข้อมูลสิทธิ์การเข้าถึง</a>"
+        + "</li>"
+        + "<li class='active'>"
+        + "<b><a data-toggle='tooltip' data-placement='top' title='Add Permisions'>" + @ViewData["Title"] + "</a></b>"
+        + "</li>"
+        + "</ol>";
+}
+
+<style>
+    #new {
+        height: 500px;
+        overflow: auto;
+    }
+
+
+    .tableFixHead1 {
+        overflow-y: auto;
+        height: 400px;
+    }
+
+        .tableFixHead1 th {
+            position: sticky;
+            top: 0;
+        }
+
+
+
+
+
+    .tableFixHead {
+        overflow-y: auto;
+        height: 500px;
+    }
+
+        .tableFixHead th {
+            position: sticky;
+            top: 0;
+        }
+
+    /* Just common table stuff. Really. */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px 16px;
+    }
+
+    th {
+        background: #eee;
+    }
+   .size {
+        height: 510px;
+    }
+
+    .fixscoll {
+        overflow-y: auto;
+       
+</style>
+
+
+<form asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="PermisionId" id="perid"/>
+    <div class="col-sm-6 col-lg-6 col-md-6 col-lg-offset-1">
+        <div class="ibox ">
+            <div class="ibox-title">
+                <h5>@ViewData["Title"]</h5>
+                
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-lg-12">
+
+                        <div class="form-group">
+                            <label class="control-label">ชื่อสิทธิ์การใช้งาน</label>
+                            <input asp-for="PermisionName" class="form-control" />
+                            <span asp-validation-for="PermisionName" class="text-danger"></span>
+                        </div>
+
+                        <div class="tableFixHead1">
+                            <table id="mysite">
+                                <thead>
+
+                                    <tr class="header">
+                                        <th>ค้นหา : <input id="myInput1" /> </th>
+                                    </tr>
+                                </thead>
+                                <tbody id='mysite1'>
+                                    @{
+                                        var data = @ViewBag.Permision;
+                                        string[] words = data.Split(',');
+                                        foreach (WebModul webModul in webModuls)
+                                        {
+                                            var a = "";
+                                            foreach (string word in words)
+                                            {
+                                                if (Int32.Parse(word) == webModul.WebModulId)
+                                                {
+                                                    a = "checked";
+                                                }
+                                            }
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" value="@webModul.WebModulId" @a data-animal-type="@webModul.WebModulId" id="@webModul.WebModulId" onclick="Permision(@webModul.WebModulId);"> @webModul.WebModulName
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <input asp-for="PermisionAction" id="typepermision" type="hidden" class="form-control" />
+                        @*<input asp-for="PermisionAction" id="typepermision"  class="form-control" />*@
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div>
+
+            <input type="submit" value="บันทึก" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Save" />
+            <a asp-action="Index" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Back to List">กลับรายการ</a>
+        </div>
+    </div>
+</form>
+
+<div class="col-sm-3 col-lg-3 col-md-3">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>รายการที่เลือก</h5>
+
+        </div>
+        <div class="ibox-content size">
+            <div>
+                <span id="show"></span>
+
+                <span id="test"></span>@*a*@
+            </div>
+            <div class="fixscoll full-height-scroll">
+                <div id="external-events">
+
+                    <span id="selectItem" style="font-size:20px"></span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $("#myInput1").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#mysite1 tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+
+
+
+
+    @*<script>
+        function Permision() {
+
+            var WebModels = @Html.Raw(Json.Serialize(webModuls));
+            var str = JSON.stringify(WebModels);
+            str = JSON.stringify(WebModels, null, 4); // (Optional) beautiful indented output.
+            //console.log(str); // Logs output to dev tools console.
+            permisiontext = "";
+
+
+
+           //var data = "1,2,3,4,5,6,7,8,9,10";
+           //var res = data.split(",");
+           for (i in WebModels)
+           {
+               if (document.getElementById(WebModels[i].webModulId).checked == true)
+               {
+                   permisiontext +=WebModels[i].webModulId+",";
+               }
+            }
+            permisiontext=permisiontext.substring(0,permisiontext.length-1)
+            //alert(permisiontext);
+
+            document.getElementById("typepermision").value =permisiontext;
+
+
+
+
+
+            }
+        </script>*@
+
+
+
+    <script>
+
+
+    function Permision(dd) {
+
+        var WebModels = @Html.Raw(Json.Serialize(webModuls));
+        var str = JSON.stringify(WebModels);
+        str = JSON.stringify(WebModels, null, 4); // (Optional) beautiful indented output.
+        console.log(str); // Logs output to dev tools console.
+        permisiontext = "";
+
+        selectItem = "";
+         j = 0;
+       //var data = "1,2,3,4,5,6,7,8,9,10";
+       //var res = data.split(",");
+
+       for (i in WebModels)
+       {
+           if (document.getElementById(WebModels[i].WebModulId).checked == true)
+           {
+               permisiontext += WebModels[i].WebModulId + ",";
+               selectItem += " <img src='/Images/check2.png'><span  style='font-size:14px' id='selectItem'> " + WebModels[i].WebModulName + "</span><br/> ";
+                        j = j + 1;
+           }
+        
+        }
+        permisiontext=permisiontext.substring(0,permisiontext.length-1)
+       // alert(permisiontext);
+
+        document.getElementById("typepermision").value =permisiontext;
+        document.getElementById("selectItem").innerHTML = selectItem;
+
+
+        }
+    </script>
+    <script>
+
+       var WebModels = @Html.Raw(Json.Serialize(webModuls));
+        var str = JSON.stringify(WebModels);
+        str = JSON.stringify(WebModels, null, 4); // (Optional) beautiful indented output.
+        console.log(str); // Logs output to dev tools console.
+        permisiontext = "";
+
+        selectItem = "";
+         j = 0;
+       //var data = "1,2,3,4,5,6,7,8,9,10";
+       //var res = data.split(",");
+
+       for (i in WebModels)
+       {
+           if (document.getElementById(WebModels[i].WebModulId).checked == true)
+           {
+               permisiontext += WebModels[i].WebModulId + ",";
+               selectItem += " <img src='/Images/check2.png'><span  style='font-size:14px' id='selectItem'> " + WebModels[i].WebModulName + "</span><br/> ";
+                        j = j + 1;
+           }
+        
+        }
+        //permisiontext=permisiontext.substring(0,permisiontext.length-1)
+       // alert(permisiontext);
+ document.getElementById("selectItem").innerHTML = selectItem;
+
+    </script>
+
+}

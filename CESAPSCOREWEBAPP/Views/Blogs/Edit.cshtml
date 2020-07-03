@@ -1,0 +1,410 @@
+﻿@model CESAPSCOREWEBAPP.Models.Blog
+
+<style>
+    .container {
+        position: relative;
+        width: 100%;
+        max-width: 400px;
+    }
+
+        .container img {
+            width: 100%;
+            height: auto;
+        }
+
+        .container .btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            background-color: #555;
+            color: white;
+            font-size: 16px;
+            padding: 12px 24px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+            .container .btn:hover {
+                background-color: black;
+            }
+
+    #output_image {
+        max-width: 300px;
+    }
+</style>
+
+@{
+    ViewData["Title"] = "แก้ไขข่าวสาร";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+                + "<li>"
+                + "<a href='../../Home/Index'>Home</a>"
+                + "</li>"
+                + "<li>"
+                + "<a href='/Blogs/Index'>รายการข่าวสาร</a>"
+                + "</li>"
+                + "<li class='active'>"
+                + "<a>" + @ViewData["Title"] + "</a>"
+                + "</li>"
+                + "</ol>";
+}
+@{
+    IEnumerable<BlogPic> blogPics = ViewData["BlogPic"] as IEnumerable<BlogPic>;
+    IEnumerable<BlogFile> blogFiles = ViewData["BlogFile"] as IEnumerable<BlogFile>;
+}
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+
+    <div class="col-lg-5">
+        <div class="ibox ">
+            <div class="ibox-title">
+                <h5>@ViewData["Title"]</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div style="display:none">
+                    <input asp-for="BlogId" />
+                    <input asp-for="BlogCreateBy" />
+                    <input asp-for="BlogCreateDate" />
+                    <input name="picold" value="@ViewBag.BlogPicTitle" />
+
+
+                    <input asp-for="BlogStatus" class="form-control" type="hidden" id="BlogStatus" />
+                </div>
+
+
+                <div class="form-group">
+                    <center><img id="output_image" src="~/images/BlogTitle/256/@ViewBag.BlogPicTitle" /></center>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label"> @Html.Label("fileCoverImg", "รูปภาพหัวข้อข่าว")</label>
+                    <div class="col-lg-9">
+                        <input name="uploadPic" onchange="preview_image(event)" class="form-control" type="file" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">หัวข้อข่าวสาร</label>
+                    <div class="col-lg-9">
+                        <input asp-for="BlogTitle" class="form-control" />
+                        <span asp-validation-for="BlogTitle" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">จากวันที่</label>
+                    <div class="col-lg-9">
+                        <div class="input-group date" id="dtp1">
+                            <input type="text" class="form-control" name="Startdate" id="StartDate1" value="@ViewBag.StartDate" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">ถึงวันที่</label>
+                    <div class="col-lg-9">
+                        <div class="input-group date" id="dtp2">
+                            <input type="text" class="form-control" name="EndDate" id="StartDate2" value="@ViewBag.EndDate" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">แนบไฟล์</label>
+                    <div class="col-lg-9">
+                        <input type="file" name="filesUpload" multiple class="form-control" />
+                    </div>
+                </div>
+                @{
+                    foreach (BlogFile blogFile in blogFiles)
+                    {
+
+                        <div class="form-group" id="@blogFile.BlogFileId">
+                            <a href="~/File/Board/@blogFile.BlogFileName"><i class="fa fa-paperclip"></i>@blogFile.BlogFileName</a> <a data-id-type="@blogFile.BlogFileId" onclick="DeleteFile(this);"><span style="color:red"><i class="fa fa-times"></i></span></a>
+                        </div>
+
+
+                    }
+                }
+
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">สถานะ</label>
+                    <div class="col-lg-9">
+                        <select class="form-control" id="status" onchange="CheckStatus()">
+                            <option value="1">Cancle</option>
+                            <option value="2">TOP</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">หมวดหมู่</label>
+                    <div class="col-lg-9">
+                        <select asp-for="BlogCatId" class="form-control" asp-items="ViewBag.BlogCatId"></select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">ภาพประกอบ</label>
+                    <div class="col-lg-9">
+                        <input type="file" id="gallery-photo-add" name="files" multiple class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-lg-12">
+                        <div class="gallery"></div>
+                    </div>
+                </div>
+
+                @{
+                    foreach (BlogPic blogPic in blogPics)
+                    {
+                        <div class="form-group row">
+
+                            <div class="container" id="@blogPic.BlogPicId">
+
+                                <img src="~/images/Board/256/@blogPic.BlogPicName" />
+                                <a class="btn" data-id-type="@blogPic.BlogPicId" onclick="showTables(this);">ลบ</a>
+
+                            </div>
+                        </div>
+                    }
+                }
+
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="ibox ">
+            <div class="ibox-title">
+                <h5>รายละเอียด</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+
+                <div class="form-group">
+                    <textarea asp-for="BlogDetail" class="textarea" placeholder="Place some text here" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="บันทึก" class="btn btn-success" />
+
+            <a asp-action="Index" class="btn btn-info">กลับรายการ</a>
+        </div>
+    </div>
+</form>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <!-- CK Editor -->
+    <script src="~/bower_components/ckeditor/ckeditor.js"></script>
+    <!-- Bootstrap WYSIHTML5 -->
+    <script src="~/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+
+    <script>
+        $('#dtp1,#dtp2').datetimepicker({
+            format: 'DD/MM/YYYY',
+        });
+        function showTables(animal) {
+            var id = animal.getAttribute("data-id-type");
+            //alert(id);
+            swal({
+                title: "คุณต้องการลบรูปภาพนี้ใช่หรือไม่?",
+                text: " ",
+                //html: true,
+                icon: "warning",
+                buttons: [
+                    'No',
+                    'yes'
+                ],
+
+                dangerMode: true,
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        type: "POST",
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: { id: id },
+                        url: "/Blogs/Deletepic/" + id,
+                        success: function (response) {
+                            //console.log(response.name);
+                            swal("ลบสำเร็จ", {
+                                title: "ลบไฟล์สำเร็จ ",
+                                icon: "success",
+                                button: false,
+
+                            });
+                            setTimeout(function () {
+                                location.reload();
+                            }, 800)
+
+                        },
+                        error: function () {
+                            swal({
+                                title: "คุณไม่มีสิทธิ์ในการลบข้อมูลนี้!",
+                                icon: "warning",
+                                button: "ตกลง",
+                            });
+
+                        }
+                    });
+
+                }
+                else {
+                    swal("ยกเลิกการลบ " + name, " ", "error");
+                }
+            })
+
+        }
+    </script>
+
+
+    <script>
+        function DeleteFile(animal) {
+            var id = animal.getAttribute("data-id-type");
+            swal({
+                title: "คุณต้องการลบไฟล์นี้ใช่หรือไม่?",
+                text: " ",
+                //html: true,
+                icon: "warning",
+                buttons: [
+                    'No',
+                    'yes'
+                ],
+
+                dangerMode: true,
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        type: "POST",
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: { id: id },
+                        url: "/Blogs/Deletefile/" + id,
+                        success: function (response) {
+                            //console.log(response.name);
+                            swal("ลบสำเร็จ", {
+                                title: "ลบไฟล์สำเร็จ ",
+                                icon: "success",
+                                button: false,
+
+                            });
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1000)
+
+                        },
+                        error: function () {
+                            swal({
+                                title: "คุณไม่มีสิทธิ์ในการลบข้อมูลนี้!",
+                                icon: "warning",
+                                button: "ตกลง",
+                            });
+
+                        }
+                    });
+
+                }
+                else {
+                    swal("ยกเลิกการลบ " + name, " ", "error");
+                }
+            })
+
+        }
+    </script>
+
+    <script>
+        function preview_image(event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('output_image');
+                output.src = reader.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+
+    <script>
+        $(function () {
+            var a = document.getElementById("status").value;
+            document.getElementById("BlogStatus").value = a;
+
+
+
+            //bootstrap WYSIHTML5 - text editor
+            $('.textarea').wysihtml5({
+                toolbar: {
+                    "font-styles": true, // Font styling, e.g. h1, h2, etc.
+                    "emphasis": true, // Italics, bold, etc.
+                    "lists": true, // (Un)ordered lists, e.g. Bullets, Numbers.
+                    "html": false, // Button which allows you to edit the generated HTML.
+                    "link": true, // Button to insert a link.
+                    "image": false, // Button to insert an image.
+                    "color": true, // Button to change color of font
+                    "blockquote": true
+                }
+            });
+
+            // Multiple images preview in browser
+            var imagesPreview = function (input, placeToInsertImagePreview) {
+                if (input.files) {
+                    var filesAmount = input.files.length;
+                    for (i = 0; i < filesAmount; i++) {
+                        var reader = new FileReader();
+                        reader.onload = function (event) {
+                            $($.parseHTML('<img>')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
+                        }
+                        reader.readAsDataURL(input.files[i]);
+                    }
+                }
+            };
+
+            $('#gallery-photo-add').on('change', function () {
+                imagesPreview(this, 'div.gallery');
+            });
+        });
+
+    </script>
+
+    <script>
+         $('#status').val('@ViewBag.BlogStatus');
+    document.getElementById('BlogStatus').value = '@ViewBag.BlogStatus';
+        function CheckStatus() {
+            var a = document.getElementById("status").value;
+            document.getElementById("BlogStatus").value = a;
+        }
+    </script>
+
+}

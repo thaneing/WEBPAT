@@ -1,0 +1,112 @@
+﻿
+@{
+    ViewData["Title"] = "เปรียบเทียบ GL และ Job Cost";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+           + "<li>"
+           + "<a href='../../Home/Index'>Home</a>"
+           + "</li>"
+
+           + "<li class='active'>"
+           + "<a>" + @ViewData["Title"] + "</a>"
+           + "</li>"
+           + "</ol>";
+}
+
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"] </h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+
+                <form method="post" asp-controller="CheckCostDiffGLs" asp-action="Index" id="searchfrom">
+                    <div class="col-lg-2 col-xs-4">
+                        <label>Job : </label>
+                        <div class="form-group">
+                            <select class="form-control" name="JobNo" asp-items="ViewBag.JobNo" id="joblist" onchange="showListHistory(this)"></select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-4">
+                        <label>จากวันที่ : </label>
+                        <div class="form-group">
+                            <div class="input-group date" id="dtp1">
+                                <input type="text" class="form-control" name="Startdate" id="StartDate1" value="@ViewBag.StartDate" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-4">
+                        <label>ถึง : </label>
+                        <div class="form-group">
+                            <div class="input-group date" id="dtp2">
+                                <input type="text" class="form-control" name="Enddate" id="StartDate2" value="@ViewBag.EndDate" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-2 col-xs-4">
+                        <button class="btn btn-primary dim btn-dim" type="button" onclick="Submit1()"><i class="fa fa-search"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>รายละเอียด </h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+
+            <!-- info row -->
+            @Html.Raw(ViewBag.table)
+
+            @*@ViewBag.sql*@
+
+
+
+        </div>
+    </div>
+</div>
+   
+
+@section Scripts {
+    <script>
+        $('#dtp1,#dtp2').datetimepicker({
+            format: 'DD/MM/YYYY',
+        });
+    </script>
+    <script>
+        function Submit1() {
+            document.getElementById('searchfrom').submit();
+        }
+    </script>
+}

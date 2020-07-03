@@ -1,0 +1,3427 @@
+﻿@using Microsoft.AspNetCore.Http;
+
+@{
+    IEnumerable<SourceAutoComplete> sourceAutoCompletes = ViewData["SourceAutoCompletes"] as IEnumerable<SourceAutoComplete>;
+
+    ViewData["Title"] = "รายงานลูกหนี้คงค้าง";
+}
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Upload รายงานลูกหนี้คงค้าง-โครงการปัจจุบัน</h4>
+            </div>
+            <div class="modal-body">
+                <form method="POST" asp-controller="InvoiceExcel" asp-action="Index" enctype="multipart/form-data" id="searchfrom">
+                    <div class="row">
+
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>ไฟล์อัพโหลด : </label>
+
+                                <input id="files" name="formFile" type="file" />
+
+                            </div>
+                        </div>
+                        <input class="btn btn-primary  pull-right" type="submit" value="นำเข้า">
+                        <a class="btn btn-warning pull-right" href="~/Files/FormImport.xlsx">แบบฟอร์ม</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-12 col-lg-12 col-md-12">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>รายงานลูกหนี้คงค้าง-โครงการปัจจุบัน </h5>
+            <div class="pull-right">
+                <div class="col-lg-12">
+                    @*<button class="btn btn-warning fullscreen" id="Wait" value="0">จัดกลุ่มงาน</button>*@
+                    <button class="btn btn-success fullscreen" id="regisg">เพิ่มเลขที่เอกสาร</button>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                        ImportData
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+
+                <div class="col-lg-12">
+                    <div class="table-responsive">
+                        <table id='example1' class="table table-striped table-bordered table-hover dataTables-example">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        วันที่
+                                    </th>
+                                    <th>
+                                        เลขที่
+                                    </th>
+
+                                    <th>
+                                        หน่วยงาน
+                                    </th>
+                                    <th>
+                                        รายการ
+                                    </th>
+                                    <th>
+                                        จำนวนเงินรวม
+                                        ภาษีมูลค่าเพิ่ม
+                                    </th>
+                                    <th>
+                                        ยอดธนาคาร
+                                    </th>
+                                    <th>
+                                        ยอดลูกหนี้การค้า
+                                        NAV รวม
+                                    </th>
+                                    <th>
+                                        Retention
+                                    </th>
+
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="4" style="text-align:right;"></th>
+                                    <th style="text-align:right;"></th>
+                                    <th style="text-align:right;"></th>
+                                    <th style="text-align:right;"></th>
+                                    <th style="text-align:right;"></th>
+
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-12 col-lg-12 col-md-12">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>เบิกเงินประกันผลงาน</h5>
+            <div class="pull-right">
+                <div class="col-lg-12">
+
+                    @*<button class="btn btn-warning fullscreen" id="Wait" value="0">จัดกลุ่มงาน</button>*@
+                    <button class="btn btn-info fullscreen3" onclick="createRe();">เบิกเงินประกันผลงาน</button>
+                </div>
+
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+
+                <div class="col-lg-12">
+                    <div class="table-responsive">
+                        <table id='deposit' class="table table-striped table-bordered table-hover dataTables-example">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        วันที่
+                                    </th>
+                                    <th>
+                                        เลขที่
+                                    </th>
+
+                                    <th>
+                                        หน่วยงาน
+                                    </th>
+                                    <th>
+                                        รายการ
+                                    </th>
+
+                                    <th>
+                                        กลุ่ม
+                                    </th>
+                                    <th>
+                                        สถานะ
+                                    </th>
+                                    <th>
+                                        จำนวนเงินรวม ภาษีมูลค่าเพิ่ม
+                                    </th>
+
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="6" style="text-align:right;">Total</th>
+                                    <th style="text-align:right;"></th>
+
+
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-12 col-lg-12 col-md-12">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>เงินประกันผลงาน ที่ยังไม่ออกใบแจ้งหนี้เรียกเก็บ </h5>
+
+            <div class="pull-right">
+                <div class="col-lg-12">
+
+                    @*<button class="btn btn-warning fullscreen" id="Wait" value="0">จัดกลุ่มงาน</button>*@
+                    <button class="btn btn-warning fullscreen2" id="regisg" onclick="registgroup();">ลงทะเบียนกลุ่ม</button>
+                </div>
+
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group row">
+                        <div class="col-lg-6">
+                            <label>เลือกกลุ่ม</label><br />
+                            <div class="col-lg-5 row">
+                                <select id="ddlgroup" class="form-control">
+                                    <option value="-" id="loading">Loading</option>
+                                </select>
+                                @*<select id="ddlgroup" class="form-control">
+                                        @foreach (var group in ViewBag.group)
+                                        {
+                                            <option value="@group.GroupCode">@group.GroupCode - @group.GroupName</option>
+                                        }
+                                    </select>*@
+                            </div>
+                            <input id="choose" type="hidden" />
+                            <div class="col-lg-1"><button class="btn btn-primary" id="groupsave" onclick="savegoupmulti();">จัดกลุ่ม</button></div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="col-lg-12">
+                    <div>
+                        <div class="table-responsive">
+                            <table id='example2' class="table table-striped table-bordered table-hover dataTables-example">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            เลือก
+                                        </th>
+                                        <th>
+                                            วันที่
+                                        </th>
+                                        <th>
+                                            เลขที่
+                                        </th>
+
+                                        <th>
+                                            หน่วยงาน
+                                        </th>
+                                        <th>
+                                            รายการ
+                                        </th>
+                                        <th>
+                                            กลุ่ม
+                                        </th>
+                                        <th>
+                                            จำนวนเงินรวม
+                                        </th>
+
+
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="6" style="text-align:right;"></th>
+                                        <th style="text-align:right;"></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="col-sm-12 col-lg-12 col-md-12">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>เงินประกันผลงาน ที่ยังไม่ออกใบแจ้งหนี้เรียกเก็บ </h5>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div>
+                        <div class="table-responsive">
+                            <table id='retentiondata' class="table table-striped table-bordered table-hover dataTables-example">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            วันที่
+                                        </th>
+                                        <th>
+                                            เลขที่
+                                        </th>
+
+                                        <th>
+                                            หน่วยงาน
+                                        </th>
+                                        <th>
+                                            รายการ
+                                        </th>
+
+                                        <th>
+                                            จำนวนเงินรวม
+                                        </th>
+
+
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="4" style="text-align:right;"></th>
+                                        <th style="text-align:right;"></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-12 col-lg-12 col-md-12">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>รายงานงานลูกหนี้ค่าเสื้อคงค้าง </h5>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="table-responsive">
+                        <table id='example3' class="table table-striped table-bordered table-hover dataTables-example">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        วันที่
+                                    </th>
+                                    <th>
+                                        เลขที่
+                                    </th>
+
+                                    <th>
+                                        หน่วยงาน
+                                    </th>
+                                    <th>
+                                        รายการ
+                                    </th>
+                                    <th>
+                                        จำนวนเงินรวมภาษีมูลค่าเพิ่ม
+                                    </th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="4" style="text-align:right;"></th>
+                                    <th style="text-align:right;"></th>
+
+
+
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*เพิ่มเลขที่เอกสาร*@
+<div id="inline-content" class="hidden">
+    <div class="col-sm-12 col-lg-9 col-md-12 col-lg-offset-4" id="docadd">
+        <div class="row">
+            <div class="col-sm-7 col-lg-7 col-md-7 ">
+                <div class="ibox ">
+                    <div class="ibox-title">
+                        <h5>เพิ่มเลขที่เอกสาร</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+
+                            <h2><span id="title"></span></h2>
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6">
+                                        <label>จากวันที่ : </label>
+                                        <div class="form-group">
+                                            <div class="input-group date" id="dtp11">
+                                                <input type="text" class="form-control" id="Date" value="@ViewBag.StartDate" />
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">หน่วยงาน</label>
+                                            <input class="typeahead_1 form-control " id="Job" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">เลขที่เอกสาร</label>
+                                            <input class="form-control" id="Doc" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">สถานะ</label>
+                                            <select class="form-control" asp-items="Html.GetEnumSelectList<DocumentReceivable.Status>()" id="Status"></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label">รายการ</label>
+                                    <input class="form-control" id="Detail" />
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label">จำนวนเงินรวมภาษีมูลค่าเพิ่ม</label>
+                                            <input class="form-control" id="Amount" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label">ยอดธนาคาร</label>
+                                            <input class="form-control" id="Outstanding" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label">ยอดลูกหนี้การค้า</label>
+                                            <input class="form-control" id="TotalNAV" />
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <button class="btn btn-success pull-right" onclick="AddDoc();">บันทึก</button>
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-lg-9 col-md-12 col-lg-offset-4" id="editdoc">
+        <div class="row">
+            <div class="col-sm-7 col-lg-7 col-md-7 ">
+                <div class="ibox ">
+                    <div class="ibox-title">
+                        <h5>แก้ไขเลขที่เอกสาร</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row" id="editdoc">
+                            <h2><span id="title"></span></h2>
+                            <input id="DocID" type="hidden" />
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6">
+                                        <label>จากวันที่ : </label>
+                                        <div class="form-group">
+                                            <div class="input-group date" id="dtp12">
+                                                <input type="text" class="form-control" id="Date2" value="@ViewBag.StartDate" />
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">หน่วยงาน</label>
+                                            <input class="typeahead_1 form-control " id="Job2" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">เลขที่เอกสาร</label>
+                                            <input class="form-control" id="Doc2" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">สถานะ</label>
+                                            <select class="form-control" asp-items="Html.GetEnumSelectList<DocumentReceivable.Status>()" id="Status2"></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label">รายการ</label>
+                                    <input class="form-control" id="Detail2" />
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label">จำนวนเงินรวมภาษีมูลค่าเพิ่ม</label>
+                                            <input class="form-control" id="Amount2" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label">ยอดธนาคาร</label>
+                                            <input class="form-control" id="Outstanding2" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label">ยอดลูกหนี้การค้า</label>
+                                            <input class="form-control" id="TotalNAV2" />
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <button class="btn btn-info pull-right" onclick="btnsaveDoc();">บันทึก</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <button class="btn btn-primary" onclick="createdoc();">เพิ่มเลขที่เอกสาร</button>
+
+    </div>
+
+
+    <table id="DataDoc" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>
+                    วันที่
+                </th>
+                <th>
+                    เลขที่เอกสาร
+                </th>
+
+                <th>
+                    หน่วยงาน
+                </th>
+                <th>
+                    รายการ
+                </th>
+                <th>
+                    จำนวนเงินรวมภาษีมูลค่าเพิ่ม
+                </th>
+                <th>
+                    ยอดธนาคาร
+                </th>
+                <th>
+                    ยอดลูกหนี้การค้า
+                </th>
+                <th>
+                    สถานะ
+                </th>
+                <th>
+                    Action
+                </th>
+
+
+            </tr>
+        </thead>
+    </table>
+</div>
+
+@*RegisterGroup*@
+<div id="inline-content2" class="hidden">
+    <div class="display">
+
+        <div class="col-lg-8 row col-lg-offset-2">
+            <div class="header">
+                <center><h2>ลงทะเบียนกลุ่ม</h2></center>
+            </div>
+            <div class="col-lg-12" id="editform">
+                <input id="groupid" class="form-control" type="hidden" />
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="control-label">เลขที่กลุ่ม</label>
+                                <input id="code2" class="form-control" />
+                            </div>
+
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="control-label">ชื่อกลุ่ม</label>
+                                <input id="group2" class="form-control" />
+                            </div>
+
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="control-label">หน่วยงาน</label>
+                                <input id="site2" class="typeahead_1 form-control " />
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+
+                                <label class="control-label">รายละเอียด</label>
+                                <textarea id="des2" class="form-control"></textarea>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-info" onclick="SaveEditGroup();" id="edit2" data-toggle="tooltip" data-placement="top" title="save">บันทึก</button>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12" id="add">
+
+                <div class="col-lg-12 ">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="control-label">รหัสกลุ่ม</label>
+                                <input id="code" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="control-label">ชื่อกลุ่ม</label>
+                                <input id="group" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="control-label">หน่วยงาน</label>
+                                <input name="site" autocomplete="off" id="site" value="@ViewBag.Site" class="typeahead_1 form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-12">
+
+                    <div class="form-group">
+                        <label class="control-label">รายละเอียด</label>
+                        <textarea id="des" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+
+                    <div class="form-group ">
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-success" onclick="AddGroup();" data-toggle="tooltip" data-placement="top" title="save">บันทึก</button>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>รายการกลุ่ม</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <button class="btn btn-primary" onclick="createGroup()" data-toggle="tooltip" data-placement="top" title="เพิ่ม">เพิ่ม</button>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="table-responsive">
+                                    <table id='tableGroup' class="table table-striped table-bordered table-hover dataTables-example">
+                                        <thead>
+                                            <tr>
+
+                                                <th>
+                                                    รหัสกลุ่ม
+                                                </th>
+                                                <th>
+                                                    ชื่อกลุ่ม
+                                                </th>
+                                                <th>
+                                                    หน่วยงาน
+                                                </th>
+                                                <th>
+                                                    รายละเอียด
+                                                </th>
+                                                <th>
+                                                    จัดการ
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@*เพิ่มเงินประกันผลงาน*@
+<div id="inline-content3" class="hidden">
+    <div class="col-sm-12 col-lg-9 col-md-12 col-lg-offset-4" id="addDeposit">
+        <div class="row">
+            <div class="col-sm-7 col-lg-7 col-md-7 ">
+                <div class="ibox ">
+                    <div class="ibox-title">
+                        <h5>เพิ่มข้อมูลเบิกเงินประกันผลงาน</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <h2><span id="title"></span></h2>
+
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">หน่วยงาน</label>
+                                            <input class="typeahead_1 form-control " id="depositJob" onchange="checkGroup();" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">กลุ่ม</label>
+                                            <select id="depositGroup" class="form-control">
+                                                <option value="-" id="loading">Loading</option>
+                                            </select>
+
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label">เลขที่เอกสาร</label>
+                                    <input class="form-control" id="depositDoc" />
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label">รายการ</label>
+                                    <input class="form-control" id="depositDetail" />
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6">
+                                        <label>วันที่ทำรายการ: </label>
+                                        <div class="form-group">
+                                            <div class="input-group date" id="dtp13">
+                                                <input type="text" class="form-control" id="depositDate" value="@ViewBag.StartDate" />
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">สถานะ</label>
+                                            <select class="form-control" asp-items="Html.GetEnumSelectList<Retention.Status>()" id="depositStatus"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+
+                                <label class="control-label pull-left" style="font-size:20px;color:red;text-align:right">จำนวนที่เบิกได้  :</label> <label class="control-label pull-right" id="TotalRetention" style="font-size:20px;color:red;text-align:right">0.00</label>
+
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label">จำนวนเงินรวมภาษีมูลค่าเพิ่ม</label>
+                                    <input class="form-control" id="depositAmount" type="number" step=".01" style="text-align:right" />
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <button class="btn btn-success pull-right" onclick="AddRetention();">บันทึก</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-lg-9 col-md-12 col-lg-offset-4" id="editDeposit">
+        <div class="row">
+            <div class="col-sm-7 col-lg-7 col-md-7 ">
+                <div class="ibox ">
+                    <div class="ibox-title">
+                        <h5>แก้ไขข้อมูลเงินประกันผลงาน</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <h2><span id="title"></span></h2>
+                            <input class="form-control" id="depositID" type="hidden" />
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">หน่วยงาน</label>
+                                            <input class="typeahead_1 form-control " id="depositJob2" onchange="checkGroup1();" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">กลุ่ม</label>
+                                            <select id="groupdata" class="form-control">
+                                                <option value="-" id="loading">Loading</option>
+                                            </select>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label">เลขที่เอกสาร</label>
+                                    <input class="form-control" id="depositDoc2" />
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label">รายการ</label>
+                                    <input class="form-control" id="depositDetail2" />
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6">
+                                        <label>วันที่ทำรายการ: </label>
+                                        <div class="form-group">
+                                            <div class="input-group date" id="dtp14">
+                                                <input type="text" class="form-control" id="depositDate2" value="@ViewBag.StartDate" />
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">สถานะ</label>
+                                            <select class="form-control" asp-items="Html.GetEnumSelectList<Retention.Status>()" id="depositStatus2"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+
+                                <label class="control-label pull-left" style="font-size:20px;color:red;text-align:right">จำนวนที่เบิกได้  :</label> <label class="control-label pull-right" id="TotalRetention1" style="font-size:20px;color:red;text-align:right">0.00</label>
+
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label">จำนวนเงินรวมภาษีมูลค่าเพิ่ม</label>
+                                    <input class="form-control" id="depositAmount2" type="number" step=".01" style="text-align:right" />
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <button class="btn btn-info pull-right" onclick="saveRetention();">บันทึก</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div>
+        <button class="btn btn-primary" onclick="createRetention();">เพิ่ม</button>
+    </div>
+
+    <table id="DataDeposit" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>
+                    วันที่
+                </th>
+                <th>
+                    เลขที่เอกสาร
+                </th>
+
+                <th>
+                    หน่วยงาน
+                </th>
+                <th>
+                    รายการ
+                </th>
+                <th>
+                    จำนวนเงิน<br />
+                    รวมภาษีมูลค่าเพิ่ม
+                </th>
+                <th>
+                    กลุ่ม
+                </th>
+                <th>
+                    สถานะ
+                </th>
+
+                <th>
+                    Action
+                </th>
+
+
+            </tr>
+        </thead>
+    </table>
+</div>
+
+@section Scripts {
+
+    <script>
+        $('#dpt9').datetimepicker({
+            format: 'YYYY-MM',
+        });
+
+        $('#dpt10').datetimepicker({
+            format: 'YYYY-MM',
+        });
+        $('#dtp11').datetimepicker({
+            format: 'DD/MM/YYYY',
+        });
+        $('#dtp12').datetimepicker({
+            format: 'DD/MM/YYYY',
+        });
+        $('#dtp13').datetimepicker({
+            format: 'DD/MM/YYYY',
+        });
+        $('#dtp14').datetimepicker({
+            format: 'DD/MM/YYYY',
+        });
+    </script>
+
+    <script>
+
+        var dataType = 'application/json; charset=utf-8';
+        table = $('#example1').DataTable({
+
+
+            destroy: true,
+            jQueryUI: true,
+            dom: 'l<"H"Rf>t<"F"ip>',
+            columnDefs:
+                [
+                    {
+                        targets: 4,
+                        className: 'dt-body-right'
+                    },
+                    {
+                        targets: 5,
+                        className: 'dt-body-right'
+                    },
+                    {
+                        targets: 6,
+                        className: 'dt-body-right'
+                    },
+                    {
+                        targets: 7,
+                        className: 'dt-body-right'
+                    }
+
+                ],
+
+            "language": {
+                "decimal": ",",
+                "thousands": "."
+            },
+
+            //scrollY: 500,
+            //deferRender: true,
+            //scrollCollapse: true,
+            //scroller: {
+            //    loadingIndicator: true
+            //},
+            //responsive: true,
+            //fixedHeader: true,
+            //select: {
+            //    style: 'os',
+            //    blurable: true
+            //},
+            dom: 'Bfrtip',
+            //stateSave: true,
+            buttons: [
+
+                {
+                    extend: 'colvis',
+                    text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                    //messageTop: 'สรุปค่าเช่าห้องพนักงานหน่วยงาน : ' + job + ' ประจำงวด : ' + textPeriod,
+
+                    titleAttr: 'Hide',
+                    postfixButtons: ['colvisRestore']
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    titleAttr: 'PDF',
+                    pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                    orientation: 'landscape',
+                    //title: 'สรุปค่าเช่าห้องพนักงานหน่วยงาน : ' + job + ' ประจำงวด : ' + textPeriod,
+                    //messageTop: 'งวดประจำเดือน ' + textPeriod,
+                    //exportOptions: {
+                    //    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                    //},
+                    customize: function (doc) {
+                        doc.defaultStyle = {
+                            font: 'THSarabun',
+                            fontSize: '12',
+                        };
+                        var now = new Date();
+                        var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+
+                        doc['footer'] = (function (page, pages) {
+                            return {
+                                columns:
+                                    [
+                                        {
+                                            alignment: 'left',
+                                            text: ['Created on: ', { text: jsDate.toString() }]
+                                        },
+                                        {
+                                            alignment: 'right',
+                                            text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                        }
+                                    ],
+                                margin: 10
+                            }
+                        });
+
+                    }
+                },
+                {
+                    extend: 'excelHtml5',
+                    //title: 'สรุปค่าเช่าห้องพนักงานหน่วยงาน : ' + job + ' ประจำงวด : ' + textPeriod,
+                    //messageTop: 'งวดประจำเดือน ' + textPeriod,
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    text: '<i class="fa fa-file-excel-o"></i> Excel',
+                    titleAttr: 'Excel',
+                    //messageTop: item + " " + itemName,
+                    autoFilter: true
+                },
+                {
+                    extend: 'copyHtml5',
+                    text: '<i class="fa fa-files-o"></i> Copy',
+                    titleAttr: 'Copy'
+
+                },
+                {
+                    text: 'JSON',
+                    action: function (e, dt, button, config) {
+                        var data = dt.buttons.exportData();
+                        $.fn.dataTable.fileSave(
+                            new Blob([JSON.stringify(data)]),
+                            'Export.json'
+                        );
+                    }
+
+                },
+                {
+                    extend: 'selectAll'
+                },
+                {
+                    extend: 'selectNone'
+                }
+            ],
+            "ajax": {
+                "url": "/AccountsReceivables/Gendata",
+                //"url": "/HouseRentals/GetData/?Job=" + job + "&Month=" + month,
+                "contentType": dataType,
+                "type": "GET",
+                "data": function (response) {
+                    return JSON.stringify(response.data);
+                },
+
+
+            },
+
+            "columns": [
+                { "data": "PostingDate" },
+                { "data": "Doc" },
+                { "data": "JobNo" },
+                { "data": "Description" },
+                { "data": "SumTotal", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                { "data": "SumTotalVat", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                { "data": "TotalNAV", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                { "data": "Retention", render: $.fn.dataTable.render.number(',', '.', 2, '') }
+
+
+            ],
+            "footerCallback": function (row, data, start, end, display) {
+                var api = this.api(), data;
+                // converting to interger to find total
+                var intVal = function (i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                            i : 0;
+                };
+
+
+                // computing column Total the complete result
+                var TotalData = api
+                    .column(4, { filter: 'applied' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // computing column Total the complete result
+                var monTotal = api
+                    .column(5, { filter: 'applied' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // computing column Total the complete result
+                var TotalAmountLCY = api
+                    .column(6, { filter: 'applied' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                var ToalAmount = api
+                    .column(7, { filter: 'applied' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                $(api.column(0).footer()).html('Total');
+                $(api.column(4).footer()).html(TotalData.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
+                $(api.column(5).footer()).html(monTotal.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
+                $(api.column(6).footer()).html(TotalAmountLCY.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
+                $(api.column(7).footer()).html(ToalAmount.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
+            }
+        });
+
+
+
+        tableRetention = $('#example2').DataTable({
+            destroy: true,
+            jQueryUI: true,
+            dom: 'l<"H"Rf>t<"F"ip>',
+            columnDefs:
+                [
+                    {
+                        targets: 6,
+                        className: 'dt-body-right'
+                    },
+                    {
+                        orderable: false,
+                        className: 'select-checkbox',
+                        targets: 0
+                    }
+
+
+                ],
+            select: {
+                style: 'multi',
+                selector: 'td:first-child',
+
+            },
+            "language": {
+                "decimal": ",",
+                "thousands": "."
+            },
+            dom: 'Bfrtip',
+            buttons: [
+
+                {
+                    extend: 'colvis',
+                    text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                    //messageTop: 'สรุปค่าเช่าห้องพนักงานหน่วยงาน : ' + job + ' ประจำงวด : ' + textPeriod,
+
+                    titleAttr: 'Hide',
+                    postfixButtons: ['colvisRestore']
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    titleAttr: 'PDF',
+                    pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                    orientation: 'landscape',
+                    //title: 'สรุปค่าเช่าห้องพนักงานหน่วยงาน : ' + job + ' ประจำงวด : ' + textPeriod,
+                    //messageTop: 'งวดประจำเดือน ' + textPeriod,
+                    //exportOptions: {
+                    //    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                    //},
+                    customize: function (doc) {
+                        doc.defaultStyle = {
+                            font: 'THSarabun',
+                            fontSize: '12',
+                        };
+                        var now = new Date();
+                        var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+
+                        doc['footer'] = (function (page, pages) {
+                            return {
+                                columns:
+                                    [
+                                        {
+                                            alignment: 'left',
+                                            text: ['Created on: ', { text: jsDate.toString() }]
+                                        },
+                                        {
+                                            alignment: 'right',
+                                            text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                        }
+                                    ],
+                                margin: 10
+                            }
+                        });
+
+                    }
+                },
+                {
+                    extend: 'excelHtml5',
+                    //title: 'สรุปค่าเช่าห้องพนักงานหน่วยงาน : ' + job + ' ประจำงวด : ' + textPeriod,
+                    //messageTop: 'งวดประจำเดือน ' + textPeriod,
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    text: '<i class="fa fa-file-excel-o"></i> Excel',
+                    titleAttr: 'Excel',
+                    //messageTop: item + " " + itemName,
+                    autoFilter: true
+                },
+                {
+                    extend: 'selectAll'
+                },
+                {
+                    extend: 'selectNone'
+                }
+            ],
+            "ajax": {
+                "url": "/AccountsReceivables/GendataR",
+                //"url": "/HouseRentals/GetData/?Job=" + job + "&Month=" + month,
+                "contentType": dataType,
+                "type": "GET",
+                "data": function (response) {
+                    return JSON.stringify(response.data);
+                },
+
+
+            },
+
+            "columns": [
+                {
+                    "data": " ", render: function (data, type, row) {
+                        return "<span></span>";
+                    }
+                },
+                { "data": "PostingDate" },
+                { "data": "Doc" },
+                { "data": "JobNo" },
+                { "data": "Description" },
+                { "data": "GroupName" },
+
+                { "data": "Retention", render: $.fn.dataTable.render.number(',', '.', 2, '') }
+
+
+
+
+            ],
+            "footerCallback": function (row, data, start, end, display) {
+                var api = this.api(), data;
+                // converting to interger to find total
+                var intVal = function (i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                            i : 0;
+                };
+
+
+                // computing column Total the complete result
+                var TotalData = api
+                    .column(6, { filter: 'applied' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+
+
+                $(api.column(0).footer()).html('Total');
+                $(api.column(6).footer()).html(TotalData.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
+
+            }
+        });
+
+
+
+        tableRetentiondata = $('#retentiondata').DataTable({
+            destroy: true,
+            jQueryUI: true,
+            dom: 'l<"H"Rf>t<"F"ip>',
+            columnDefs:
+                [
+                    {
+                        targets: 4,
+                        className: 'dt-body-right'
+                    }
+
+
+                ],
+
+            "language": {
+                "decimal": ",",
+                "thousands": "."
+            },
+            dom: 'Bfrtip',
+            buttons: [
+
+                {
+                    extend: 'colvis',
+                    text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                    //messageTop: 'สรุปค่าเช่าห้องพนักงานหน่วยงาน : ' + job + ' ประจำงวด : ' + textPeriod,
+
+                    titleAttr: 'Hide',
+                    postfixButtons: ['colvisRestore']
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    titleAttr: 'PDF',
+                    pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                    orientation: 'landscape',
+                    //title: 'สรุปค่าเช่าห้องพนักงานหน่วยงาน : ' + job + ' ประจำงวด : ' + textPeriod,
+                    //messageTop: 'งวดประจำเดือน ' + textPeriod,
+                    //exportOptions: {
+                    //    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                    //},
+                    customize: function (doc) {
+                        doc.defaultStyle = {
+                            font: 'THSarabun',
+                            fontSize: '12',
+                        };
+                        var now = new Date();
+                        var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+
+                        doc['footer'] = (function (page, pages) {
+                            return {
+                                columns:
+                                    [
+                                        {
+                                            alignment: 'left',
+                                            text: ['Created on: ', { text: jsDate.toString() }]
+                                        },
+                                        {
+                                            alignment: 'right',
+                                            text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                        }
+                                    ],
+                                margin: 10
+                            }
+                        });
+
+                    }
+                },
+                {
+                    extend: 'excelHtml5',
+                    //title: 'สรุปค่าเช่าห้องพนักงานหน่วยงาน : ' + job + ' ประจำงวด : ' + textPeriod,
+                    //messageTop: 'งวดประจำเดือน ' + textPeriod,
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    text: '<i class="fa fa-file-excel-o"></i> Excel',
+                    titleAttr: 'Excel',
+                    //messageTop: item + " " + itemName,
+                    autoFilter: true
+                },
+                {
+                    extend: 'selectAll'
+                },
+                {
+                    extend: 'selectNone'
+                }
+            ],
+            "ajax": {
+                "url": "/AccountsReceivables/GendataGroupR",
+                //"url": "/HouseRentals/GetData/?Job=" + job + "&Month=" + month,
+                "contentType": dataType,
+                "type": "GET",
+                "data": function (response) {
+                    return JSON.stringify(response.data);
+                },
+
+
+            },
+
+            "columns": [
+
+                { "data": "PostingDate" },
+                { "data": "Doc" },
+                { "data": "JobNo" },
+                { "data": "GroupName" },
+
+                { "data": "Retention", render: $.fn.dataTable.render.number(',', '.', 2, '') }
+
+
+
+
+            ],
+            "footerCallback": function (row, data, start, end, display) {
+                var api = this.api(), data;
+                // converting to interger to find total
+                var intVal = function (i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                            i : 0;
+                };
+
+
+                // computing column Total the complete result
+                var TotalData = api
+                    .column(4, { filter: 'applied' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+
+
+                $(api.column(0).footer()).html('Total');
+                $(api.column(4).footer()).html(TotalData.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
+
+            }
+        });
+
+
+
+
+
+
+        table2 = $('#example3').DataTable({
+            destroy: true,
+            jQueryUI: true,
+            dom: 'l<"H"Rf>t<"F"ip>',
+            columnDefs:
+                [
+                    {
+                        targets: 4,
+                        className: 'dt-body-right'
+                    }
+
+                ],
+            "language": {
+                "decimal": ",",
+                "thousands": "."
+            },
+            dom: 'Bfrtip',
+            buttons: [
+
+                {
+                    extend: 'colvis',
+                    text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                    //messageTop: 'สรุปค่าเช่าห้องพนักงานหน่วยงาน : ' + job + ' ประจำงวด : ' + textPeriod,
+
+                    titleAttr: 'Hide',
+                    postfixButtons: ['colvisRestore']
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    titleAttr: 'PDF',
+                    pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                    orientation: 'landscape',
+                    //title: 'สรุปค่าเช่าห้องพนักงานหน่วยงาน : ' + job + ' ประจำงวด : ' + textPeriod,
+                    //messageTop: 'งวดประจำเดือน ' + textPeriod,
+                    //exportOptions: {
+                    //    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                    //},
+                    customize: function (doc) {
+                        doc.defaultStyle = {
+                            font: 'THSarabun',
+                            fontSize: '12',
+                        };
+                        var now = new Date();
+                        var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+
+                        doc['footer'] = (function (page, pages) {
+                            return {
+                                columns:
+                                    [
+                                        {
+                                            alignment: 'left',
+                                            text: ['Created on: ', { text: jsDate.toString() }]
+                                        },
+                                        {
+                                            alignment: 'right',
+                                            text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                        }
+                                    ],
+                                margin: 10
+                            }
+                        });
+
+                    }
+                },
+                {
+                    extend: 'excelHtml5',
+                    //title: 'สรุปค่าเช่าห้องพนักงานหน่วยงาน : ' + job + ' ประจำงวด : ' + textPeriod,
+                    //messageTop: 'งวดประจำเดือน ' + textPeriod,
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    text: '<i class="fa fa-file-excel-o"></i> Excel',
+                    titleAttr: 'Excel',
+                    //messageTop: item + " " + itemName,
+                    autoFilter: true
+                },
+                {
+                    extend: 'copyHtml5',
+                    text: '<i class="fa fa-files-o"></i> Copy',
+                    titleAttr: 'Copy'
+
+                },
+                {
+                    text: 'JSON',
+                    action: function (e, dt, button, config) {
+                        var data = dt.buttons.exportData();
+                        $.fn.dataTable.fileSave(
+                            new Blob([JSON.stringify(data)]),
+                            'Export.json'
+                        );
+                    }
+
+                },
+                {
+                    extend: 'selectAll'
+                },
+                {
+                    extend: 'selectNone'
+                }
+            ],
+            "ajax": {
+                "url": "/AccountsReceivables/GendataShirt",
+                //"url": "/HouseRentals/GetData/?Job=" + job + "&Month=" + month,
+                "contentType": dataType,
+                "type": "GET",
+                "data": function (response) {
+                    return JSON.stringify(response.data);
+                },
+
+
+            },
+
+            "columns": [
+                {
+                    "data": "PostingDate"
+                },
+                { "data": "Doc" },
+                { "data": "JobNo" },
+                { "data": "Description" },
+                { "data": "Retention", render: $.fn.dataTable.render.number(',', '.', 2, '') }
+
+
+            ],
+            "footerCallback": function (row, data, start, end, display) {
+                var api = this.api(), data;
+                // converting to interger to find total
+                var intVal = function (i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                            i : 0;
+                };
+
+
+                // computing column Total the complete result
+                var TotalData = api
+                    .column(4, { filter: 'applied' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+
+
+                $(api.column(0).footer()).html('Total');
+                $(api.column(4).footer()).html(TotalData.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
+
+            }
+        });
+
+
+
+
+    </script>
+
+    <script>
+
+        // Standard Modal
+        $('.modaal-inline-content').modaal({
+            type: 'inline',
+            accessible_title: 'Modal title',
+            before_open: function () {
+                //console.log('log before open');
+            },
+            before_close: function () {
+                //console.log('log before close');
+            },
+            after_open: function () {
+                //console.log('log after open');
+            },
+            after_close: function () {
+                //console.log('log after close');
+            },
+            should_open: function () {
+                //console.log('just checking to see if we should open');
+                return true;
+            },
+
+        });
+
+
+        $('.fullscreen').modaal({
+            fullscreen: true,
+            content_source: '#inline-content'
+
+        });
+
+
+
+        table1 = $('#DataDoc').DataTable({
+            destroy: true,
+            jQueryUI: true,
+            dom: 'l<"H"Rf>t<"F"ip>',
+            columnDefs:
+                [
+                    {
+                        targets: 4,
+                        className: 'dt-body-right'
+                    },
+                    {
+                        targets: 5,
+                        className: 'dt-body-right'
+                    },
+                    {
+                        targets: 6,
+                        className: 'dt-body-right'
+                    }
+
+
+                ],
+            "language": {
+                "decimal": ",",
+                "thousands": "."
+            },
+            dom: 'Bfrtip',
+            buttons: [
+
+                {
+                    extend: 'colvis',
+                    text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                    //messageTop: 'สรุปค่าเช่าห้องพนักงานหน่วยงาน : ' + job + ' ประจำงวด : ' + textPeriod,
+
+                    titleAttr: 'Hide',
+                    postfixButtons: ['colvisRestore']
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    titleAttr: 'PDF',
+                    pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                    orientation: 'landscape',
+                    //title: 'สรุปค่าเช่าห้องพนักงานหน่วยงาน : ' + job + ' ประจำงวด : ' + textPeriod,
+                    //messageTop: 'งวดประจำเดือน ' + textPeriod,
+                    //exportOptions: {
+                    //    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                    //},
+                    customize: function (doc) {
+                        doc.defaultStyle = {
+                            font: 'THSarabun',
+                            fontSize: '12',
+                        };
+                        var now = new Date();
+                        var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+
+                        doc['footer'] = (function (page, pages) {
+                            return {
+                                columns:
+                                    [
+                                        {
+                                            alignment: 'left',
+                                            text: ['Created on: ', { text: jsDate.toString() }]
+                                        },
+                                        {
+                                            alignment: 'right',
+                                            text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                        }
+                                    ],
+                                margin: 10
+                            }
+                        });
+
+                    }
+                },
+                {
+                    extend: 'excelHtml5',
+                    //title: 'สรุปค่าเช่าห้องพนักงานหน่วยงาน : ' + job + ' ประจำงวด : ' + textPeriod,
+                    //messageTop: 'งวดประจำเดือน ' + textPeriod,
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    text: '<i class="fa fa-file-excel-o"></i> Excel',
+                    titleAttr: 'Excel',
+                    //messageTop: item + " " + itemName,
+                    autoFilter: true
+                },
+                {
+                    extend: 'copyHtml5',
+                    text: '<i class="fa fa-files-o"></i> Copy',
+                    titleAttr: 'Copy'
+
+                },
+                {
+                    text: 'JSON',
+                    action: function (e, dt, button, config) {
+                        var data = dt.buttons.exportData();
+                        $.fn.dataTable.fileSave(
+                            new Blob([JSON.stringify(data)]),
+                            'Export.json'
+                        );
+                    }
+
+                },
+                {
+                    extend: 'selectAll'
+                },
+                {
+                    extend: 'selectNone'
+                }
+            ],
+            "ajax": {
+                "url": "/AccountsReceivables/GenDocuement",
+                //"url": "/HouseRentals/GetData/?Job=" + job + "&Month=" + month,
+                "contentType": dataType,
+                "type": "GET",
+                "data": function (response) {
+                    return JSON.stringify(response.data);
+                },
+
+
+            },
+
+            "columns": [
+                {
+                    "data": "PostingDate", type: 'date',
+                    render: function (data, type, row) { return data ? moment(data).format('DD/MM/YYYY') : ''; }
+                },
+                { "data": "DocNo" },
+                { "data": "JobNo" },
+                { "data": "Detail" },
+                { "data": "Amount", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                { "data": "Outstanding", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                { "data": "TotalNAV", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                {
+                    "data": "Statuss",
+                    render: function (data, type, row) {
+                        if (data == 0) {
+                            return 'Open';
+                        }
+                        else {
+                            return 'Close';
+                        }
+                    }
+                },
+                {
+                    "data": "ID", render: function (data, type, row) {
+                        //console.log(data);
+                        return " <a class='btn btn-info' data-toggle='tooltip' data-placement='top' title='แก้ไข' data-id-type='" + data + "'  onclick = 'editDoc(this);' > <i class='fa fa-edit'></i></a >  <a class='btn btn-danger' data-toggle='tooltip' data-placement='top' title='ลบ' data-id-type='" + data + "'  onclick = 'deleteDoc(this);' > <i class='fa fa-trash'></i></a >";
+
+                    }
+                }
+
+            ],
+            "footerCallback": function (row, data, start, end, display) {
+                var api = this.api(), data;
+                // converting to interger to find total
+                var intVal = function (i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                            i : 0;
+                };
+
+
+                // computing column Total the complete result
+                var TotalData = api
+                    .column(4, { filter: 'applied' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+
+
+                $(api.column(0).footer()).html('Total');
+                $(api.column(4).footer()).html(TotalData.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
+
+            }
+        });
+
+        document.getElementById('docadd').style.display = "none";
+        document.getElementById('editdoc').style.display = "none";
+
+
+    </script>
+
+    <script>
+    var WebModels = @Html.Raw(Json.Serialize(sourceAutoCompletes));
+
+      //  var str = JSON.stringify(WebModels);
+        //console.log(JSON.stringify(WebModels));
+
+    //console.log(WebModels);
+       $('.typeahead_1').typeahead({
+                source: WebModels
+            });
+
+    </script>
+    <script>
+        // Standard Modal RegisGroup
+        $('.modaal-inline-content2').modaal({
+            type: 'inline',
+            accessible_title: 'Modal title',
+            before_open: function () {
+                //console.log('log before open');
+            },
+            before_close: function () {
+                //console.log('log before close');
+            },
+            after_open: function () {
+                //console.log('log after open');
+            },
+            after_close: function () {
+                //console.log('log after close');
+            },
+            should_open: function () {
+                //console.log('just checking to see if we should open');
+                return true;
+            }
+        });
+
+
+        $('.fullscreen2').modaal({
+            fullscreen: true,
+            content_source: '#inline-content2'
+        });
+        function registgroup() {
+
+            //$('#myModal2').modal();
+            document.getElementById('add').style.display = "none";
+            document.getElementById('editform').style.display = "none";
+
+            datagroup();
+
+        }
+
+    </script>
+    <script>
+        function createGroup() {
+            document.getElementById('add').style.display = "block";
+            document.getElementById('editform').style.display = "none";
+        }
+
+
+    </script>
+
+    <script>
+        function datagroup() {
+            tableGroup = $('#tableGroup').DataTable({
+
+                destroy: true,
+                columnDefs:
+                    [
+
+                        {
+                            targets: 2,
+                            className: 'dt-body-left'
+
+                        }
+
+
+                    ],
+                "language": {
+                    "decimal": ",",
+                    "thousands": "."
+                },
+
+                "pageLength": 10,
+                //"order": [[1, "asc"]],
+                dom: 'Bfrtip',
+                buttons: [
+
+                    {
+                        extend: 'colvis',
+                        text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                        //messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                        titleAttr: 'Hide',
+                        postfixButtons: ['colvisRestore']
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                        titleAttr: 'PDF',
+                        pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                        //orientation: 'landscape',
+                        // messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                        customize: function (doc) {
+                            doc.defaultStyle = {
+                                font: 'THSarabun',
+                                fontSize: '12',
+
+                            };
+                            var now = new Date();
+                            var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                            doc['footer'] = (function (page, pages) {
+                                return {
+                                    columns:
+                                        [
+                                            {
+                                                alignment: 'center',
+                                                text: ['Created on: ', { text: jsDate.toString() }]
+                                            },
+                                            {
+                                                alignment: 'right',
+                                                text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                            }
+                                        ],
+                                    margin: 10
+                                }
+                            });
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        titleAttr: 'Excel',
+                        // messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                        autoFilter: true
+                    }
+
+                ],
+                "ajax": {
+                    "url": "/AccountsReceivables/GetdataGroup/",
+                    "contentType": dataType,
+                    "type": "GET",
+                    "data": function (response) {
+                        return JSON.stringify(response.data);
+                    }
+
+                },
+
+                "columns": [
+                    { "data": "GroupCode" },
+                    { "data": "GroupName" },
+                    { "data": "GroupSite" },
+                    { "data": "GroupDes" },
+                    {
+                        "data": "ID", render: function (data, type, row) {
+                            //console.log(data);
+                            return " <a class='btn btn-info' data-toggle='tooltip' data-placement='top' title='แก้ไข' data-id-type='" + data + "'  onclick = 'editGroup(this);' > <i class='fa fa-edit'></i></a > <a class='btn btn-danger' data-toggle='tooltip' data-placement='top' title='ลบ' data-id-type='" + data + "'  onclick = 'deleteGroup(this);' > <i class='fa fa-trash'></i></a > ";
+
+                        }
+                    }
+
+
+                ]
+            });
+        }
+    </script>
+
+    <script>
+        function cleargroup() {
+            $("#group").val('');
+            document.getElementById('add').style.display = "none";
+        }
+    </script>
+    <script>
+        function AddGroup() {
+
+            var group = document.getElementById('group').value;
+            var code = document.getElementById('code').value;
+            var des = document.getElementById('des').value;
+            var site = document.getElementById('site').value;
+            $.ajax({
+                type: "POST",
+                //dataType: 'json',
+                // contentType: 'application/json; charset=utf-8',
+                data: { group: group, code: code, des: des, site: site },
+                url: "/AccountsReceivables/AddGroup/",
+                success: function (response) {
+                    swal({
+                        title: "สำเร็จ!",
+                        text: "บันทึกข้อมูลกลุ่มสำเร็จ",
+                        icon: "success",
+                        button: "ตกลง",
+                    });
+                    tableGroup.ajax.reload();
+                    cleargroup();
+                    updateselectlist();
+                },
+                failure: function (response) {
+                    swal({
+                        title: "บันทึกไม่สำเร็จ!",
+                        text: "กรุณากรอกใหม่อีกครั้ง",
+                        icon: "warning",
+                        button: "ตกลง",
+                    });
+                }
+            });
+
+        }
+
+    </script>
+    <script>
+        function editGroup(edit) {
+            document.getElementById('add').style.display = "none";
+            document.getElementById("editform").style.display = "block";
+
+
+            var id = edit.getAttribute("data-id-type");
+
+
+            $.ajax({
+                type: "GET",
+                //dataType: 'json',
+                // contentType: 'application/json; charset=utf-8',
+                data: {
+                    id: id
+                },
+                url: "/AccountsReceivables/getGroup/" + id,
+                success: function (response) {
+                    console.log(response.ID);
+                    document.getElementById('groupid').value = response.ID; //เรียกแสดงใน input
+                    document.getElementById('group2').value = response.name;
+                    document.getElementById('code2').value = response.code;
+                    document.getElementById('des2').value = response.des;
+                    document.getElementById('site2').value = response.site;
+                },
+                failure: function (response) {
+                    swal({
+                        title: "บันทึกไม่สำเร็จ!",
+                        text: "กรุณากรอกใหม่อีกครั้ง",
+                        icon: "warning",
+                        button: "ตกลง",
+                    });
+                }
+            });
+        }
+
+    </script>
+    <script>
+        function SaveEditGroup() {
+
+            document.getElementById("editform").style.display = "none";
+
+            var id = document.getElementById('groupid').value;
+
+            var group = document.getElementById('group2').value;
+            var code = document.getElementById('code2').value;
+            var des = document.getElementById('des2').value;
+            var site = document.getElementById('site2').value;
+            $.ajax({
+                type: "POST",
+                //dataType: 'json',
+                // contentType: 'application/json; charset=utf-8',
+                data: { id: id, group: group, code: code, des: des, site: site },
+                url: "/AccountsReceivables/EditGroup/",
+                success: function (response) {
+                    swal({
+                        title: "สำเร็จ!",
+                        text: "บันทึกข้อมูลกลุ่มสำเร็จ",
+                        icon: "success",
+                        button: "ตกลง",
+                    });
+                    tableGroup.ajax.reload();
+                    updateselectlist();
+
+                },
+                failure: function (response) {
+                    swal({
+                        title: "บันทึกไม่สำเร็จ!",
+                        text: "กรุณากรอกใหม่อีกครั้ง",
+                        icon: "warning",
+                        button: "ตกลง",
+                    });
+                }
+            });
+
+        }
+
+    </script>
+    <script>
+        function deleteGroup(deletebutton) {
+            var id = deletebutton.getAttribute("data-id-type");
+
+            swal({
+                title: "คุณต้องการลบข้อมูลนี้หรือไม่?",
+                text: " ",
+                //html: true,
+                icon: "warning",
+                buttons: [
+                    'No',
+                    'yes'
+                ],
+
+                dangerMode: true,
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        type: "POST",
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: { id: id },
+                        url: "/AccountsReceivables/remove/" + id,
+                        success: function (response) {
+                            //console.log(response.name);
+                            swal("ลบข้อมูลของกลุ่ม  " + response.name, {
+                                title: "สำเร็จ",
+                                icon: "success",
+                                button: "ตกลง",
+
+                            });
+                            tableGroup.ajax.reload();
+                            updateselectlist();
+
+                        },
+                        error: function () {
+                            swal({
+                                title: "คุณไม่มีสิทธิ์ในหน้านี้!",
+                                icon: "warning",
+                                button: "ตกลง",
+                            });
+
+                        }
+                    });
+
+                }
+                else {
+                    swal("ยกเลิกการลบ " + name, " ", "error");
+                }
+            })
+
+
+        }
+
+    </script>
+
+    <script>
+        function savegoupmulti() {
+            var group = document.getElementById("ddlgroup").value;
+            var code = "";
+            for (i = 0; i < tableRetention.rows('.selected').data().length; i++) {
+                if (i == 0) {
+                    code = tableRetention.rows('.selected').data()[i].Doc;
+                } else {
+                    code += "," + tableRetention.rows('.selected').data()[i].Doc;
+                }
+
+            }
+
+            console.log(code);
+            console.log(group);
+            var doc = document.getElementById('choose').value = code;
+
+            $.ajax({
+                type: "GET",
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: { doc: doc, group: group },
+                url: "/AccountsReceivables/SaveGroupMulti/",
+                //data: { id: id},
+                //url: "/HouseRentals/Checkstring/",
+                success: function (response) {
+                    //alert("Success");
+                    //alert(response.test);
+                    swal({
+                        title: "สำเร็จ",
+                        text: "จัดกลุ่ม " + group + "เรียบร้อย",
+                        icon: "success",
+                        button: "ตกลง",
+                    });
+                    tableRetention.ajax.reload();
+                },
+                failure: function (response) {
+
+                }
+            });
+
+
+        }
+    </script>
+
+    <script>
+        function createdoc() {
+            document.getElementById('docadd').style.display = "block";
+            document.getElementById("editdoc").style.display = "none";
+        }
+        function cleardoc() {
+            //$("#Date").val('');
+            $("#Job").val('');
+            $("#Status").val(0);
+            $("#Detail").val('');
+            $("#Amount").val('');
+            $("#TotalNAV").val('');
+            $("#Outstanding").val('');
+            $("#Doc").val('');
+            document.getElementById('docadd').style.display = "none";
+
+        }
+    </script>
+    <script>
+        function AddDoc() {
+            document.getElementById('docadd').style.display = "none";
+            //document.getElementById("editdoc").style.display = "none";
+
+            var date = document.getElementById('Date').value;
+            var job = document.getElementById('Job').value;
+            var status = document.getElementById('Status').value;
+            var detail = document.getElementById('Detail').value;
+            var amount = document.getElementById('Amount').value;
+            var totalNAV = document.getElementById('TotalNAV').value;
+            var outstanding = document.getElementById('Outstanding').value;
+            var doc = document.getElementById('Doc').value;
+
+
+            $.ajax({
+                type: "POST",
+                //dataType: 'json',
+                // contentType: 'application/json; charset=utf-8',
+                data: { date: date, job: job, status: status, detail: detail, amount: amount, outstanding: outstanding, totalNAV: totalNAV, doc: doc },
+                url: "/AccountsReceivables/AddDoc",
+                success: function (response) {
+                    //alert(status);
+                    swal({
+                        title: "สำเร็จ!",
+                        text: "บันทึกข้อมูลกลุ่มสำเร็จ",
+                        icon: "success",
+                        button: "ตกลง",
+                    });
+                    cleardoc();
+                    table.ajax.reload();
+                    table1.ajax.reload();
+                    updateselectlist();
+
+
+                },
+                failure: function (response) {
+                    swal({
+                        title: "บันทึกไม่สำเร็จ!",
+                        text: "กรุณากรอกใหม่อีกครั้ง",
+                        icon: "warning",
+                        button: "ตกลง",
+                    });
+                }
+            });
+
+        }
+
+    </script>
+    <script>
+        function editDoc(appdata) {
+
+
+            document.getElementById("editdoc").style.display = "block";
+
+            var id = appdata.getAttribute("data-id-type");
+
+            $.ajax({
+                type: 'GET',
+                contentType: "application/json",
+                dataType: 'JSON',
+                url: "/AccountsReceivables/getDoc/?id=" + id,
+                complete: function () {
+
+                },
+                success: function (response) {
+                    document.getElementById('Date2').value = response.postingdate;
+                    document.getElementById('Job2').value = response.job;
+                    document.getElementById('Status2').value = response.status;
+                    document.getElementById('Detail2').value = response.detail;
+                    document.getElementById('Amount2').value = response.amount;
+                    document.getElementById('TotalNAV2').value = response.totalNav;
+                    document.getElementById('Outstanding2').value = response.outstanding;
+                    document.getElementById('Doc2').value = response.doc;
+                    document.getElementById('DocID').value = response.ID;
+
+
+
+                },
+                failure: function (response) {
+                    swal({
+                        title: "ไม่สำเร็จ!",
+                        text: "กรุณาทำรายการใหม่อีกครั้ง",
+                        icon: "warning",
+                        button: "ตกลง",
+                    });
+                }
+            });
+        }
+
+
+
+
+    </script>
+
+    <script>
+        function btnsaveDoc() {
+            document.getElementById("editdoc").style.display = "none";
+
+            var date = document.getElementById('Date2').value;
+            var job = document.getElementById('Job2').value;
+            var status = document.getElementById('Status2').value;
+            var detail = document.getElementById('Detail2').value;
+            var amount = document.getElementById('Amount2').value;
+            var totalNAV = document.getElementById('TotalNAV2').value;
+            var outstanding = document.getElementById('Outstanding2').value;
+            var doc = document.getElementById('Doc2').value;
+
+            var id = document.getElementById('DocID').value;
+
+            $.ajax({
+                type: "POST",
+                //dataType: 'json',
+                // contentType: 'application/json; charset=utf-8',
+                data: { date: date, job: job, status: status, detail: detail, amount: amount, outstanding: outstanding, totalNAV: totalNAV, doc: doc, id: id },
+                url: "/AccountsReceivables/EditDoc",
+                success: function (response) {
+                    //alert(status);
+                    swal({
+                        title: "สำเร็จ!",
+                        text: "แก้ไขข้อมูลเลขที่เอกสาร " + doc,
+                        icon: "success",
+                        button: "ตกลง",
+                    });
+                    table.ajax.reload();
+                    table1.ajax.reload();
+
+                },
+                failure: function (response) {
+                    swal({
+                        title: "บันทึกไม่สำเร็จ!",
+                        text: "กรุณากรอกใหม่อีกครั้ง",
+                        icon: "warning",
+                        button: "ตกลง",
+                    });
+                }
+            });
+        }
+
+    </script>
+    <script>
+        function deleteDoc(deletebutton) {
+            var id = deletebutton.getAttribute("data-id-type");
+
+            swal({
+                title: "คุณต้องการลบข้อมูลนี้หรือไม่?",
+                text: " ",
+                //html: true,
+                icon: "warning",
+                buttons: [
+                    'No',
+                    'yes'
+                ],
+
+                dangerMode: true,
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        type: "POST",
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: { id: id },
+                        url: "/AccountsReceivables/removeDoc/" + id,
+                        success: function (response) {
+                            //console.log(response.name);
+                            swal("ลบข้อมูลของเลขที่เอกสาร  " + response.name, {
+                                title: "สำเร็จ",
+                                icon: "success",
+                                button: "ตกลง",
+
+                            });
+                            table1.ajax.reload();
+
+
+                        },
+                        error: function () {
+                            swal({
+                                title: "คุณไม่มีสิทธิ์ในหน้านี้!",
+                                icon: "warning",
+                                button: "ตกลง",
+                            });
+
+                        }
+                    });
+
+                }
+                else {
+                    swal("ยกเลิกการลบ " + name, " ", "error");
+                }
+            })
+
+
+        }
+
+    </script>
+
+
+    @*เบิกเงินประกัน*@
+    <script>
+        // Standard Modal RegisGroup
+        $('.modaal-inline-content3').modaal({
+            type: 'inline',
+            accessible_title: 'Modal title',
+            before_open: function () {
+                //console.log('log before open');
+            },
+            before_close: function () {
+                //console.log('log before close');
+            },
+            after_open: function () {
+                //console.log('log after open');
+            },
+            after_close: function () {
+                //console.log('log after close');
+            },
+            should_open: function () {
+                //console.log('just checking to see if we should open');
+                return true;
+            }
+        });
+
+
+        $('.fullscreen3').modaal({
+            fullscreen: true,
+            content_source: '#inline-content3'
+        });
+
+        tabledeposit = $('#DataDeposit').DataTable({
+
+            destroy: true,
+            columnDefs:
+                [
+
+                    {
+                        targets: 4,
+                        className: 'dt-body-right'
+
+                    }
+
+
+                ],
+            "language": {
+                "decimal": ",",
+                "thousands": "."
+            },
+
+            "pageLength": 10,
+            //"order": [[1, "asc"]],
+            dom: 'Bfrtip',
+            buttons: [
+
+                {
+                    extend: 'colvis',
+                    text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                    //messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                    titleAttr: 'Hide',
+                    postfixButtons: ['colvisRestore']
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                    titleAttr: 'PDF',
+                    pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                    //orientation: 'landscape',
+                    // messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                    customize: function (doc) {
+                        doc.defaultStyle = {
+                            font: 'THSarabun',
+                            fontSize: '12',
+
+                        };
+                        var now = new Date();
+                        var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                        doc['footer'] = (function (page, pages) {
+                            return {
+                                columns:
+                                    [
+                                        {
+                                            alignment: 'center',
+                                            text: ['Created on: ', { text: jsDate.toString() }]
+                                        },
+                                        {
+                                            alignment: 'right',
+                                            text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                        }
+                                    ],
+                                margin: 10
+                            }
+                        });
+                    }
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i> Excel',
+                    titleAttr: 'Excel',
+                    // messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                    autoFilter: true
+                }
+
+            ],
+            "ajax": {
+                "url": "/AccountsReceivables/GenRetentionAll/",
+                "contentType": dataType,
+                "type": "GET",
+                "data": function (response) {
+                    return JSON.stringify(response.data);
+                }
+
+            },
+
+            "columns": [
+                {
+                    "data": "PostingDate", type: 'date',
+                    render: function (data, type, row) { return data ? moment(data).format('DD/MM/YYYY') : ''; }
+                },
+                { "data": "DocNo" },
+                { "data": "JobNo" },
+                { "data": "Detail" },
+                { "data": "Amount", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                { "data": "Group" },
+                {
+                    "data": "Statuss",
+                    render: function (data, type, row) {
+                        if (data === 0) {
+                            return 'Open';
+                        }
+                        else {
+                            return 'Close';
+                        }
+                    }
+                },
+                {
+                    "data": "ID", render: function (data, type, row) {
+                        //console.log(data);
+                        return " <a class='btn btn-info' data-toggle='tooltip' data-placement='top' title='แก้ไข' data-id-type='" + data + "'  onclick = 'editRetention(this);' > <i class='fa fa-edit'></i></a > <a class='btn btn-danger' data-toggle='tooltip' data-placement='top' title='ลบ' data-id-type='" + data + "'  onclick = 'deleteRetention(this);' > <i class='fa fa-trash'></i></a > ";
+
+                    }
+                }
+
+
+            ]
+        });
+
+        document.getElementById("depositAmount").value = 0;
+
+    </script>
+    <script>
+        function createRe() {
+
+            document.getElementById("editDeposit").style.display = "none";
+            document.getElementById("addDeposit").style.display = "none";
+            document.getElementById("TotalRetention").innerHTML = "0.00";
+            document.getElementById("TotalRetention1").innerHTML = "0.00";
+        }
+    </script>
+    <script>
+        function createRetention() {
+
+            document.getElementById("addDeposit").style.display = "block";
+            document.getElementById("TotalRetention").innerHTML = "0.00"
+            document.getElementById("TotalRetention1").innerHTML = "0.00";
+        }
+        function clearretention() {
+            $("#depositJob").val('');
+            $("#depositDetail").val('');
+            $("#depositGroup").val('');
+            $("#depositAmount").val('');
+            $("#depositJDoc").val('');
+            $("#depositStatus").val(0);
+
+
+            document.getElementById("addDeposit").style.display = "none";
+        }
+    </script>
+
+    <script>
+        function checkGroup() {
+
+
+
+            var site = document.getElementById("depositJob").value;
+            //var site2 = document.getElementById("depositJob2").value;
+
+
+            //Make an Ajax request to a PHP script called car-models.php
+            //This will return the data that we can add to our Select element.
+            $.ajax({
+                url: '/AccountsReceivables/SelectGroup?site=' + site,
+                type: 'get',
+                success: function (response) {
+
+                    //Log the data to the console so that
+                    //you can get a better view of what the script is returning.
+                    //  console.log(response.data.length);
+
+                    var len = response.data.length;
+                    //$("#depositJob2").empty();
+                    //$("#depositJob2").append("<option value='0'>กรุณาเลือก</option>");
+                    //for (var i = 0; i < len; i++) {
+                    //    var id = response.data[i].GroupCode;
+                    //    var name = response.data[i].GroupName;
+
+                    //    $("#depositJob2").append("<option value='" + id + "'>" + name + "</option>");
+
+                    //}
+
+
+                    $("#depositGroup").empty();
+                    $("#depositGroup").append("<option value='0'>กรุณาเลือก</option>");
+                    for (var i = 0; i < len; i++) {
+                        var id = response.data[i].GroupCode;
+                        var name = response.data[i].GroupName;
+
+                        $("#depositGroup").append("<option value='" + id + "'>" + name + "</option>");
+
+                    }
+
+
+                    //$.each(data, function(key, modelName){
+                    //    //Use the Option() constructor to create a new HTMLOptionElement.
+                    //    var option = new Option(modelName, modelName);
+                    //    //Convert the HTMLOptionElement into a JQuery object that can be used with the append method.
+                    //    $(option).html(modelName);
+                    //    //Append the option to our Select element.
+                    //    $("#car_models").append(option);
+                    //});
+
+                    ////Change the text of the default "loading" option.
+                    //$('#loading').text('Select Car Model');
+
+                }
+            });
+            //var job = document.getElementById("depositJob").value;
+            ////alert(x);
+            //$.ajax({
+            //    type: "GET",
+            //    dataType: 'json',
+            //    contentType: 'application/json; charset=utf-8',
+            //    data: { job: job },
+            //    url: "/AccountsReceivables/CheckGroup/",
+            //    success: function (response) {
+
+            //        console.log(response.group);
+            //        if (response.group.length > 0) {
+            //            document.getElementById("depositGroup").value = response.group[0].GroupName;
+            //        } else {
+
+            //            swal({
+            //                title: "เลือกไม่สำเร็จ!",
+            //                text: "หน่วยงานนี้ยังไม่ได้ลงทะเบียนกลุ่ม ตรวจสอบอีกครั้ง",
+            //                icon: "warning",
+            //                button: "ตกลง",
+            //            });
+            //            //return false;
+            //            $("#depositGroup").val('');
+            //        }
+
+
+
+            //    },
+            //    failure: function (response) {
+            //        swal({
+            //            title: "ไม่สำเร็จ!",
+            //            text: "กรุณาทำรายการใหม่อีกครั้ง",
+            //            icon: "warning",
+            //            button: "ตกลง",
+            //        });
+            //    }
+            //});
+        }
+    </script>
+
+
+
+    <script>
+        function checkGroup1(group) {
+
+
+
+            var site = document.getElementById("depositJob2").value;
+            //var site2 = document.getElementById("depositJob2").value;
+
+
+            //Make an Ajax request to a PHP script called car-models.php
+            //This will return the data that we can add to our Select element.
+            $.ajax({
+                url: '/AccountsReceivables/SelectGroup?site=' + site,
+                type: 'get',
+                success: function (response) {
+
+                    //Log the data to the console so that
+                    //you can get a better view of what the script is returning.
+                    //  console.log(response.data.length);
+
+                    var len = response.data.length;
+                    $("#groupdata").empty();
+                    $("#groupdata").append("<option value='0'>กรุณาเลือก</option>");
+                    for (var i = 0; i < len; i++) {
+                        var id = response.data[i].GroupCode;
+                        var name = response.data[i].GroupName;
+
+                        $("#groupdata").append("<option value='" + id + "'>" + name + "</option>");
+
+                    }
+
+
+                    //$("#depositGroup").empty();
+                    //$("#depositGroup").append("<option value='0'>กรุณาเลือก</option>");
+                    //for (var i = 0; i < len; i++) {
+                    //    var id = response.data[i].GroupCode;
+                    //    var name = response.data[i].GroupName;
+
+                    //    $("#depositGroup").append("<option value='" + id + "'>" + name + "</option>");
+
+                    //}
+
+
+                    //$.each(data, function(key, modelName){
+                    //    //Use the Option() constructor to create a new HTMLOptionElement.
+                    //    var option = new Option(modelName, modelName);
+                    //    //Convert the HTMLOptionElement into a JQuery object that can be used with the append method.
+                    //    $(option).html(modelName);
+                    //    //Append the option to our Select element.
+                    //    $("#car_models").append(option);
+                    //});
+
+                    ////Change the text of the default "loading" option.
+                    //$('#loading').text('Select Car Model');
+                    document.getElementById('groupdata').value = group;
+                }
+            });
+            //var job = document.getElementById("depositJob").value;
+            ////alert(x);
+            //$.ajax({
+            //    type: "GET",
+            //    dataType: 'json',
+            //    contentType: 'application/json; charset=utf-8',
+            //    data: { job: job },
+            //    url: "/AccountsReceivables/CheckGroup/",
+            //    success: function (response) {
+
+            //        console.log(response.group);
+            //        if (response.group.length > 0) {
+            //            document.getElementById("depositGroup").value = response.group[0].GroupName;
+            //        } else {
+
+            //            swal({
+            //                title: "เลือกไม่สำเร็จ!",
+            //                text: "หน่วยงานนี้ยังไม่ได้ลงทะเบียนกลุ่ม ตรวจสอบอีกครั้ง",
+            //                icon: "warning",
+            //                button: "ตกลง",
+            //            });
+            //            //return false;
+            //            $("#depositGroup").val('');
+            //        }
+
+
+
+            //    },
+            //    failure: function (response) {
+            //        swal({
+            //            title: "ไม่สำเร็จ!",
+            //            text: "กรุณาทำรายการใหม่อีกครั้ง",
+            //            icon: "warning",
+            //            button: "ตกลง",
+            //        });
+            //    }
+            //});
+        }
+    </script>
+
+    <script>
+        function AddRetention() {
+
+            //document.getElementById("editdoc").style.display = "none";
+
+            var date = document.getElementById('depositDate').value;
+            var job = document.getElementById('depositJob').value;
+            var status = document.getElementById('depositStatus').value;
+            var detail = document.getElementById('depositDetail').value;
+            var amount = document.getElementById('depositAmount').value;
+            var group = document.getElementById('depositGroup').value;
+            var doc = document.getElementById('depositDoc').value;
+
+            if (job == '') {
+                swal({
+                    title: "ไม่ถูกต้อง!",
+                    text: "กรอกข้อมูลหน่วยงาน",
+                    icon: "warning",
+                    button: "ตกลง",
+                });
+                return false;
+            } else if (group == '') {
+                swal({
+                    title: "ไม่ถูกต้อง!",
+                    text: "กรอกข้อมูลกลุ่ม",
+                    icon: "warning",
+                    button: "ตกลง",
+                });
+                return false;
+            } else if (date == '') {
+                swal({
+                    title: "ไม่ถูกต้อง!",
+                    text: "กรอกวันที่ทำรายการให้ถูกต้อง",
+                    icon: "warning",
+                    button: "ตกลง",
+                });
+                return false;
+            } else if (group == '') {
+                swal({
+                    title: "ไม่ถูกต้อง!",
+                    text: "กรอกข้อมูลกลุ่ม",
+                    icon: "warning",
+                    button: "ตกลง",
+                });
+                return false;
+            } else {
+                $.ajax({
+                    type: "POST",
+                    //dataType: 'json',
+                    // contentType: 'application/json; charset=utf-8',
+                    data: { date: date, job: job, status: status, detail: detail, amount: amount, doc: doc, group: group },
+                    url: "/AccountsReceivables/AddRetention",
+                    success: function (response) {
+                        //alert(status);
+
+                        swal({
+                            title: "สำเร็จ!",
+                            text: "บันทึกข้อมูลกลุ่มสำเร็จ",
+                            icon: "success",
+                            button: "ตกลง",
+                        });
+                        clearretention();
+                        tabledeposit.ajax.reload();
+                        deposittable.ajax.reload();
+                        document.getElementById('addDeposit').style.display = "none";
+                    },
+                    failure: function (response) {
+                        swal({
+                            title: "บันทึกไม่สำเร็จ!",
+                            text: "กรุณากรอกใหม่อีกครั้ง",
+                            icon: "warning",
+                            button: "ตกลง",
+                        });
+                    }
+                });
+            }
+
+
+
+        }
+
+    </script>
+
+    <script>
+        function editRetention(appdata) {
+            document.getElementById("editDeposit").style.display = "block";
+            document.getElementById("addDeposit").style.display = "none";
+            var id = appdata.getAttribute("data-id-type");
+
+            $.ajax({
+                type: 'GET',
+                contentType: "application/json",
+                dataType: 'JSON',
+                url: "/AccountsReceivables/getRetention/?id=" + id,
+                complete: function () {
+
+                },
+                success: function (response) {
+                    document.getElementById('depositDate2').value = response.postingdate;
+                    document.getElementById('depositJob2').value = response.job;
+                    document.getElementById('depositStatus2').value = response.status;
+                    document.getElementById('depositDetail2').value = response.detail;
+                    document.getElementById('depositAmount2').value = response.amount;
+                    // document.getElementById('depositGroup2').value = response.group;
+                    document.getElementById('depositDoc2').value = response.doc;
+                    document.getElementById('depositID').value = response.ID;
+                    checkGroup1(response.group);
+                    // document.getElementById('groupdata').value = response.group;
+
+                    $.ajax({
+                        type: "GET",
+                        //dataType: 'JSON',
+                        contentType: 'application/json; charset=utf-8',
+                        //data: { id: id },
+                        url: "/AccountsReceivables/SelectEditGroupAmount?Group=" + response.group,
+                        success: function (response) {
+                            //console.log(response);
+                            //alert(response);
+                            //swal("คงเหลือ  " + response.data, {
+                            //    title: "สำเร็จ",
+                            //    icon: "success",
+                            //    button: "ตกลง",
+
+                            //});
+                            document.getElementById("TotalRetention1").innerHTML = formatNumber(response.data);
+                            //tabledeposit.ajax.reload();
+                            //deposittable.ajax.reload();
+
+                        },
+                        error: function () {
+                            //swal({
+                            //    title: "คุณไม่มีสิทธิ์ในหน้านี้!",
+                            //    icon: "warning",
+                            //    button: "ตกลง",
+                            //});
+
+                        }
+                    });
+
+
+                    //alert(response.group);
+
+                },
+                failure: function (response) {
+                    swal({
+                        title: "ไม่สำเร็จ!",
+                        text: "กรุณาทำรายการใหม่อีกครั้ง",
+                        icon: "warning",
+                        button: "ตกลง",
+                    });
+                }
+            });
+
+        }
+
+        function saveRetention() {
+
+
+
+            var date = document.getElementById('depositDate2').value;
+            var job = document.getElementById('depositJob2').value;
+            var status = document.getElementById('depositStatus2').value;
+            var detail = document.getElementById('depositDetail2').value;
+            var amount = document.getElementById('depositAmount2').value;
+            var group = document.getElementById('groupdata').value;
+            var doc = document.getElementById('depositDoc2').value;
+
+            var id = document.getElementById('depositID').value;
+            //alert(status);
+            if (job == '') {
+                swal({
+                    title: "ไม่ถูกต้อง!",
+                    text: "กรอกข้อมูลหน่วยงาน",
+                    icon: "warning",
+                    button: "ตกลง",
+                });
+                return false;
+            } else if (group == '') {
+                swal({
+                    title: "ไม่ถูกต้อง!",
+                    text: "กรอกข้อมูลกลุ่ม",
+                    icon: "warning",
+                    button: "ตกลง",
+                });
+                return false;
+            } else if (date == '') {
+                swal({
+                    title: "ไม่ถูกต้อง!",
+                    text: "กรอกวันที่ทำรายการให้ถูกต้อง",
+                    icon: "warning",
+                    button: "ตกลง",
+                });
+                return false;
+            } else {
+                $.ajax({
+                    type: "POST",
+                    //dataType: 'json',
+                    // contentType: 'application/json; charset=utf-8',
+                    data: { date: date, job: job, status: status, detail: detail, amount: amount, doc: doc, id: id, group: group },
+                    url: "/AccountsReceivables/editRetention",
+                    success: function (response) {
+                        //alert(status);
+                        swal({
+                            title: "สำเร็จ!",
+                            text: "แก้ไขข้อมูลเลขที่เอกสาร " + doc,
+                            icon: "success",
+                            button: "ตกลง",
+                        });
+
+                        tabledeposit.ajax.reload();
+                        deposittable.ajax.reload();
+                        document.getElementById("editDeposit").style.display = "none";
+                    },
+                    failure: function (response) {
+                        swal({
+                            title: "บันทึกไม่สำเร็จ!",
+                            text: "กรุณากรอกใหม่อีกครั้ง",
+                            icon: "warning",
+                            button: "ตกลง",
+                        });
+                    }
+                });
+            }
+
+
+
+        }
+    </script>
+
+    <script>
+        function deleteRetention(deletebutton) {
+            var id = deletebutton.getAttribute("data-id-type");
+
+            swal({
+                title: "คุณต้องการลบข้อมูลนี้หรือไม่?",
+                text: " ",
+                //html: true,
+                icon: "warning",
+                buttons: [
+                    'No',
+                    'yes'
+                ],
+
+                dangerMode: true,
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        type: "POST",
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: { id: id },
+                        url: "/AccountsReceivables/removeRetention/" + id,
+                        success: function (response) {
+                            //console.log(response.name);
+                            swal("ลบข้อมูลของกลุ่ม  " + response.name, {
+                                title: "สำเร็จ",
+                                icon: "success",
+                                button: "ตกลง",
+
+                            });
+                            tabledeposit.ajax.reload();
+                            deposittable.ajax.reload();
+
+                        },
+                        error: function () {
+                            swal({
+                                title: "คุณไม่มีสิทธิ์ในหน้านี้!",
+                                icon: "warning",
+                                button: "ตกลง",
+                            });
+
+                        }
+                    });
+
+                }
+                else {
+                    swal("ยกเลิกการลบ " + name, " ", "error");
+                }
+            })
+
+
+        }
+
+    </script>
+    <script>
+        deposittable = $('#deposit').DataTable({
+
+            destroy: true,
+            columnDefs:
+                [
+
+                    {
+                        targets: 6,
+                        className: 'dt-body-right'
+
+                    }
+
+
+                ],
+            "language": {
+                "decimal": ",",
+                "thousands": "."
+            },
+
+            "pageLength": 10,
+            //"order": [[1, "asc"]],
+            dom: 'Bfrtip',
+            buttons: [
+
+                {
+                    extend: 'colvis',
+                    text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                    //messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                    titleAttr: 'Hide',
+                    postfixButtons: ['colvisRestore']
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                    titleAttr: 'PDF',
+                    pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                    //orientation: 'landscape',
+                    // messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                    customize: function (doc) {
+                        doc.defaultStyle = {
+                            font: 'THSarabun',
+                            fontSize: '12',
+
+                        };
+                        var now = new Date();
+                        var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                        doc['footer'] = (function (page, pages) {
+                            return {
+                                columns:
+                                    [
+                                        {
+                                            alignment: 'center',
+                                            text: ['Created on: ', { text: jsDate.toString() }]
+                                        },
+                                        {
+                                            alignment: 'right',
+                                            text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                        }
+                                    ],
+                                margin: 10
+                            }
+                        });
+                    }
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i> Excel',
+                    titleAttr: 'Excel',
+                    // messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                    autoFilter: true
+                }
+
+            ],
+            "ajax": {
+                "url": "/AccountsReceivables/GenRetention/",
+                "contentType": dataType,
+                "type": "GET",
+                "data": function (response) {
+                    return JSON.stringify(response.data);
+                }
+
+            },
+
+            "columns": [
+                {
+                    "data": "PostingDate", type: 'date',
+                    render: function (data, type, row) { return data ? moment(data).format('DD/MM/YYYY') : ''; }
+                },
+                { "data": "DocNo" },
+                { "data": "JobNo" },
+                { "data": "Detail" },
+                { "data": "Group" },
+                {
+                    "data": "Statuss",
+                    render: function (data, type, row) {
+                        if (data === 0) {
+                            return 'Open';
+                        }
+                        else {
+                            return 'Close';
+                        }
+                    }
+                },
+                { "data": "Amount", render: $.fn.dataTable.render.number(',', '.', 2, '') }
+
+
+
+            ],
+            "footerCallback": function (row, data, start, end, display) {
+                var api = this.api(), data;
+                // converting to interger to find total
+                var intVal = function (i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                            i : 0;
+                };
+
+
+                // computing column Total the complete result
+                var TotalData = api
+                    .column(6, { filter: 'applied' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+
+
+                $(api.column(0).footer()).html('Total');
+                $(api.column(6).footer()).html(TotalData.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
+
+            }
+
+        });
+
+        function formatNumber(num) {
+            return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+        }
+
+        $('#depositGroup').change(function () {
+            var str = this.value;
+            console.log(str);
+            $.ajax({
+                type: "GET",
+                //dataType: 'JSON',
+                contentType: 'application/json; charset=utf-8',
+                //data: { id: id },
+                url: "/AccountsReceivables/SelectGroupAmount?Group=" + str,
+                success: function (response) {
+                    //console.log(response);
+                    //alert(response);
+                    //swal("คงเหลือ  " + response.data, {
+                    //    title: "สำเร็จ",
+                    //    icon: "success",
+                    //    button: "ตกลง",
+
+                    //});
+                    document.getElementById("TotalRetention").innerHTML = formatNumber(response.data);
+                    //tabledeposit.ajax.reload();
+                    //deposittable.ajax.reload();
+
+                },
+                error: function () {
+                    //swal({
+                    //    title: "คุณไม่มีสิทธิ์ในหน้านี้!",
+                    //    icon: "warning",
+                    //    button: "ตกลง",
+                    //});
+
+                }
+            });
+
+
+        }).change();
+
+        $('#groupdata').change(function () {
+            var str = this.value;
+            console.log(str);
+            $.ajax({
+                type: "GET",
+                //dataType: 'JSON',
+                contentType: 'application/json; charset=utf-8',
+                //data: { id: id },
+                url: "/AccountsReceivables/SelectEditGroupAmount?Group=" + str,
+                success: function (response) {
+                    //console.log(response);
+                    //alert(response);
+                    //swal("คงเหลือ  " + response.data, {
+                    //    title: "สำเร็จ",
+                    //    icon: "success",
+                    //    button: "ตกลง",
+
+                    //});
+                    document.getElementById("TotalRetention1").innerHTML = formatNumber(response.data);
+                    //tabledeposit.ajax.reload();
+                    //deposittable.ajax.reload();
+
+                },
+                error: function () {
+                    //swal({
+                    //    title: "คุณไม่มีสิทธิ์ในหน้านี้!",
+                    //    icon: "warning",
+                    //    button: "ตกลง",
+                    //});
+
+                }
+            });
+
+
+        }).change();
+
+
+
+    </script>
+
+    <script>
+        updateselectlist();
+
+        function updateselectlist() {
+            $.ajax({
+                url: '/AccountsReceivables/SelectGroup',
+                type: 'get',
+                success: function (response) {
+                    //console.log(response)
+                    //Log the data to the console so that
+                    //you can get a better view of what the script is returning.
+                    //  console.log(response.data.length);
+
+                    var len = response.data.length;
+                    $("#ddlgroup").empty();
+                    $("#ddlgroup").append("<option value='0'>กรุณาเลือก</option>");
+                    for (var i = 0; i < len; i++) {
+                        var id = response.data[i].GroupCode;
+                        var name = response.data[i].GroupName;
+
+                        $("#ddlgroup").append("<option value='" + id + "'>" + id + ' ' + name + "</option>");
+
+                    }
+
+
+                    //$("#depositGroup").empty();
+                    //$("#depositGroup").append("<option value='0'>กรุณาเลือก</option>");
+                    //for (var i = 0; i < len; i++) {
+                    //    var id = response.data[i].GroupCode;
+                    //    var name = response.data[i].GroupName;
+
+                    //    $("#depositGroup").append("<option value='" + id + "'>" + name + "</option>");
+
+                    //}
+
+
+                    //$.each(data, function(key, modelName){
+                    //    //Use the Option() constructor to create a new HTMLOptionElement.
+                    //    var option = new Option(modelName, modelName);
+                    //    //Convert the HTMLOptionElement into a JQuery object that can be used with the append method.
+                    //    $(option).html(modelName);
+                    //    //Append the option to our Select element.
+                    //    $("#car_models").append(option);
+                    //});
+
+                    ////Change the text of the default "loading" option.
+                    //$('#loading').text('Select Car Model');
+                    //document.getElementById('groupdata').value = group;
+                }
+            });
+        }
+    </script>
+
+}
+

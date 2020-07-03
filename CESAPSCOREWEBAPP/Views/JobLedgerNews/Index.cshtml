@@ -1,0 +1,3821 @@
+﻿@using CESAPSCOREWEBAPP.Models
+@using Microsoft.AspNetCore.Http;
+@model CESAPSCOREWEBAPP.Models.V_Job
+
+
+@{
+    IEnumerable<Tmp_JobCostReport> tmp_JobCostReports = ViewData["JsonRegionList"] as IEnumerable<Tmp_JobCostReport>;
+    IEnumerable<Tmp_JobCostReport> JsonTotalLists = ViewData["JsonTotalList"] as IEnumerable<Tmp_JobCostReport>;
+
+}
+
+
+@{
+    ViewData["Title"] = "Report JobCost";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+                   + "<li>"
+                   + "<a href='../../Home/Index'>Home</a>"
+                   + "</li>"
+
+                   + "<li class='active'>"
+                   + "<a>" + @ViewData["Title"] + "</a>"
+                   + "</li>"
+                   + "</ol>";
+}
+
+<style>
+
+    .tableFixHead {
+        overflow-y: auto;
+        height: 800px;
+    }
+
+        .tableFixHead th {
+            position: sticky;
+            top: 0;
+        }
+
+    /* Just common table stuff. Really. */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px 16px;
+    }
+
+    th {
+        background: #eee;
+    }
+
+
+    thead input {
+        width: 100%;
+    }
+    /* Style the tab */
+    .tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+            /* Change background color of buttons on hover */
+            .tab button:hover {
+            }
+
+            /* Create an active/current tablink class */
+            .tab button.active {
+            }
+
+    /* Style the tab content */
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+
+
+    /* Button used to open the chat form - fixed at the bottom of the page */
+    .open-button {
+        background-color: #555;
+        color: white;
+        padding: 16px 20px;
+        border: none;
+        cursor: pointer;
+        opacity: 0.8;
+        position: fixed;
+        bottom: 40px;
+        right: 28px;
+        width: 380px;
+    }
+
+    /* The popup chat - hidden by default */
+    .chat-popup {
+        display: none;
+        position: fixed;
+        right: 15px;
+        border: 3px solid #f1f1f1;
+        z-index: 9;
+        bottom: 40px;
+    }
+
+    /* Add styles to the form container */
+    .form-container {
+        max-width: 400px;
+        padding: 10px;
+        background-color: white;
+    }
+
+    /* Full-width textarea */
+    .data {
+        width: 400px;
+        padding: 15px;
+        margin: 5px 0 22px 0;
+        border: none;
+        background: #f1f1f1;
+        resize: none;
+        height: 500px;
+        overflow: scroll;
+    }
+
+    /* When the textarea gets focus, do something */
+    .form-container textarea:focus {
+        background-color: #ddd;
+        outline: none;
+    }
+
+    /* Set a style for the submit/send button */
+    .form-container .btn {
+        background-color: rgb(0,174,239);
+        color: white;
+        padding: 16px 20px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        margin-bottom: 10px;
+        opacity: 0.8;
+    }
+
+    /* Add a red background color to the cancel button */
+    .form-container .cancel {
+        background-color: darkslategray;
+    }
+
+    /* Add some hover effects to buttons */
+    .form-container .btn:hover, .open-button:hover {
+        opacity: 1;
+    }
+</style>
+
+
+
+<div class="spiner-example" id="popup" style="display:none ">
+    <div class="sk-spinner sk-spinner-three-bounce">
+        <div class="sk-bounce1"></div>
+        <div class="sk-bounce2"></div>
+        <div class="sk-bounce3"></div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<div class="ibox float-e-margins">
+    <div class="ibox-title">
+        <h5>@ViewData["Title"]</h5>
+        <div class="ibox-tools">
+            <a class="collapse-link">
+                <i class="fa fa-chevron-up"></i>
+            </a>
+            <a class="close-link">
+                <i class="fa fa-times"></i>
+            </a>
+        </div>
+    </div>
+    <div class="ibox-content">
+        <div class="row">
+
+            <form method="post" asp-controller="JobLedgernews" asp-action="Index" id="searchfrom">
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>Job : </label>
+                        <select class="form-control" asp-for="JobNo" asp-items="ViewBag.JobNo" id="joblist" onchange="showListHistory(this)"></select>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>จากวันที่ : </label>
+
+                        <div class="input-group date" id="dtp1">
+                            <input type="text" class="form-control" name="Startdate" id="StartDate1" value="@ViewBag.StartDate" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label>ถึง : </label>
+
+                        <div class="input-group date" id="dtp2">
+                            <input type="text" class="form-control" name="Enddate" id="StartDate2" value="@ViewBag.EndDate" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-xs-4">
+                    <div class="form-group">
+                        <button class="btn btn-primary dim btn-dim" type="button" onclick="Submit1()"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="wrapper wrapper-content animated fadeInRight ecommerce">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="tabs-container">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#tab-1"> Summary</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-2"> History</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-3"> Job Cost</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-4"> สรุปตามหมวด</a></li>
+
+                </ul>
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="panel-body">
+                            <div class="alert alert-info"><strong>หน่วยงาน:@ViewBag.Job  เงื่อนไข : @ViewBag.StartDate - @ViewBag.EndDate  </strong></div>
+
+                            <button class="btn btn-primary dim btn-dim" type="button" data-toggle="modal" data-target="#exampleModal"> <i class="fa fa-edit"></i>ประมาณการ</button>
+
+                            <button class="btn btn-primary dim btn-dim" type="button" onclick="exportpdf();"><i class="fa fa-file-pdf-o"></i> Export PDF</button>
+                            <button class="btn btn-primary dim btn-dim" type="button" onclick="ExportExcelFile();"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+                            <button class="btn btn-primary dim btn-dim" type="button" onclick="SaveLog();"> <i class="fa fa-save"></i> Save</button>
+
+                            <button class="btn btn-primary dim btn-dim" type="button" onclick="data()" style="display:none"><i class="fa fa-save"></i> Datatable</button>
+
+
+
+
+                            <table class="table table-striped" id="Jobcost">
+                                <tr>
+                                    <td><b><u>Accounting Job Cost</u></b></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b><u>Income & Cost</u></b></td>
+                                    <td></td>
+                                </tr>
+                                <!---Row2-->
+                                <tr>
+                                    <td><b>-Income</b></td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <span id="income1">@Html.Raw(@ViewBag.INCOME1)</span>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -N0000  Work Done
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <span id="N00">@Html.Raw(@ViewBag.N00)</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row3-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            -External Cost
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <span id="External">@Html.Raw(@ViewBag.ExternalCost)</span>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -O0000 Other Income
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <span id="O00">@Html.Raw(ViewBag.O00)</span>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row4-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Gross Profit / Gross Margin
+                                        </b>
+
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <b style="border-top:solid 3px">
+                                                <span id="GrossProfit">@Html.Raw(@ViewBag.GrossProfit)</span>
+                                            </b>
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="PerGross">@Html.Raw(@ViewBag.PerGross)</span>
+
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            <u>INCOME </u>
+                                        </b>
+
+
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <b style="border-bottom: double 3px;border-top:solid 3px">
+                                                <span id="INCOME">@Html.Raw(@ViewBag.INCOME)</span>
+                                            </b>
+                                        </div>
+
+
+                                    </td>
+                                </tr>
+                                <!---Row5-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Total Internal
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <span id="TIC">@Html.Raw(@ViewBag.TIC)</span>
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            -A0000   หมวดเตรียมการ
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <span id="A00">@Html.Raw(@ViewBag.A00)</span>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row6-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Net Profit / NET Margin
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <b style="border-bottom: double 3px;border-top:solid 3px">
+                                                <span id="NetProfit">@Html.Raw(ViewBag.NetProfit)</span>
+                                            </b>
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="PerNet">@Html.Raw(@ViewBag.PerNet)</span>
+
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            -B0000   หมวดค่าใช้จ่าย
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <span id="B00">@Html.Raw(@ViewBag.B00)</span>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row7-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -C0000   หมวดค่าเช่า
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <span id="C00">@Html.Raw(@ViewBag.C00)</span>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row8-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -D0000   หมวดค่าพัสดุ
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <span id="D00">@Html.Raw(@ViewBag.D00)</span>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row9-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            <u>
+                                                ประมาณการ
+                                            </u>
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            -E0000   หมวดค่าแรงจ้างเหมา
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <span id="E00">@Html.Raw(@ViewBag.E00)</span>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row10-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Contract Work    <!-- Button trigger modal -->
+
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <b>
+                                                <label id="contract_work">0.00</label>
+                                            </b>
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            -F0000   หมวดค่าจ้างเหมาช่วง
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <span id="F00">@Html.Raw(@ViewBag.F00)</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row11-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -G0000   หมวดค่าใช้จ่ายอื่นๆ
+                                        </b>
+
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <span id="G00">@Html.Raw(@ViewBag.G00)</span>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row12-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Extra Work
+
+
+
+                                        </b>
+
+                                    </td>
+                                    <td>
+                                        <b>
+                                            <div style="text-align:right;">
+                                                <label id="Extra_work">0.00</label>
+
+                                            </div>
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            -G0210 ภาษีหัก ณ ที่จ่าย
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <span id="G0210N">@Html.Raw(@ViewBag.G0210N)</span>
+                                        </div>
+
+                                    </td>
+                                </tr>
+
+                                <!---Row13-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -H0000   หมวดค่าใช้จ่ายส่วนกลาง
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+
+                                            <span id="H00">@Html.Raw(@ViewBag.H00)</span>
+
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row14-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Orther Income<!-- Button trigger modal -->
+
+                                        </b>
+
+                                    </td>
+                                    <td>
+
+                                        <b>
+                                            <div style="text-align:right;">
+                                                <label id="OrtherIncome">0.00</label>
+
+                                            </div>
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            Total cost (External + Internal) (1)
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <b style="border-bottom: double 3px;border-top:solid 3px">
+                                                <span id="TCXI">@Html.Raw(@ViewBag.TCXI)</span>
+                                            </b>
+
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row15-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            TOTAL INCOME
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <b style="border-bottom: double 3px;border-top:solid 3px">
+                                                <label id="TotalIncome">0.00</label>
+                                            </b>
+
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            <u>
+                                                Internal Cost
+                                            </u>
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <b>
+
+                                            </b>
+
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row16-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Actual External Cost Todate
+                                        </b>
+                                    </td>
+                                    <td> <div style="text-align:right;"> <label id="AECT">0.00</label></div></td>
+                                    <td></td>
+
+                                    <td>
+                                        <b>
+
+                                            -C0110 ค่าเช่าขนส่งภายใน
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="C0110">@Html.Raw(@ViewBag.C0110)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row17-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+
+                                            -C0120 ค่าเช่าเครื่องจักรภายใน
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="C0120">@Html.Raw(@ViewBag.C0120)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row18-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Update External cost อื่นๆ<!-- Button trigger modal -->
+
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <b>
+                                                <label id="update_excost">0.00</label>
+                                            </b>
+
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                            -C0130 ค่าเช่าเครื่องใช้สนง.ภายใน
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="C0130">@Html.Raw(@ViewBag.C0130)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row19-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            ประมาณการเพิ่มจนจบ(เฉพาะ External Cost)
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            <div style="text-align:right;">
+                                                <label id="External_Cost1">0.00</label>
+                                            </div>
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            -C0410 ค่าเช่านั่งร้านภายใน
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="C0410">@Html.Raw(@ViewBag.C0410)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row20-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Total External COST
+
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <b style="border-bottom: double 3px;border-top:solid 3px">
+                                                <label id="TotalExternalCost">0.00</label>
+                                            </b>
+
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                            -C0510 ค่าเช่าชีทไฟล์ภายใน
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="C0510">@Html.Raw(@ViewBag.C0510)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row21-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Gross Profit / Gross Margin
+
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <b>
+                                                <label id="gross">0.00</label>
+                                            </b>
+
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <b>
+                                            <label id="percengross">0.00%</label>
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                            -C0910 ค่าเช่า H-Beam ภายใน
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="C0910">@Html.Raw(@ViewBag.C0910)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row22-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Actual Internal Cost Todate
+
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <b>
+                                                <label id="AIC">0.00</label>
+                                            </b>
+
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                            -C1010 ค่าเช่าแผ่นเหล็กภายใน
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="C1010">@Html.Raw(@ViewBag.C1010)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row23-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            ประมาณการ Internal
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            <div style="text-align:right;">
+                                                <label id="Internal1">0.00</label>
+                                            </div>
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                            -C1110 ค่าเช่าเหล็กรูปพรรณภายใน
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="C1110">@Html.Raw(@ViewBag.C1110)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row24-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Net Profit / Net Margin
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <b style="border-bottom: double 3px;border-top:solid 3px">
+                                                <label id="netProfit">0.00</label>
+                                            </b>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            <label id="percenNetPro">0.00%</label>
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            -D0450 ค่าเช่าแบบภายใน
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="D0450">@Html.Raw(@ViewBag.D0450)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row25-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -H0110 เงินเดือน
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="H0110">@Html.Raw(@ViewBag.H0110)</span>
+
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row26-->
+                                <tr>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td></td>
+
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -H0130 เบี้ยเลี้ยงพนักงาน
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="H0130">@Html.Raw(@ViewBag.H0130)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row27-->
+                                <tr>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -H0200 ค่าใช้จ่ายทางอ้อม
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="H0200">@Html.Raw(@ViewBag.H0200)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row28-->
+                                <tr>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+
+                                    <td>
+                                        <b>
+                                            -H0800 ค้างจ่ายภายใน
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="H0800">@Html.Raw(@ViewBag.H0800)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row29-->
+                                <tr>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            Total Internal Cost (2)
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <b style="border-bottom: double 3px;border-top:solid 3px">
+                                                <span id="TIC">@Html.Raw(@ViewBag.TIC)</span>
+                                            </b>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row30-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            <u>
+                                                รายละเอียดต้นทุนบางรายการ
+                                            </u>
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <b>
+
+                                            </b>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row31-->
+                                <tr>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            -D2100 วัสดุเช่าส่วนกลาง (เฉพาะฝ่ายบัญชีเท่านั้น)
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="D2100">@Html.Raw(@ViewBag.D2100)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row32-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -E0800 ค่าแรงรายวันงานก่อสร้าง
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="E0800">@Html.Raw(@ViewBag.E0800)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row33-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -E0910 ค่าแรงรายวันบริษัท[ปกติ]
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="E0910">@Html.Raw(@ViewBag.E0910)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row34-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -E0920 ค่าแรงรายวันบริษัท [ล่วงหน้า]
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="E0920">@Html.Raw(@ViewBag.E0920)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row35-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -E0930 พนักงานบริษัท [ล่วงหน้า]
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="E0930">@Html.Raw(@ViewBag.E0930)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row36-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -E0940 ค่าแรงฝากเบิก
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="E0940">@Html.Raw(@ViewBag.E0940)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row37-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+
+                                    <td>
+                                        <b>
+                                            -G0210 ภาษีหัก ณ ที่จ่าย
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="G0210P">@Html.Raw(@ViewBag.G0210P)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row38-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -H0600 ต้นทุนโอน
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="H0600">@Html.Raw(@ViewBag.H0600)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row39-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -F5999 ค่าใช้จ่ายต้นทุนล่วงหน้า
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="F5999">@Html.Raw(@ViewBag.F5999)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row40-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -H0400 ล/นมัดจำ-เงินล่วงหน้า
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="H0400">@Html.Raw(@ViewBag.H0400)</span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="tab-2" class="tab-pane">
+                        <div class="panel-body">
+
+                            <!-----------------------------------------------------HISTORY-->
+                            <div class="alert" style="background-color:#808080"><strong style="color:white">หน่วยงาน: <span id="jobold"></span>  เงื่อนไข :<span id="startold"></span> - <span id="endold"></span> โดย : <span id="whoold"></span> จัดทำเมื่อ : <span id="dateold"></span> </strong></div>
+                            <button class="btn btn-primary dim btn-dim" type="button" onclick="ExportExcelFileHistory();"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+
+                            <table class="table" style="background-color:#E0E0E0;border-color:#E0E0E0" id="JobcostOld">
+                                <tr>
+                                    <td><b><u>Accounting Job Cost</u></b></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b><u>Income & Cost</u></b></td>
+                                    <td></td>
+                                </tr>
+                                <!---Row2-->
+                                <tr>
+                                    <td><b>-Income</b></td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <span id="a1"></span>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -N0000  Work Done
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <span id="c1"></span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row3-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            -External Cost
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <span id="a2"></span>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -O0000 Other Income
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <span id="c2"></span>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row4-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Gross Profit / Gross Margin
+                                        </b>
+
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <b style="border-top:solid 3px">
+                                                <span id="a3"></span>
+                                            </b>
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="b1"></span>
+
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            <u>INCOME </u>
+                                        </b>
+
+
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <b style="border-bottom: double 3px;border-top:solid 3px">
+                                                <span id="c3"></span>
+                                            </b>
+                                        </div>
+
+
+                                    </td>
+                                </tr>
+                                <!---Row5-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Total Internal
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <span id="a4"></span>
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            -A0000   หมวดเตรียมการ
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <span id="c4"></span>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row6-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Net Profit / NET Margin
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <b style="border-bottom: double 3px;border-top:solid 3px">
+                                                <span id="a5"></span>
+                                            </b>
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="b2"></span>
+
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            -B0000   หมวดค่าใช้จ่าย
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <span id="c5"></span>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row7-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -C0000   หมวดค่าเช่า
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <span id="c6"></span>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row8-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -D0000   หมวดค่าพัสดุ
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <span id="c7"></span>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row9-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            <u>
+                                                ประมาณการ
+                                            </u>
+                                            <span id="datecreateby"></span>
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            -E0000   หมวดค่าแรงจ้างเหมา
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <span id="c8"></span>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row10-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Contract Work    <!-- Button trigger modal -->
+
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <b>
+                                                <label id="a6"></label>
+                                            </b>
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            -F0000   หมวดค่าจ้างเหมาช่วง
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <span id="c9"></span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row11-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -G0000   หมวดค่าใช้จ่ายอื่นๆ
+                                        </b>
+
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <span id="c10"></span>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row12-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Extra Work
+
+
+
+                                        </b>
+
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <b>
+                                                <label id="a7"></label>
+                                            </b>
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            -G0210 ภาษีหัก ณ ที่จ่าย
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <span id="c11"></span>
+                                        </div>
+
+                                    </td>
+                                </tr>
+
+                                <!---Row13-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -H0000   หมวดค่าใช้จ่ายส่วนกลาง
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+
+                                            <span id="c12"></span>
+
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row14-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Orther Income<!-- Button trigger modal -->
+
+                                        </b>
+
+                                    </td>
+                                    <td>
+
+
+                                        <div style="text-align:right;">
+                                            <b>
+                                                <label id="a8"></label>
+                                            </b>
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            Total cost (External + Internal) (1)
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <b style="border-bottom: double 3px;border-top:solid 3px">
+                                                <span id="c13"></span>
+                                            </b>
+
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row15-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            TOTAL INCOME
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <b style="border-bottom: double 3px;border-top:solid 3px">
+                                                <label id="a9"></label>
+                                            </b>
+
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            <u>
+                                                Internal Cost
+                                            </u>
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <b>
+
+                                            </b>
+
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row16-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Actual External Cost Todate
+                                        </b>
+                                    </td>
+                                    <td> <div style="text-align:right;"> <label id="a10"></label></div></td>
+                                    <td></td>
+
+                                    <td>
+                                        <b>
+
+                                            -C0110 ค่าเช่าขนส่งภายใน
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c14"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row17-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+
+                                            -C0120 ค่าเช่าเครื่องจักรภายใน
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c15"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row18-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Update External cost อื่นๆ<!-- Button trigger modal -->
+
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <b>
+                                                <label id="a11"></label>
+                                            </b>
+
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                            -C0130 ค่าเช่าเครื่องใช้สนง.ภายใน
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c16"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row19-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            ประมาณการเพิ่มจนจบ(เฉพาะ External Cost)
+
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <b>
+                                                <label id="a12"></label>
+                                            </b>
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            -C0410 ค่าเช่านั่งร้านภายใน
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c17"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row20-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Total External COST
+
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <b style="border-bottom: double 3px;border-top:solid 3px">
+                                                <label id="a13"></label>
+                                            </b>
+
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                            -C0510 ค่าเช่าชีทไฟล์ภายใน
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c18"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row21-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Gross Profit / Gross Margin
+
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <b>
+                                                <label id="a14"></label>
+                                            </b>
+
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <b>
+                                            <label id="b3"></label>
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                            -C0910 ค่าเช่า H-Beam ภายใน
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c19"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row22-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Actual Internal Cost Todate
+
+
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <b>
+                                                <label id="a15"></label>
+                                            </b>
+
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                            -C1010 ค่าเช่าแผ่นเหล็กภายใน
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c20"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row23-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            ประมาณการ Internal
+
+                                        </b>
+                                    </td>
+                                    <td>
+
+                                        <div style="text-align:right;">
+                                            <b>
+                                                <label id="a16"></label>
+                                            </b>
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                            -C1110 ค่าเช่าเหล็กรูปพรรณภายใน
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c21"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row24-->
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Net Profit / Net Margin
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <b style="border-bottom: double 3px;border-top:solid 3px">
+                                                <label id="a17"></label>
+                                            </b>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            <label id="b4"></label>
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            -D0450 ค่าเช่าแบบภายใน
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c22"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row25-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -H0110 เงินเดือน
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c23"></span>
+
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row26-->
+                                <tr>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td></td>
+
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -H0130 เบี้ยเลี้ยงพนักงาน
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c24"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row27-->
+                                <tr>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -H0200 ค่าใช้จ่ายทางอ้อม
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c25"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row28-->
+                                <tr>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+
+                                    <td>
+                                        <b>
+                                            -H0800 ค้างจ่ายภายใน
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c26"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row29-->
+                                <tr>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            Total Internal Cost (2)
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <b style="border-bottom: double 3px;border-top:solid 3px">
+                                                <span id="c27"></span>
+                                            </b>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row30-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            <u>
+                                                รายละเอียดต้นทุนบางรายการ
+                                            </u>
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+                                            <b>
+
+                                            </b>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!---Row31-->
+                                <tr>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            -D2100 วัสดุเช่าส่วนกลาง (เฉพาะฝ่ายบัญชีเท่านั้น)
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c28"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row32-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -E0800 ค่าแรงรายวันงานก่อสร้าง
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c29"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row33-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -E0910 ค่าแรงรายวันบริษัท[ปกติ]
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c30"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row34-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -E0920 ค่าแรงรายวันบริษัท [ล่วงหน้า]
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c31"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row35-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -E0930 พนักงานบริษัท [ล่วงหน้า]
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c32"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row36-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -E0940 ค่าแรงฝากเบิก
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c33"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row37-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+
+                                    <td>
+                                        <b>
+                                            -G0210 ภาษีหัก ณ ที่จ่าย
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c34"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row38-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -H0600 ต้นทุนโอน
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c35"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row39-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -F5999 ค่าใช้จ่ายต้นทุนล่วงหน้า
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c36"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!---Row40-->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>
+                                            -H0400 ล/นมัดจำ-เงินล่วงหน้า
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <div style="text-align:right;">
+
+                                            <span id="c37"></span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    @*<button class="open-button" onclick="openForm()">History</button>*@
+
+                    @*<div class="form-popup" id="myForm">
+                            <div class="form-container">
+                                <button type="button" class="btn btn-success" onclick="SaveLog()"><i class="fa fa-save"></i> Save</button>
+                                <input type="text" placeholder="History" name="email" readonly>
+                                <p id="showItem"></p>
+
+                                <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+                            </div>
+                        </div>*@
+
+
+
+
+
+
+
+
+
+                    <div id="tab-3" class="tab-pane">
+                        <div class="panel-body">
+                            <!-- Main content -->
+                            <div class="box">
+                           
+                                <!-- /.box-header -->
+                                <div class="box-body">
+
+
+                                    <!-- info row -->
+                                    @Html.Raw(ViewBag.table)
+
+
+
+                                    @*@ViewBag.sql*@
+
+
+                                    <table id="example" class="display" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>JobTask</th>
+                                                <th>ThisPeriodQTY</th>
+                                                <th>ThisPeriodAMT</th>
+                                                <th>OpenningQTY</th>
+                                                <th>OpenningAMT</th>
+                                                <th>CumBalQTY</th>
+                                                <th>CumBalAMT</th>
+                                                <th>BudgetQty</th>
+                                                <th>PerQty</th>
+                                                <th>BudgetAMT</th>
+                                                <th>PerAMT</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-4" class="tab-pane">
+                        <div class="panel-body">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">สรุปรายงานแยกตามหมวด</h3>
+                                </div>
+                                <!-- /.box-header -->
+                                <div class="box-body">
+
+
+                                    <!-- info row -->
+                                    @*@Html.Raw(ViewBag.table3)*@
+
+
+                                    @*@ViewBag.sql*@
+
+
+                                    <table id="example1" class="display" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>JobTask</th>
+                                                <th>ThisPeriodQTY</th>
+                                                <th>ThisPeriodAMT</th>
+                                                <th>OpenningQTY</th>
+                                                <th>OpenningAMT</th>
+                                                <th>CumBalQTY</th>
+                                                <th>CumBalAMT</th>
+                                                <th>BudgetQty</th>
+                                                <th>PerQty</th>
+                                                <th>BudgetAMT</th>
+                                                <th>PerAMT</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">กรอกข้อมูลประมาณการ</h5>
+
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-lg-12">
+                                <div class="col-lg-8">
+                                    <label class="form-control" style="text-align:right">Constract Work :</label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <input class="form-control" style="text-align:right" id="Contract" type="number" value="0" onchange="cal()" />
+
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="col-lg-8">
+                                    <label class="form-control" style="text-align:right">Extra Work :</label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <input class="form-control" style="text-align:right" id="Extra" type="number" value="0" onchange="cal()" />
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="col-lg-8">
+                                    <label class="form-control" style="text-align:right">Orther Income :</label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <input class="form-control" style="text-align:right" id="Other_Income" type="number" value="0" Onchange="cal()" />
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="col-lg-8">
+
+                                    <label class="form-control" style="text-align:right">TOTAL INCOME : </label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <b style="border-bottom: double 3px;border-top:solid 3px">
+                                        <label class="form-control" style="text-align:right" id="totalincome3"></label>
+                                    </b>
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-lg-12">
+                                <div class="col-lg-8">
+                                    <label class="form-control" style="text-align:right">Actual External Cost Todate</label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <input class="form-control" style="text-align:right" id="AECT1" type="number" value="0" onchange="cal()" />
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="col-lg-8">
+                                    <label class="form-control" style="text-align:right">Update External Cost อื่นๆ :</label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <input class="form-control" style="text-align:right" id="UpdateExternal" type="number" value="0" onchange="cal()" />
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="col-lg-12">
+                                <div class="col-lg-8">
+                                    <label class="form-control" style="text-align:right">ประมาณการเพิ่มจนจบงาน (เฉพาะ External Cost)</label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <input class="form-control" style="text-align:right" id="ExternalCost" type="number" value="0" onchange="cal()" />
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="col-lg-8">
+
+                                    <label class="form-control" style="text-align:right">Total External COST </label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <b style="border-bottom: double 3px;border-top:solid 3px">
+                                        <label class="form-control" style="text-align:right" id="TEC3"></label>
+                                    </b>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="col-lg-8">
+
+                                    <label class="form-control" style="text-align:right">Gross Profit / Gross Margin </label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <b style="border-bottom: double 3px;border-top:solid 3px">
+                                        <label class="form-control" style="text-align:right" id="gross3"></label>
+                                    </b>
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="col-lg-12" style="display:none">
+                                <div class="col-lg-8">
+                                    <label class="form-control" style="text-align:right">Actual Internal Cost Todate</label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <input class="form-control" style="text-align:right" id="AICT" type="number" value="0" onchange="cal()" />
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="col-lg-8">
+                                    <label class="form-control" style="text-align:right">Actual Internal Cost Todate</label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <input class="form-control" style="text-align:right" id="AICT11" type="number" value="0" onchange="cal()" />
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-lg-12" style="display:none">
+                                <div class="col-lg-8">
+                                    <label class="form-control" style="text-align:right">ประมาณการ Internal</label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <input class="form-control" style="text-align:right" id="Internal" type="number" value="0" onchange="cal()" />
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-12">
+                                <div class="col-lg-8">
+                                    <label class="form-control" style="text-align:right">ประมาณการ Internal</label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <input class="form-control" style="text-align:right" id="Internal9" type="number" value="0" onchange="cal()" />
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="col-lg-8">
+
+                                    <label class="form-control" style="text-align:right">Net Profit / Net Margin </label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <b style="border-bottom: double 3px;border-top:solid 3px">
+                                        <label class="form-control" style="text-align:right" id="net3"></label>
+                                    </b>
+                                </div>
+                            </div>
+
+
+                            <div class="modal-footer">
+                                <div class="col-lg-12">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<button class="open-button" onclick="openForm()">History</button>
+
+<div class="chat-popup" id="myForm">
+    <div class="form-container">
+        <h1>History</h1>
+
+
+        <div class="data">
+            <p id="showItem"></p>
+        </div>
+
+
+        <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+
+    </div>
+</div>
+
+<button style="display:none" onclick="loadfile()" id="myCheck"></button>
+
+
+
+
+
+
+
+
+
+@section Scripts {
+    <script>
+        $('#dtp1,#dtp2').datetimepicker({
+            format: 'DD/MM/YYYY',
+        });
+    </script>
+
+    <script>
+        function cal() {
+            var Contract = parseFloat(document.getElementById("Contract").value);
+            var Extra = parseFloat(document.getElementById("Extra").value);
+            var Other_Income = parseFloat(document.getElementById("Other_Income").value);
+            var ExternalCost = parseFloat(document.getElementById("ExternalCost").value);
+            var UpdateExternal = parseFloat(document.getElementById("UpdateExternal").value);
+            var internal = parseFloat(document.getElementById("Internal").value);
+            var AIC = parseFloat(document.getElementById("AICT").value);
+            var AECT1 = parseFloat(document.getElementById("AECT1").value);
+            var AIC = parseFloat(document.getElementById("AICT11").value);
+            var internal = parseFloat(document.getElementById("Internal9").value);
+
+
+            document.getElementById("TotalExternalCost").innerHTML = currencyFormat(AECT1 + ExternalCost + UpdateExternal);
+            document.getElementById("TotalIncome").innerHTML = currencyFormat(Contract + Extra + Other_Income);
+            document.getElementById("totalincome3").innerHTML = currencyFormat(Contract + Extra + Other_Income);
+
+            document.getElementById("TEC3").innerHTML = currencyFormat(AECT1 + ExternalCost + UpdateExternal);
+            document.getElementById("gross3").innerHTML = currencyFormat((Contract + Extra + Other_Income) - (AECT1 + ExternalCost + UpdateExternal));
+
+            document.getElementById("contract_work").innerHTML = currencyFormat(Contract);
+            document.getElementById("Extra_work").innerHTML = currencyFormat(Extra);
+            document.getElementById("OrtherIncome").innerHTML = currencyFormat(Other_Income);
+            document.getElementById("update_excost").innerHTML = currencyFormat(UpdateExternal);
+            document.getElementById("External_Cost1").innerHTML = currencyFormat(ExternalCost);
+            document.getElementById("Internal1").innerHTML = currencyFormat(internal);
+            document.getElementById("AIC").innerHTML = currencyFormat(AIC);
+            document.getElementById("gross").innerHTML = currencyFormat((Contract + Extra + Other_Income) - (AECT1 + ExternalCost + UpdateExternal));
+            document.getElementById("netProfit").innerHTML = currencyFormat(((Contract + Extra + Other_Income) - (AECT1 + ExternalCost + UpdateExternal)) - (AIC + internal));
+            document.getElementById("percengross").innerHTML = currencyFormat((((Contract + Extra + Other_Income) - (AECT1 + ExternalCost + UpdateExternal)) / (Contract + Extra + Other_Income)) * 100) + "%";
+            document.getElementById("percenNetPro").innerHTML = currencyFormat(((((Contract + Extra + Other_Income) - (AECT1 + ExternalCost + UpdateExternal)) - (AIC + internal)) / (Contract + Extra + Other_Income)) * 100) + "%";
+            document.getElementById("AECT").innerHTML = currencyFormat(AECT1);
+
+            document.getElementById("net3").innerHTML = currencyFormat(((Contract + Extra + Other_Income) - (AECT1 + ExternalCost + UpdateExternal)) - (AIC + internal));
+        }
+        function currencyFormat(num1) {
+            var val = Math.round(Number(num1) * 100) / 100;
+            var parts = val.toFixed(2).toString().split(".");
+            return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (parts[1] ? "." + parts[1] : "");
+
+        }
+        function CommaFormatted(amount) {
+            var delimiter = ","; // replace comma if desired
+            var a = amount.split('.', 2)
+            var d = a[1];
+            var i = parseInt(a[0]);
+            if (isNaN(i)) { return ''; }
+            var minus = '';
+            if (i < 0) { minus = '-'; }
+            i = Math.abs(i);
+            var n = new String(i);
+            var a = [];
+            while (n.length > 3) {
+                var nn = n.substr(n.length - 3);
+                a.unshift(nn);
+                n = n.substr(0, n.length - 3);
+            }
+            if (n.length > 0) { a.unshift(n); }
+            n = a.join(delimiter);
+            if (d.length < 1) { amount = n; }
+            else { amount = n + '.' + d; }
+            amount = minus + amount;
+            return amount;
+        }
+
+
+    </script>
+
+    <script>
+        function Result() {
+            document.getElementById("sumdata").style.display = "none";
+            document.getElementById("Paris").style.display = "";
+            document.getElementById("test").style.display = "none";
+        }
+        function Table() {
+            document.getElementById("sumdata").style.display = "none";
+            document.getElementById("Paris").style.display = "none";
+            document.getElementById("test").style.display = "";
+        }
+
+        function sumgroup() {
+            document.getElementById("sumdata").style.display = "";
+            document.getElementById("Paris").style.display = "none";
+            document.getElementById("test").style.display = "none";
+
+        }
+    </script>
+    <script>
+        function openForm() {
+            document.getElementById("myForm").style.display = "block";
+        }
+
+        function closeForm() {
+            document.getElementById("myForm").style.display = "none";
+        }
+    </script>
+
+    <script>
+        function Submit1() {
+            document.getElementById("popup").style.display = "block";
+
+            document.getElementById('searchfrom').submit();
+        }
+        function loadfile() {
+
+
+            window.open(location.protocol + '//' + location.host + '/reports/report.xlsx');
+        }
+
+    </script>
+    <script>
+        
+        var dataType = 'application/json; charset=utf-8';
+        var job = document.getElementById("joblist").value;
+        var StartDate1 = document.getElementById("StartDate1").value;
+        var StartDate2 = document.getElementById("StartDate2").value;
+        var WebModels = @Html.Raw(Json.Serialize(tmp_JobCostReports));
+        var str = JSON.stringify(WebModels);
+        //console.log(JSON.stringify(WebModels));
+            table = $('#example').DataTable({
+                destroy: true,
+                //fixedHeader: true,
+                  columnDefs:
+                        [
+                            {
+                                targets: 1,
+                                className: 'dt-body-right'
+                            },
+                           {
+                                targets: 2,
+                                className: 'dt-body-right'
+                          },
+                           {
+                                targets: 3,
+                                className: 'dt-body-right'
+                          },
+                           {
+                                targets: 4,
+                                className: 'dt-body-right'
+                          },
+                           {
+                                targets: 5,
+                                className: 'dt-body-right'
+                          },
+                           {
+                                targets: 6,
+                                className: 'dt-body-right'
+                          },
+                           {
+                                targets: 7,
+                                className: 'dt-body-right'
+                          },
+                           {
+                                targets: 8,
+                                className: 'dt-body-right'
+                          },
+                           {
+                                targets: 9,
+                                className: 'dt-body-right'
+                          },
+                           {
+                                targets: 10,
+                                className: 'dt-body-right'
+                          }
+                        ],
+
+
+
+                //scrollY: 500,
+                //deferRender: true,
+                //scrollCollapse: true,
+                //scroller: {
+                //    loadingIndicator: true
+                //},
+                //responsive: true,
+                //fixedHeader: true,
+                //select: {
+                //    style: 'os',
+                //    blurable: true
+                //},
+                dom: 'Bfrtip',
+                //stateSave: true,
+                buttons: [
+                    {
+                        extend: 'colvis',
+                        text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                        titleAttr: 'Hide',
+                        postfixButtons: ['colvisRestore']
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                        titleAttr: 'PDF',
+                        pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                        orientation: 'landscape',
+                        messageTop: "หน่วยงาน : "+job + " ระหว่างวันที่ : " + StartDate1 +"-"+StartDate2,
+                        customize: function (doc) {
+                            doc.defaultStyle = {
+                                font: 'THSarabun',
+                                fontSize: '12',
+
+                            };
+
+                            //Create a date string that we use in the footer. Format is dd-mm-yyyy
+                            var now = new Date();
+                            var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                            doc['footer'] = (function (page, pages) {
+                                return {
+                                    columns:
+                                        [
+                                            {
+                                                alignment: 'center',
+                                                text: ['Created on: ', { text: jsDate.toString() }]
+                                            },
+                                            {
+                                                alignment: 'right',
+                                                text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                            }
+                                        ],
+                                    margin: 10
+                                }
+                            });
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        titleAttr: 'Excel',
+                        messageTop: "หน่วยงาน : "+job + " ระหว่างวันที่ : " + StartDate1 +"-"+StartDate2,
+                        autoFilter: true
+                    },
+                    {
+                        extend: 'copyHtml5',
+                        text: '<i class="fa fa-files-o"></i> Copy',
+                        titleAttr: 'Copy'
+                    },
+                    {
+                        text: 'JSON',
+                        action: function (e, dt, button, config) {
+                            var data = dt.buttons.exportData();
+                            $.fn.dataTable.fileSave(
+                                new Blob([JSON.stringify(data)]),
+                                'Export.json'
+                            );
+                        }
+                    }
+                    //,
+                    //{
+                    //    extend: 'selectAll'
+                    //},
+                    //{
+                    //    extend: 'selectNone'
+                    //}
+                ],
+                "aaData":  WebModels,
+                "aoColumns": [
+                    { "mDataProp": "JobTaskFull" },
+                    { "mDataProp": "ThisPeriodQty",render: $.fn.dataTable.render.number(',', '.', 2, '')},
+                    { "mDataProp": "ThisPeriodAMT" ,render: $.fn.dataTable.render.number(',', '.', 2, '')},
+                    { "mDataProp": "OpenningQTY" ,render: $.fn.dataTable.render.number(',', '.', 2, '')},
+                    { "mDataProp": "OpenningAMT" ,render: $.fn.dataTable.render.number(',', '.', 2, '')},
+                    { "mDataProp": "CumBalQTY" ,render: $.fn.dataTable.render.number(',', '.', 2, '')},
+                    { "mDataProp": "CumBalAMT" ,render: $.fn.dataTable.render.number(',', '.', 2, '')},
+                    { "mDataProp": "BudgetQTY",render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "mDataProp": "PercenQTY",render: $.fn.dataTable.render.number(',', '.', 2, '','%') },
+                    { "mDataProp": "BudgetAMT" ,render: $.fn.dataTable.render.number(',', '.', 2, '')},
+                    { "mDataProp": "PercenAMT" ,render: $.fn.dataTable.render.number(',', '.', 2, '','%')}
+
+                ]
+            });
+
+         
+
+
+
+
+
+
+    </script>
+    <script>
+        var dataType = 'application/json; charset=utf-8';
+        var job = document.getElementById("joblist").value;
+        var StartDate1 = document.getElementById("StartDate1").value;
+        var StartDate2 = document.getElementById("StartDate2").value;
+        var webdata = @Html.Raw(Json.Serialize(JsonTotalLists));
+
+
+
+        var str1 = JSON.stringify(webdata);
+        console.log(JSON.stringify(webdata));
+            table1 = $('#example1').DataTable({
+                destroy: true,
+                //fixedHeader: true,
+                                  columnDefs:
+                        [
+                            {
+                                targets: 1,
+                                className: 'dt-body-right'
+                            },
+                           {
+                                targets: 2,
+                                className: 'dt-body-right'
+                          },
+                           {
+                                targets: 3,
+                                className: 'dt-body-right'
+                          },
+                           {
+                                targets: 4,
+                                className: 'dt-body-right'
+                          },
+                           {
+                                targets: 5,
+                                className: 'dt-body-right'
+                          },
+                           {
+                                targets: 6,
+                                className: 'dt-body-right'
+                          },
+                           {
+                                targets: 7,
+                                className: 'dt-body-right'
+                          },
+                           {
+
+                                targets: 8,
+                                className: 'dt-body-right'
+                          },
+                           {
+                                targets: 9,
+                                className: 'dt-body-right'
+                          },
+                         {
+                                targets: 10,
+                                className: 'dt-body-right'
+                          }
+                        ],
+
+                //scrollY: 500,
+                //deferRender: true,
+                //scrollCollapse: true,
+                //scroller: {
+                //    loadingIndicator: true
+                //},
+                responsive: true,
+               // fixedHeader: true,
+               // select: {
+                //    style: 'os',
+                //    blurable: true
+                //},
+                dom: 'Bfrtip',
+                //stateSave: true,
+                buttons: [
+                    {
+                        extend: 'colvis',
+                        text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                        titleAttr: 'Hide',
+                        postfixButtons: ['colvisRestore']
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                        titleAttr: 'PDF',
+                        pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                        orientation: 'landscape',
+
+                        customize: function (doc) {
+                            doc.defaultStyle = {
+                                font: 'THSarabun',
+                                fontSize: '12',
+
+                            };
+
+                            //Create a date string that we use in the footer. Format is dd-mm-yyyy
+                            var now = new Date();
+                            var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                            doc['footer'] = (function (page, pages) {
+                                return {
+                                    columns:
+                                        [
+                                            {
+                                                alignment: 'center',
+                                                text: ['Created on: ', { text: jsDate.toString() }]
+                                            },
+                                            {
+                                                alignment: 'right',
+                                                text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                            }
+                                        ],
+                                    margin: 10
+                                }
+                            });
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        titleAttr: 'Excel',
+                        autoFilter: true
+                    },
+                    {
+                        extend: 'copyHtml5',
+                        text: '<i class="fa fa-files-o"></i> Copy',
+                        titleAttr: 'Copy'
+                    },
+                    {
+                        text: 'JSON',
+                        action: function (e, dt, button, config) {
+                            var data = dt.buttons.exportData();
+                            $.fn.dataTable.fileSave(
+                                new Blob([JSON.stringify(data)]),
+                                'Export.json'
+                            );
+                        }
+                    }
+                    //,
+                    //{
+                    //    extend: 'selectAll'
+                    //},
+                    //{
+                    //    extend: 'selectNone'
+                    //}
+                ],
+                "aaData":  webdata,
+                "aoColumns": [
+                    { "mDataProp": "JobTaskFull" },
+                    { "mDataProp": "ThisPeriodQty",render: $.fn.dataTable.render.number(',', '.', 2, '')},
+                    { "mDataProp": "ThisPeriodAMT" ,render: $.fn.dataTable.render.number(',', '.', 2, '')},
+                    { "mDataProp": "OpenningQTY" ,render: $.fn.dataTable.render.number(',', '.', 2, '')},
+                    { "mDataProp": "OpenningAMT" ,render: $.fn.dataTable.render.number(',', '.', 2, '')},
+                    { "mDataProp": "CumBalQTY" ,render: $.fn.dataTable.render.number(',', '.', 2, '')},
+                    { "mDataProp": "CumBalAMT" ,render: $.fn.dataTable.render.number(',', '.', 2, '')},
+                    { "mDataProp": "BudgetQTY",render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "mDataProp": "PercenQTY",render: $.fn.dataTable.render.number(',', '.', 2, '','%')},
+                    { "mDataProp": "BudgetAMT" ,render: $.fn.dataTable.render.number(',', '.', 2, '')},
+                    { "mDataProp": "PercenAMT" ,render: $.fn.dataTable.render.number(',', '.', 2, '', '%')}
+
+                ]
+            });
+
+    </script>
+
+
+    <script>
+        $("#wizard").steps();
+    </script>
+
+    <script>
+    function exportpdf() {
+        var datestart = '@ViewBag.SStartDate'
+        var dateend = '@ViewBag.SEndDate'
+        var job='@ViewBag.Job'
+
+        var income1 = document.getElementById("income1").innerText
+        var N00 = document.getElementById("N00").innerText
+        var External = document.getElementById("External").innerText
+        var O00 = document.getElementById("O00").innerText
+        var GrossProfit = document.getElementById("GrossProfit").innerText
+        var PerGross = document.getElementById("PerGross").innerText
+        var INCOME = document.getElementById("INCOME").innerText
+        var TIC = document.getElementById("TIC").innerText
+        var A00 = document.getElementById("A00").innerText
+        var NetProfit =document.getElementById("NetProfit").innerText
+        var PerNet = document.getElementById("PerNet").innerText
+        var B00 = document.getElementById("B00").innerText
+        var C00 = document.getElementById("C00").innerText
+        var D00 = document.getElementById("D00").innerText
+        var E00 = document.getElementById("E00").innerText
+        var contract_work = document.getElementById("contract_work").innerText
+        var F00 = document.getElementById("F00").innerText
+        var G00 = document.getElementById("G00").innerText
+        var Extra_work = document.getElementById("Extra_work").innerText
+        var G0210N = document.getElementById("G0210N").innerText
+        var H00 = document.getElementById("H00").innerText
+        var OrtherIncome = document.getElementById("OrtherIncome").innerText
+        var TCXI = document.getElementById("TCXI").innerText
+        var TotalIncome = document.getElementById("TotalIncome").innerText
+        var AIC = document.getElementById("AIC").innerText
+        var C0110 = document.getElementById("C0110").innerText
+        var C0120 = document.getElementById("C0120").innerText
+        var update_excost = document.getElementById("update_excost").innerText
+        var C0130=document.getElementById("C0130").innerText
+        var External_Cost1 = document.getElementById("External_Cost1").innerText
+        var C0410 = document.getElementById("C0410").innerText
+        var TotalExternalCost = document.getElementById("TotalExternalCost").innerText
+        var C0510 = document.getElementById("C0510").innerText
+        var gross = document.getElementById("gross").innerText
+        var percengross = document.getElementById("percengross").innerText
+        var C0910 = document.getElementById("C0910").innerText
+        var C1010 = document.getElementById("C1010").innerText
+        var AIC = document.getElementById("AIC").innerText
+        var Internal1 = document.getElementById("Internal1").innerText
+        var C1110 = document.getElementById("C1110").innerText
+        var netProfit = document.getElementById("netProfit").innerText
+        var percenNetPro = document.getElementById("percenNetPro").innerText
+        var D0450=document.getElementById("D0450").innerText
+        var H0110 = document.getElementById("H0110").innerText
+        var H0130 = document.getElementById("H0130").innerText
+        var H0200 = document.getElementById("H0200").innerText
+        var H0800 = document.getElementById("H0800").innerText
+         var AECT1 = document.getElementById("AECT").innerText
+
+        var D2100 = document.getElementById("D2100").innerText
+        var E0800 = document.getElementById("E0800").innerText
+        var E0910 = document.getElementById("E0910").innerText
+        var E0920 = document.getElementById("E0920").innerText
+        var E0930 = document.getElementById("E0930").innerText
+        var E0940 = document.getElementById("E0940").innerText
+        var G0210P = document.getElementById("G0210P").innerText
+        var H0600 = document.getElementById("H0600").innerText
+        var F5999 = document.getElementById("F5999").innerText
+        var H0400 = document.getElementById("H0400").innerText
+
+
+
+
+
+            //ต้องระบุตามชื่อของ ไฟล์ font
+            pdfMake.fonts = {
+                THSarabun: {
+                    normal: 'THSarabun.ttf',
+                    bold: 'THSarabun Bold.ttf',
+                    italics: 'THSarabun Italic.ttf',
+                    bolditalics: 'THSarabun BoldItalic.ttf'
+                },
+                Roboto: {
+                    normal: 'Roboto-Regular.ttf',
+                    bold: 'Roboto-Medium.ttf',
+                    italics: 'Roboto-Italic.ttf',
+                    bolditalics: 'Roboto-MediumItalic.ttf'
+                }
+            }
+
+                var dd = {
+                    content: [
+
+
+                        { text: 'JOBCost Site : '+job, style: 'header', margin: [0, 0, 0, 0] },
+                        { text: 'This Peried : '+ datestart +'-'+dateend, style: 'header',margin: [0, 0, 0, 0] },
+                        {
+                            style: 'tableExample',
+                            table: {
+                                headerRows: 1,
+                                body: [
+                                    [{ text: 'Accounting Job Cost', style: 'tableHeader', decoration: 'underline', decorationStyle: 'solid', decorationColor: 'black' }, { text: '', style: 'tableHeader' }, { text: '', style: 'tableHeader' }, { text: 'Income & Cost', style: 'tableHeader', decoration: 'underline', decorationStyle: 'solid', decorationColor: 'black' }, { text: '', style: 'tableHeader' }],
+                                    [{ text: 'Income' }, { text: income1, alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'N0000 Work Done' }, { text: N00, alignment: 'right' }],
+                                    [{ text: 'External Cost' }, { text: External, alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'O0000 Other Income' }, { text: O00, alignment: 'right', decoration: 'underline' }],
+                                    [{ text: 'Gross Profit/Gross Margin' }, { text: GrossProfit, alignment: 'right', decoration: 'underline' }, { text: PerGross, alignment: 'right' }, { text: ' INCOME' }, { text: INCOME, alignment: 'right', decoration: 'underline', decorationStyle: 'double' }],
+                                    [{ text: 'Total Internal' }, { text: TIC, alignment: 'right', decoration: 'underline' }, { text: '', alignment: 'right' }, { text: ' A0000 หมวดเตรียมการ' }, { text: A00, alignment: 'right' }],
+                                    [{ text: 'Net Profit/Net Margin' }, { text: NetProfit, alignment: 'right', decoration: 'underline', decorationStyle: 'double' }, { text: PerNet, alignment: 'right' }, { text: ' B0000 หมวดค่าใช้จ่าย' }, { text: B00, alignment: 'right' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: ' C0000 หมวดค่าเช่า' }, { text: C00, alignment: 'right' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: ' D0000 หมวดค่าวัสดุ' }, { text: D00, alignment: 'right' }],
+                                    [{ text: 'ประมาณการ', decoration: 'underline' }, { text: '', alignment: 'right' }, { text: '' }, { text: ' E0000 หมวดค่าแรงจ้างเหมา' }, { text: E00, alignment: 'right' }],
+                                    [{ text: 'Contact Work' }, { text: contract_work, alignment: 'right' }, { text: '', alignment: 'right' }, { text: ' F0000 หมวดค่าจ้างเหมาช่วง' }, { text: F00, alignment: 'right' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: ' G0000 หมวดค่าใช้จ่ายอื่นๆ' }, { text: G00, alignment: 'right' }],
+                                    [{ text: 'Extrawork' }, { text: Extra_work, alignment: 'right' }, { text: '', alignment: 'right' }, { text: ' G0120 ภาษีหัก ณ ที่จ่าย' }, { text: G0210N, alignment: 'right' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'H0000 หมวดค่าใช้จ่ายส่วนกลาง' }, { text: H00, alignment: 'right', decoration: 'underline' }],
+                                    [{ text: 'Other Income' }, { text: OrtherIncome, alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'Total cost(External + Internal)(1)' }, { text: TCXI, alignment: 'right', decoration: 'underline', decorationStyle: 'double' }],
+                                    [{ text: 'Total INCOME' }, { text: TotalIncome, alignment: 'right', decoration: 'underline', decorationStyle: 'double' }, { text: '', alignment: 'right' }, { text: 'Internal Cost', decoration: 'underline' }, { text: '', alignment: 'right' }],
+                                    [{ text: 'Actual External Cost Todate' }, { text: AECT1, alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'C0110 ค่าเช่าขนส่งภายใน' }, { text: C0110, alignment: 'right' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'C0120 ค่าเช่าเครื่องจักรภายใน' }, { text: C0120, alignment: 'right' }],
+                                    [{ text: 'Update External cost อื่นๆ' }, { text: update_excost, alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'C0130 ค่าเช่าเครื่องใช้ ส.น.ง.ภายใน' }, { text: C0130, alignment: 'right' }],
+                                    [{ text: 'ประมาณการเพิ่มจนจบงาน (เฉพาะ External cost)' }, { text: External_Cost1, alignment: 'right', decoration: 'underline' }, { text: '', alignment: 'right' }, { text: 'C0410 ค่าเช่านั่งร้านภายใน' }, { text: C0410, alignment: 'right' }],
+                                    [{ text: 'Total External Cost' }, { text: TotalExternalCost, alignment: 'right', decoration: 'underline', decorationStyle: 'double' }, { text: '', alignment: 'right' }, { text: 'C0510 ค่าเช่าชีพไพล์ภายใน' }, { text: C0510, alignment: 'right' }],
+                                    [{ text: 'Gross Profit/Gross Margin' }, { text: gross, alignment: 'right' }, { text: percengross, alignment: 'right' }, { text: 'C0910 ค่าเช่า H-Beam ภายใน' }, { text: C0910, alignment: 'right' }],
+                                    [{ text: 'Actual Internal Cost Todate' }, { text: AIC, alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'C1010 ค่าเช่าแผ่นเหล็กภายใน' }, { text: C1010, alignment: 'right' }],
+                                    [{ text: 'ประมาณการ Internal' }, { text: Internal1, alignment: 'right', decoration: 'underline' }, { text: '', alignment: 'right' }, { text: 'C1110 ค่าเช่าเหล็กรูปพรรณภายใน' }, { text: C1110, alignment: 'right' }],
+                                    [{ text: 'Net Profit /Net Margin' }, { text: netProfit, alignment: 'right', decoration: 'underline', decorationStyle: 'double' }, { text: percenNetPro, alignment: 'right' }, { text: 'D0450 ค่าเช่าแบบภายใน' }, { text: D0450, alignment: 'right' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'H0110 เงินเดือน' }, { text: H0110, alignment: 'right' }],
+                                    [{ text: '', decoration: 'underline' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'H0130 เบี้ยเลี้ยงพนักงาน' }, { text: H0130, alignment: 'right' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'H0200 ค่าใช้จ่ายทางอ้อม' }, { text: H0200, alignment: 'right' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'H0800 ค้างจ่ายภายใน' }, { text: H0800, alignment: 'right', decoration: 'underline' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'Total Internal cost(2)' }, { text: TIC, alignment: 'right', decoration: 'underline', decorationStyle: 'double' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'รายละเอียดต้นทุนบางรายการ', decoration: 'underline' }, { text: '', alignment: 'right' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'D2100 วัสดุเช่าส่วนกลาง (เฉพาะฝ่าย บ/ช เท่านั้น' }, { text: D2100, alignment: 'right' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'E0800 ค่าแรงรายวันงานก่อสร้าง' }, { text: E0800, alignment: 'right' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'E0910 ค่าแรงรายวันบริษัท [ปกติ]' }, { text: E0910, alignment: 'right' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'E0920 ค่าแรงรายวันบริษัท [ล่วงเวลา]' }, { text: E0920, alignment: 'right' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'E0930 พนักงานบริษัท [ล่วงเวลา]' }, { text: E0930, alignment: 'right' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'E0940 ค่าแรงฝากเบิก' }, { text: E0940, alignment: 'right' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'G0210 ภาษีหัก ณ ที่จ่าย' }, { text: G0210P, alignment: 'right' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'H0600 ต้นทุนโอน' }, { text: H0600, alignment: 'right' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'F5999 ค่าใช้จ่ายต้นทุนล่วงหน้า' }, { text: F5999, alignment: 'right' }],
+                                    [{ text: '' }, { text: '', alignment: 'right' }, { text: '', alignment: 'right' }, { text: 'H0400 ล/น มัดจำ-เงินล่วงหน้า' }, { text: H0400, alignment: 'right' }],
+
+                                ]
+                            },
+                            layout: 'noBorders'
+                        },
+                        {
+                            style: 'tableExample',
+                            table: {
+                                headerRows: 1,
+                                body: [
+                                    [{ text: 'ผู้จัดทำ', style: 'tableHeader' , alignment: 'center'}],
+                                    [{ text: '', style: 'tableHeader', alignment: 'center' }],
+                                    [{ text: '', style: 'tableHeader', alignment: 'center' }],
+                                    [{ text: '', style: 'tableHeader',alignment: 'center' }],
+                                    [{ text: '........................................................', style: 'tableHeader',alignment: 'center' }],
+                                    [ { text: '............/............................./.............', style: 'tableHeader',alignment: 'center' }],
+                                    [ { text: 'ผู้ตรวจสอบ', style: 'tableHeader',alignment: 'center' }],
+                                    [{ text: '', style: 'tableHeader', alignment: 'center' }],
+                                    [{ text: '', style: 'tableHeader', alignment: 'center' }],
+                                    [{ text: '', style: 'tableHeader',alignment: 'center' }],
+                                    [ { text: '........................................................', style: 'tableHeader',alignment: 'center' }],
+                                    [ { text: '............/............................./.............', style: 'tableHeader',alignment: 'center' }],
+
+
+                                ]
+                            },
+                            absolutePosition: { x: 30, y: 650 },
+                            layout: 'noBorders'
+                        }
+                    ],
+
+                    defaultStyle: {
+                        font: 'THSarabun',
+                        fontSize: 12
+                    },
+                    styles: {
+		                header: {
+			                fontSize: 18,
+			                bold: true,
+			                alignment: 'center'
+		                }
+	                }
+                };
+
+    var pdf = pdfMake.createPdf(dd).download(job + '_Start' + datestart + '_TO' + dateend + '.pdf');
+}
+    </script>
+
+    <script>
+     function SaveLog() {
+        //SAVE VAEULU Estimate
+        var stringValue = $('#StartDate1').val().trim();
+        var day = stringValue.substr(0, 2);
+        var month = stringValue.substr(3, 2);
+        var year = stringValue.substr(6, 4);
+        var date1 = year + '-' + month + '-' + day;
+        var stringValue1 = $('#StartDate2').val().trim();
+        var day1= stringValue1.substr(0, 2);
+        var month1 = stringValue1.substr(3, 2);
+        var year1 = stringValue1.substr(6, 4);
+        var date2 = year1 + '-' + month1 + '-' + day1;
+
+
+
+        var datestart = date1;
+        var dateend = date2;
+        var job = '@ViewBag.Job';
+        var Contract = parseFloat(document.getElementById("Contract").value);
+        var Extra = parseFloat(document.getElementById("Extra").value);
+        var Other_Income = parseFloat(document.getElementById("Other_Income").value);
+        var ExternalCost = parseFloat(document.getElementById("ExternalCost").value);
+        var UpdateExternal = parseFloat(document.getElementById("UpdateExternal").value);
+        var internal = parseFloat(document.getElementById("Internal").value);
+        var AIC = parseFloat(document.getElementById("AICT").value);
+        var AECT1 = parseFloat(document.getElementById("AECT1").value);
+        var AIC = parseFloat(document.getElementById("AICT11").value);
+        var internal= parseFloat(document.getElementById("Internal9").value);
+        var income1 = document.getElementById("income1").innerText;
+        var N00 = document.getElementById("N00").innerText;
+        var External = document.getElementById("External").innerText;
+        var O00 = document.getElementById("O00").innerText;
+        var GrossProfit = document.getElementById("GrossProfit").innerText;
+        var PerGross = document.getElementById("PerGross").innerText;
+        var INCOME = document.getElementById("INCOME").innerText;
+        var TIC = document.getElementById("TIC").innerText;
+        var A00 = document.getElementById("A00").innerText;
+        var NetProfit = document.getElementById("NetProfit").innerText;
+        var PerNet = document.getElementById("PerNet").innerText;
+        var B00 = document.getElementById("B00").innerText;
+        var C00 = document.getElementById("C00").innerText;
+        var D00 = document.getElementById("D00").innerText;
+        var E00 = document.getElementById("E00").innerText;
+        var contract_work = document.getElementById("contract_work").innerText;
+        var F00 = document.getElementById("F00").innerText;
+        var G00 = document.getElementById("G00").innerText;
+        var Extra_work = document.getElementById("Extra_work").innerText;
+        var G0210N = document.getElementById("G0210N").innerText;
+        var H00 = document.getElementById("H00").innerText;
+        var OrtherIncome = document.getElementById("OrtherIncome").innerText;
+        var TCXI = document.getElementById("TCXI").innerText;
+        var TotalIncome = document.getElementById("TotalIncome").innerText;
+        var AIC = document.getElementById("AIC").innerText;
+        var C0110 = document.getElementById("C0110").innerText;
+        var C0120 = document.getElementById("C0120").innerText;
+        var update_excost = document.getElementById("update_excost").innerText;
+        var C0130 = document.getElementById("C0130").innerText;
+        var External_Cost1 = document.getElementById("External_Cost1").innerText;
+        var C0410 = document.getElementById("C0410").innerText;
+        var TotalExternalCost = document.getElementById("TotalExternalCost").innerText;
+        var C0510 = document.getElementById("C0510").innerText;
+        var gross = document.getElementById("gross").innerText;
+        var percengross = document.getElementById("percengross").innerText;
+        var C0910 = document.getElementById("C0910").innerText;
+        var C1010 = document.getElementById("C1010").innerText;
+        var AIC = document.getElementById("AIC").innerText;
+        var Internal1 = document.getElementById("Internal1").innerText;
+        var C1110 = document.getElementById("C1110").innerText;
+        var netProfit = document.getElementById("netProfit").innerText;
+        var percenNetPro = document.getElementById("percenNetPro").innerText;
+        var D0450 = document.getElementById("D0450").innerText;
+        var H0110 = document.getElementById("H0110").innerText;
+        var H0130 = document.getElementById("H0130").innerText;
+        var H0200 = document.getElementById("H0200").innerText;
+        var H0800 = document.getElementById("H0800").innerText;
+        var AECT1 = document.getElementById("AECT").innerText;
+        var D2100 = document.getElementById("D2100").innerText;
+        var E0800 = document.getElementById("E0800").innerText;
+        var E0910 = document.getElementById("E0910").innerText;
+        var E0920 = document.getElementById("E0920").innerText;
+        var E0930 = document.getElementById("E0930").innerText;
+        var E0940 = document.getElementById("E0940").innerText;
+        var G0210P = document.getElementById("G0210P").innerText;
+        var H0600 = document.getElementById("H0600").innerText;
+        var F5999 = document.getElementById("F5999").innerText;
+        var H0400 = document.getElementById("H0400").innerText;
+         //JSON data
+        var dataType = 'application/json; charset=utf-8';
+        var data = {
+                EstimateJob: job,
+                EstimateStart: datestart,
+                EstimateEnd: dateend,
+                Contractwork: Contract,
+                ExtraWork: Extra,
+                OtherIncome: Other_Income,
+                AECT: AECT1,
+                UECT: UpdateExternal,
+                EC: ExternalCost,
+                AICT: AIC,
+                netProfit: internal,
+                a1: income1,
+                a2: External,
+                a3: GrossProfit,
+                a4: TIC,
+                a5: NetProfit,
+                a6: contract_work,
+                A7: Extra_work,
+                a8: OrtherIncome,
+                a9: TotalIncome,
+                a10: AECT1,
+                a11: update_excost,
+                a12: External_Cost1,
+                a13: TotalExternalCost,
+                a14: gross,
+                a15: AIC,
+                a16: Internal1,
+                a17: netProfit,
+                b1: PerGross,
+                b2: PerNet,
+                b3: percengross,
+                b4: percenNetPro,
+                c1: N00,
+                c2: O00,
+                c3: INCOME,
+                c4: A00,
+                c5: B00,
+                c6: C00,
+                c7: D00,
+                c8: E00,
+                c9: F00,
+                c10: G00,
+                c11: G0210N,
+                c12: H00,
+                c13: TCXI,
+                c14: C0110,
+                c15: C0120,
+                c16: C0130,
+                c17: C0410,
+                c18: C0510,
+                c19: C0910,
+                c20: C1010,
+                c21: C1110,
+                c22: D0450,
+                c23: H0110,
+                c24: H0130,
+                c25: H0200,
+                c26: H0800,
+                c27: TIC,
+                c28: D2100,
+                c29: E0800,
+                c30: E0910,
+                c31: E0920,
+                c32: E0930,
+                c33: E0940,
+                c34: G0210P,
+                c35: H0600,
+                c36: F5999,
+                c37:H0400
+            }
+            $.ajax({
+                type: 'GET',
+                url: "/JobLedgerNews/Add/",
+                dataType: 'json',
+                contentType: dataType,
+                data: data,
+                success: function (response) {
+                    var data = {
+                        job: $("#joblist :selected").val()
+                    }
+                    $.ajax({
+                        type: 'GET',
+                        url: "/JobLedgerNews/History/",
+                        contentType: "application/json",
+                        dataType: 'JSON',
+                        data: data,
+                        success: function (response) {
+                            document.getElementById("showItem").innerHTML = response.link;
+                        }
+                    });
+                }
+            });
+           }
+    </script>
+
+    <script>
+        var data = {
+            job: $("#joblist :selected").val()
+        }
+        $.ajax({
+            type: 'GET',
+            url: "/JobLedgerNews/History/",
+            contentType: "application/json",
+            dataType: 'JSON',
+            data: data,
+            success: function (response) {
+                document.getElementById("showItem").innerHTML = response.link;
+            }
+        });
+
+        function showListHistory(job) {
+
+            var value = job.value;
+            var data = {
+                job: value
+            }
+            //alert(value);
+            $.ajax({
+                type: 'GET',
+                url: "/JobLedgerNews/History/",
+                contentType: "application/json",
+                dataType: 'JSON',
+                data: data,
+                success: function (response) {
+                    document.getElementById("showItem").innerHTML = response.link;
+
+
+                }
+            });
+        }
+    </script>
+
+
+    <script>
+        function showdatahis(animal) {
+            var animalType = animal.getAttribute("data-animal-type");
+            //alert(animalType);
+            var data =
+            {
+                id: animalType
+            }
+            var dataType = 'application/json; charset=utf-8';
+            //alert(value);
+            $.ajax({
+                type: 'GET',
+                url: "/JobLedgerNews/ShowHistory/",
+                contentType: dataType,
+                dataType: 'JSON',
+                data: data,
+                success: function (response) {
+                    document.getElementById("jobold").innerHTML = response.estimateJob;
+                    document.getElementById("startold").innerHTML = response.estimateStart;
+                    document.getElementById("endold").innerHTML = response.estimateEnd;
+                    document.getElementById("whoold").innerHTML = response.estimateBy;
+                    document.getElementById("dateold").innerHTML = response.dateCreate;
+                    document.getElementById("a1").innerHTML = response.a1;
+                    document.getElementById("a2").innerHTML = response.a2;
+                    document.getElementById("a3").innerHTML = response.a3;
+                    document.getElementById("a4").innerHTML = response.a4;
+                    document.getElementById("a5").innerHTML = response.a5;
+                    document.getElementById("a6").innerHTML = response.a6;
+                    document.getElementById("a7").innerHTML = response.a7;
+                    document.getElementById("a8").innerHTML = response.a8;
+                    document.getElementById("a9").innerHTML = response.a9;
+                    document.getElementById("a10").innerHTML = response.a10;
+                    document.getElementById("a11").innerHTML = response.a11;
+                    document.getElementById("a12").innerHTML = response.a12;
+                    document.getElementById("a13").innerHTML = response.a13;
+                    document.getElementById("a14").innerHTML = response.a14;
+                    document.getElementById("a15").innerHTML = response.a15;
+                    document.getElementById("a16").innerHTML = response.a16;
+                    document.getElementById("a17").innerHTML = response.a17;
+                    document.getElementById("b1").innerHTML = response.b1;
+                    document.getElementById("b2").innerHTML = response.b2;
+                    document.getElementById("b3").innerHTML = response.b3;
+                    document.getElementById("b4").innerHTML = response.b4;
+                    document.getElementById("c1").innerHTML = response.c1;
+                    document.getElementById("c2").innerHTML = response.c2;
+                    document.getElementById("c3").innerHTML = response.c3;
+                    document.getElementById("c4").innerHTML = response.c4;
+                    document.getElementById("c5").innerHTML = response.c5;
+                    document.getElementById("c6").innerHTML = response.c6;
+                    document.getElementById("c7").innerHTML = response.c7;
+                    document.getElementById("c8").innerHTML = response.c8;
+                    document.getElementById("c9").innerHTML = response.c9;
+                    document.getElementById("c10").innerHTML = response.c10;
+                    document.getElementById("c11").innerHTML = response.c11;
+                    document.getElementById("c12").innerHTML = response.c12;
+                    document.getElementById("c13").innerHTML = response.c13;
+                    document.getElementById("c14").innerHTML = response.c14;
+                    document.getElementById("c15").innerHTML = response.c15;
+                    document.getElementById("c16").innerHTML = response.c16;
+                    document.getElementById("c17").innerHTML = response.c17;
+                    document.getElementById("c18").innerHTML = response.c18;
+                    document.getElementById("c19").innerHTML = response.c19;
+                    document.getElementById("c20").innerHTML = response.c20;
+                    document.getElementById("c21").innerHTML = response.c21;
+                    document.getElementById("c22").innerHTML = response.c22;
+                    document.getElementById("c23").innerHTML = response.c23;
+                    document.getElementById("c24").innerHTML = response.c24;
+                    document.getElementById("c25").innerHTML = response.c25;
+                    document.getElementById("c26").innerHTML = response.c26;
+                    document.getElementById("c27").innerHTML = response.c27;
+                    document.getElementById("c28").innerHTML = response.c28;
+                    document.getElementById("c29").innerHTML = response.c29;
+                    document.getElementById("c30").innerHTML = response.c30;
+                    document.getElementById("c31").innerHTML = response.c31;
+                    document.getElementById("c32").innerHTML = response.c32;
+                    document.getElementById("c33").innerHTML = response.c33;
+                    document.getElementById("c34").innerHTML = response.c34;
+                    document.getElementById("c35").innerHTML = response.c35;
+                    document.getElementById("c36").innerHTML = response.c36;
+                    document.getElementById("c37").innerHTML = response.c37;
+                    document.getElementById("datecreateby").innerHTML = "(" + response.dateCreate + ")";
+                }
+            });
+        }
+    </script>
+
+
+    <script>
+    function ExportExcelFile() {
+        var stringValue = $('#StartDate1').val().trim();
+        var day = stringValue.substr(0, 2);
+        var month = stringValue.substr(3, 2);
+        var year = stringValue.substr(6, 4);
+        var date1 = year + '-' + month + '-' + day;
+        var stringValue1 = $('#StartDate2').val().trim();
+        var day1= stringValue1.substr(0, 2);
+        var month1 = stringValue1.substr(3, 2);
+        var year1 = stringValue1.substr(6, 4);
+        var date2 = year1 + '-' + month1 + '-' + day1;
+        var datestart = date1;
+        var dateend = date2;
+        var job = '@ViewBag.Job';
+        var Contract = parseFloat(document.getElementById("Contract").value);
+        var Extra = parseFloat(document.getElementById("Extra").value);
+        var Other_Income = parseFloat(document.getElementById("Other_Income").value);
+        var ExternalCost = parseFloat(document.getElementById("ExternalCost").value);
+        var UpdateExternal = parseFloat(document.getElementById("UpdateExternal").value);
+        var internal = parseFloat(document.getElementById("Internal").value);
+        var AIC = parseFloat(document.getElementById("AICT").value);
+        var AECT1 = parseFloat(document.getElementById("AECT1").value);
+        var AIC = parseFloat(document.getElementById("AICT11").value);
+        var internal= parseFloat(document.getElementById("Internal9").value);
+        var income1 = document.getElementById("income1").innerText;
+        var N00 = document.getElementById("N00").innerText;
+        var External = document.getElementById("External").innerText;
+        var O00 = document.getElementById("O00").innerText;
+        var GrossProfit = document.getElementById("GrossProfit").innerText;
+        var PerGross = document.getElementById("PerGross").innerText;
+        var INCOME = document.getElementById("INCOME").innerText;
+        var TIC = document.getElementById("TIC").innerText;
+        var A00 = document.getElementById("A00").innerText;
+        var NetProfit = document.getElementById("NetProfit").innerText;
+        var PerNet = document.getElementById("PerNet").innerText;
+        var B00 = document.getElementById("B00").innerText;
+        var C00 = document.getElementById("C00").innerText;
+        var D00 = document.getElementById("D00").innerText;
+        var E00 = document.getElementById("E00").innerText;
+        var contract_work = document.getElementById("contract_work").innerText;
+        var F00 = document.getElementById("F00").innerText;
+        var G00 = document.getElementById("G00").innerText;
+        var Extra_work = document.getElementById("Extra_work").innerText;
+        var G0210N = document.getElementById("G0210N").innerText;
+        var H00 = document.getElementById("H00").innerText;
+        var OrtherIncome = document.getElementById("OrtherIncome").innerText;
+        var TCXI = document.getElementById("TCXI").innerText;
+        var TotalIncome = document.getElementById("TotalIncome").innerText;
+        var AIC = document.getElementById("AIC").innerText;
+        var C0110 = document.getElementById("C0110").innerText;
+        var C0120 = document.getElementById("C0120").innerText;
+        var update_excost = document.getElementById("update_excost").innerText;
+        var C0130 = document.getElementById("C0130").innerText;
+        var External_Cost1 = document.getElementById("External_Cost1").innerText;
+        var C0410 = document.getElementById("C0410").innerText;
+        var TotalExternalCost = document.getElementById("TotalExternalCost").innerText;
+        var C0510 = document.getElementById("C0510").innerText;
+        var gross = document.getElementById("gross").innerText;
+        var percengross = document.getElementById("percengross").innerText;
+        var C0910 = document.getElementById("C0910").innerText;
+        var C1010 = document.getElementById("C1010").innerText;
+        var AIC = document.getElementById("AIC").innerText;
+        var Internal1 = document.getElementById("Internal1").innerText;
+        var C1110 = document.getElementById("C1110").innerText;
+        var netProfit = document.getElementById("netProfit").innerText;
+        var percenNetPro = document.getElementById("percenNetPro").innerText;
+        var D0450 = document.getElementById("D0450").innerText;
+        var H0110 = document.getElementById("H0110").innerText;
+        var H0130 = document.getElementById("H0130").innerText;
+        var H0200 = document.getElementById("H0200").innerText;
+        var H0800 = document.getElementById("H0800").innerText;
+        var AECT1 = document.getElementById("AECT").innerText;
+        var D2100 = document.getElementById("D2100").innerText;
+        var E0800 = document.getElementById("E0800").innerText;
+        var E0910 = document.getElementById("E0910").innerText;
+        var E0920 = document.getElementById("E0920").innerText;
+        var E0930 = document.getElementById("E0930").innerText;
+        var E0940 = document.getElementById("E0940").innerText;
+        var G0210P = document.getElementById("G0210P").innerText;
+        var H0600 = document.getElementById("H0600").innerText;
+        var F5999 = document.getElementById("F5999").innerText;
+        var H0400 = document.getElementById("H0400").innerText;
+        var dataType = 'application/json; charset=utf-8';
+        var data = {
+                EstimateJob: job,
+                EstimateStart: datestart,
+                EstimateEnd: dateend,
+                Contractwork: Contract,
+                ExtraWork: Extra,
+                OtherIncome: Other_Income,
+                AECT: AECT1,
+                UECT: UpdateExternal,
+                EC: ExternalCost,
+                AICT: AIC,
+                netProfit: internal,
+                a1: income1,
+                a2: External,
+                a3: GrossProfit,
+                a4: TIC,
+                a5: NetProfit,
+                a6: contract_work,
+                A7: Extra_work,
+                a8: OrtherIncome,
+                a9: TotalIncome,
+                a10: AECT1,
+                a11: update_excost,
+                a12: External_Cost1,
+                a13: TotalExternalCost,
+                a14: gross,
+                a15: AIC,
+                a16: Internal1,
+                a17: netProfit,
+                b1: PerGross,
+                b2: PerNet,
+                b3: percengross,
+                b4: percenNetPro,
+                c1: N00,
+                c2: O00,
+                c3: INCOME,
+                c4: A00,
+                c5: B00,
+                c6: C00,
+                c7: D00,
+                c8: E00,
+                c9: F00,
+                c10: G00,
+                c11: G0210N,
+                c12: H00,
+                c13: TCXI,
+                c14: C0110,
+                c15: C0120,
+                c16: C0130,
+                c17: C0410,
+                c18: C0510,
+                c19: C0910,
+                c20: C1010,
+                c21: C1110,
+                c22: D0450,
+                c23: H0110,
+                c24: H0130,
+                c25: H0200,
+                c26: H0800,
+                c27: TIC,
+                c28: D2100,
+                c29: E0800,
+                c30: E0910,
+                c31: E0920,
+                c32: E0930,
+                c33: E0940,
+                c34: G0210P,
+                c35: H0600,
+                c36: F5999,
+                c37:H0400
+        }
+      document.getElementById("popup").style.display = "block";
+            $.ajax({
+                type: 'GET',
+                url: "/JobLedgernews/FileReport/",
+                dataType: 'json',
+                contentType: dataType,
+                data: data,
+                complete: function () {
+                    console.log(location.protocol + '//' + location.host + this.url);
+                     //alert(location.protocol + '//'+location.host + this.url)
+                    document.getElementById("popup").style.display = "none";
+
+                    //window.location = '/Reports/Download?file=' + returnValue;
+                     //document.getElementById("myCheck").click();
+                    //window.open(location.protocol + '//' + location.host + '/reports/report.xlsx');
+                },
+                success: function (data) {
+                    //var response = JSON.parse(data);
+                    console.log(data.filename);
+                     window.location = '/JobLedgernews/Download?file=' + data.filename;
+
+                }
+            });
+           }
+    </script>
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+

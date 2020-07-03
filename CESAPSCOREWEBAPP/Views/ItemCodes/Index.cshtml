@@ -1,0 +1,556 @@
+﻿
+@{
+        IEnumerable<SourceAutoComplete> sourceAutoCompletes = ViewData["SourceAutoCompletes"] as IEnumerable<SourceAutoComplete>;
+    ViewData["Title"] = "Purchase By Item Code";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+       + "<li>"
+       + "<a href='../../Home/Index'>Home</a>"
+       + "</li>"
+
+       + "<li class='active'>"
+       + "<a>" + @ViewData["Title"] + "</a>"
+       + "</li>"
+       + "</ol>";
+
+
+}
+
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+
+            <h5>@ViewData["Title"]</h5>
+
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+
+            </div>
+        </div>
+        <div class="ibox-content">
+
+
+
+            <div class="table-responsive">
+                <table border="0" cellspacing="6" cellpadding="6">
+                    <tbody>
+                        <tr>
+                            <th style="text-align:right">Search By Item No. :&nbsp;</th>
+                            <th><input type="text" class="form-control" id="column0_search"></th>
+
+                            <th style="text-align:right">&nbsp;Search By Description :&nbsp;</th>
+                            <th><input type="text" class="form-control" id="column2_search"></th>
+                        </tr>
+                        <tr>
+                            <th style="text-align:right">Search By Description2 :&nbsp;</th>
+                            <th><input type="text" class="form-control" id="column3_search"></th>
+                            <th style="text-align:right">Search By CostCode :&nbsp;</th>
+                            <th><input type="text" class="form-control" id="column6_search"></th>
+
+                        </tr>
+                        <tr>
+                    
+                            <th style="text-align:right">&nbsp;Search By Group :&nbsp;</th>
+                            <th><input type="text" id="column5_search" autocomplete="off" class="typeahead_1 form-control"></th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+
+            <h5>@ViewData["Title"]</h5>
+
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+
+            </div>
+        </div>
+        <div class="ibox-content">
+
+
+
+            <div class="table-responsive">
+
+
+                <table id='example' class="table table-striped table-bordered table-hover dataTables-example">
+                    <thead>
+                        <tr>
+                            <th align='center'>ItemNo</th>
+                            <th align='center'>ItemNo2</th>
+                            <th align='center'>Description</th>
+                            <th align='center'>Description2</th>
+                            <th align='center'>Unit</th>
+                            <th align='center'>Group</th>
+                            <th align='center'>Costcode</th>
+
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="inline-content" class="hidden">
+    <h2><span id="title"></span></h2>
+    <table id="example1" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>Date</th>
+
+                <th>Ven.No</th>
+                <th>Ven.Name</th>
+                <th>Location</th>
+                <th>Description</th>
+                <th>Description2</th>
+                <th>Unit Of Measure</th>
+                <th>Qty.</th>
+                <th>UnitCost</th>
+                <th>Amount</th>
+                <th>JobCost</th>
+                <th>Doc.No</th>
+                <th>Detail</th>
+
+            </tr>
+        </thead>
+    </table>
+</div>
+
+
+
+
+
+
+
+@section Scripts {
+
+
+    <script>
+    @*var WebModels = @Html.Raw(Json.Serialize(sourceAutoCompletes));
+      //  var str = JSON.stringify(WebModels);
+        //console.log(JSON.stringify(WebModels));
+
+    //console.log(WebModels);
+       $('.typeahead_1').typeahead({
+                source: WebModels
+        });*@
+
+    </script>
+
+
+
+
+    <script>
+        //alert(item);
+        var dataType = 'application/json; charset=utf-8';
+        table = $('#example').DataTable({
+            destroy: true,
+
+
+
+            "language": {
+                "decimal": ",",
+                "thousands": "."
+            },
+
+            "pageLength": 25,
+
+            // rowGroup: {
+            //    dataSrc: 2
+            //},
+            //fixedHeader: true,
+            //scrollY: 600,
+            //deferRender: true,
+            //scrollCollapse: true,
+            //scroller: {
+            //    loadingIndicator: true
+            //},
+            //responsive: {
+            //    breakpoints: [
+            //        { name: 'bigdesktop', width: Infinity },
+            //        { name: 'meddesktop', width: 1480 },
+            //        { name: 'smalldesktop', width: 1280 },
+            //        { name: 'medium', width: 1188 },
+            //        { name: 'tabletl', width: 1024 },
+            //        { name: 'btwtabllandp', width: 848 },
+            //        { name: 'tabletp', width: 768 },
+            //        { name: 'mobilel', width: 480 },
+            //        { name: 'mobilep', width: 320 }
+            //    ]
+            //},
+            dom: 'Bfrtip',
+            // stateSave: true,
+
+            buttons: [
+
+                //{
+                //    extend: 'colvis',
+                //    text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                //    // messageTop: item + " " + itemname,
+                //    titleAttr: 'Hide',
+                //    postfixButtons: ['colvisRestore']
+                //},
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                    titleAttr: 'PDF',
+                    pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                    orientation: 'landscape',
+                    //messageTop: item + " " + itemname,
+                    customize: function (doc) {
+                        doc.defaultStyle = {
+                            font: 'THSarabun',
+                            fontSize: '12',
+
+                        };
+                        var now = new Date();
+                        var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                        doc['footer'] = (function (page, pages) {
+                            return {
+                                columns:
+                                    [
+                                        {
+                                            alignment: 'center',
+                                            text: ['Created on: ', { text: jsDate.toString() }]
+                                        },
+                                        {
+                                            alignment: 'right',
+                                            text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                        }
+                                    ],
+                                margin: 10
+                            }
+                        });
+                    }
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i> Excel',
+                    titleAttr: 'Excel',
+                    //messageTop: item + " " + itemname,
+                    autoFilter: true
+                },
+                {
+                    extend: 'copyHtml5',
+                    text: '<i class="fa fa-files-o"></i> Copy',
+                    titleAttr: 'Copy'
+
+                },
+                {
+                    text: 'JSON',
+                    action: function (e, dt, button, config) {
+                        var data = dt.buttons.exportData();
+                        $.fn.dataTable.fileSave(
+                            new Blob([JSON.stringify(data)]),
+                            'Export.json'
+                        );
+                    }
+                }
+                //,
+                //{
+                //    extend: 'selectAll'
+                //},
+                //{
+                //    extend: 'selectNone'
+                //}
+            ],
+            "ajax": {
+                "url": "/ItemCodes/GetData",
+                "contentType": dataType,
+                "type": "GET",
+                "data": function (response) {
+                    return JSON.stringify(response.data);
+                }
+
+            },
+
+            "columns": [
+
+                { "data": "ItemNo" },
+                { "data": "ItemNo2" },
+                { "data": "Description" },
+                { "data": "Description2" },
+                { "data": "Unit" },
+                { "data": "Groupcode" },
+
+                { "data": "Costcode" }
+
+
+
+            ]
+
+
+
+
+        });
+
+        // #column3_search is a <input type="text"> element
+        $('#column0_search').on('keyup', function () {
+            table
+                .columns(0)
+                .search(this.value)
+                .draw();
+        });
+        // #column0_search is a <input type="text"> element
+        $('#column2_search').on('keyup', function () {
+            table
+                .columns(2)
+                .search(this.value)
+                .draw();
+        });
+
+        // #column0_search is a <input type="text"> element
+        $('#column3_search').on('keyup', function () {
+            table
+                .columns(3)
+                .search(this.value)
+                .draw();
+        });
+
+        // #column0_search is a <input type="text"> element
+        $('#column5_search').on('keyup', function () {
+            table
+                .columns(5)
+                .search(this.value)
+                .draw();
+        });
+        $('#column6_search').on('keyup', function () {
+            table
+                .columns(6)
+                .search(this.value)
+                .draw();
+        });
+
+
+
+    </script>
+
+
+
+
+
+    <script>
+
+        function selectDetail(appid) {
+
+            var item = appid.getAttribute("data-animal-type");
+            var itemName = appid.getAttribute("data-item-type");
+
+
+            document.getElementById("title").innerHTML = item + " " + itemName;
+
+
+            //alert(item);
+            var dataType = 'application/json; charset=utf-8';
+            tableitem = $('#example1').DataTable({
+                destroy: true,
+                columnDefs:
+                    [
+                        {
+                            targets: 6,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 7,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 8,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 9,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 10,
+                            className: 'dt-body-right'
+                        }
+                    ],
+                "language": {
+                    "decimal": ",",
+                    "thousands": "."
+                },
+
+                //scrollY: 500,
+                //deferRender: true,
+                //scrollCollapse: true,
+                //scroller: {
+                //    loadingIndicator: true
+                //},
+                responsive: true,
+                //fixedHeader: true,
+                select: {
+                    style: 'os',
+                    blurable: true
+                },
+                dom: 'Bfrtip',
+                //stateSave: true,
+                buttons: [
+
+                    {
+                        extend: 'colvis',
+                        text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                        messageTop: item + " " + itemName,
+                        titleAttr: 'Hide',
+                        postfixButtons: ['colvisRestore']
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        exportOptions: {
+                          columns: ':visible'
+                        },
+                        title: 'รายงานรายการสั่งซื้อตาม Item No :'+item+' Item Name :' +itemName ,
+                        text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                        titleAttr: 'PDF',
+                        pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                        orientation: 'landscape',
+                        messageTop: item + " " + itemName,
+                        customize: function (doc) {
+                            doc.defaultStyle = {
+                                font: 'THSarabun',
+                                fontSize: '12',
+
+                            };
+                            var now = new Date();
+                            var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                            doc['footer'] = (function (page, pages) {
+                                return {
+                                    columns:
+                                        [
+                                            {
+                                                alignment: 'center',
+                                                text: ['Created on: ', { text: jsDate.toString() }]
+                                            },
+                                            {
+                                                alignment: 'right',
+                                                text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                            }
+                                        ],
+                                    margin: 10
+                                }
+                            });
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        title: 'รายงานรายการสั่งซื้อตาม Item No :'+item+' Item Name :' +itemName ,
+                        exportOptions: {
+                          columns: ':visible'
+                         },
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        titleAttr: 'Excel',
+                        messageTop: item + " " + itemName,
+                        autoFilter: true
+                    },
+                    {
+                        extend: 'copyHtml5',
+                        text: '<i class="fa fa-files-o"></i> Copy',
+                        titleAttr: 'Copy'
+
+                    },
+                    {
+                        text: 'JSON',
+                        action: function (e, dt, button, config) {
+                            var data = dt.buttons.exportData();
+                            $.fn.dataTable.fileSave(
+                                new Blob([JSON.stringify(data)]),
+                                'Export.json'
+                            );
+                        }
+                    },
+                    {
+                        extend: 'selectAll'
+                    },
+                    {
+                        extend: 'selectNone'
+                    }
+                ],
+                "ajax": {
+                    "url": "/ItemCodes/GetItem/?Item=" + item,
+                    "contentType": dataType,
+                    "type": "GET",
+                    "data": function (response) {
+                        return JSON.stringify(response.data);
+                    }
+
+                },
+
+                "columns": [
+                    { "data": "OrderDate" },
+
+                    { "data": "VendorNo" },
+                    { "data": "VendorName" },
+                    { "data": "Location" },
+                    { "data": "Description" },
+                    { "data": "Description2" },
+                    { "data": "UnitOfMeasure" },
+                    { "data": "Quantity", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "UnitCost", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "Amount", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "JobTaskNo" },
+                    { "data": "DocumentNo" },
+                    { "data": "RefPR" }
+                ]
+
+
+
+
+            });
+
+
+
+            // Standard Modal
+            $('.modaal-inline-content').modaal({
+                type: 'inline',
+                accessible_title: 'Modal title',
+                before_open: function () {
+                    //console.log('log before open');
+                },
+                before_close: function () {
+                    //console.log('log before close');
+                },
+                after_open: function () {
+                    //console.log('log after open');
+                },
+                after_close: function () {
+                    //console.log('log after close');
+                },
+                should_open: function () {
+                    //console.log('just checking to see if we should open');
+                    return true;
+                }
+            });
+
+
+            $('.fullscreen').modaal({
+                fullscreen: true,
+                content_source: '#inline-content'
+            });
+
+            //$('#myModal').modal();
+        }
+
+    </script>
+
+
+}
+

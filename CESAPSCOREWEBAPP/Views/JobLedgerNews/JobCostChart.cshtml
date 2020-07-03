@@ -1,0 +1,548 @@
+﻿
+@{
+
+
+
+    ViewData["Title"] = "JobCost Chart";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+    + "<li>"
+    + "<a href='../../Home/Index'>Home</a>"
+    + "</li>"
+
+    + "<li class='active'>"
+    + "<a>" + @ViewData["Title"] + "</a>"
+    + "</li>"
+    + "</ol>";
+}
+
+
+<style>
+
+
+
+    .options {
+        padding: 20px;
+        margin-top: 20px;
+        background-color: rgba(191, 191, 191, 0.15);
+    }
+
+    .caption {
+        font-size: 18px;
+        font-weight: 500;
+    }
+
+    .option {
+        width: 24%;
+        display: inline-block;
+        margin-top: 10px;
+    }
+
+    input.empty {
+        font-family: FontAwesome;
+        font-style: normal;
+        font-weight: normal;
+        text-decoration: inherit;
+    }
+
+
+
+
+    th {
+        font-size: 0.7vw;
+    }
+
+    td {
+        font-size: 0.7vw;
+    }
+</style>
+
+
+
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="charts">
+                <div id="buttonGroup">
+                    @(Html.DevExtreme().Button()
+                        .Icon("print")
+                        .Text("Print")
+                        .OnClick("print")
+                        .ElementAttr("class", "row-element")
+                    )
+                    @(Html.DevExtreme().Button()
+                        .Icon("export")
+                        .Text("Export")
+                        .OnClick("exportChart")
+                        .ElementAttr("class", "row-element")
+                    )
+                   
+                </div>
+                @(Html.DevExtreme().Chart()
+                    .ID("chart")
+                    .CommonSeriesSettings(s => s.Type(SeriesType.Bar)
+                        .Label(l => l
+                        .Visible(true)
+                        .Format(f => f
+                            .Type(Format.FixedPoint)
+                            .Precision(2)
+
+                        )
+                      )
+                    )
+                    .Title("Job Cost Chart")
+
+                    .Tooltip(t => t.Enabled(true).CustomizeTooltip("customize_tooltip").Format(f => f
+                            .Type(Format.FixedPoint)
+                            .Precision(2)
+
+                        ))
+
+
+
+                )
+
+
+
+            </div>
+
+
+
+
+
+            <div id="pivotgrid-demo">
+
+
+                @(Html.DevExtreme().PivotGrid<JobLedgerNew>()
+                    .ID("pivotgrid")
+                    .AllowSortingBySummary(true)
+                    .AllowFiltering(true)
+                    .FieldPanel(p => p
+                        .ShowColumnFields(true)
+                        .ShowDataFields(true)
+                        .ShowFilterFields(true)
+                        .ShowRowFields(true)
+                        .AllowFieldDragging(true)
+                        .Visible(true)
+                    )
+                    .HeaderFilter(h => h
+                        .AllowSearch(true)
+                        .Width(300)
+                        .Height(400)
+                    )
+                    .ShowBorders(true)
+                    .ShowColumnGrandTotals(true)
+                    .ShowRowGrandTotals(true)
+                    .ShowRowTotals(true)
+                    .ShowColumnTotals(true)
+                    .FieldChooser(c => c.Enabled(true).Height(400))
+                    .Export(e => e.Enabled(true).FileName("JobCost Data"))
+                    .Scrolling(fc => fc.Mode(PivotGridScrollingMode.Virtual))
+                    .DataSource(d => d
+                        .Store(s => s.Mvc().Controller("JobLedgerNews").LoadAction("JobCostData"))
+                        .Fields(fields =>
+                        {
+
+
+                            fields.AddFor(m => m.JobNo)
+                               .Width(120)
+                               .Area(PivotGridArea.Filter)
+                               .Caption("Site");
+
+                            fields.AddFor(m => m.JobMain)
+                                 .Width(150)
+                                 .Area(PivotGridArea.Filter)
+                                 .Caption("MAIN");
+
+                            fields.AddFor(m => m.JobSub)
+                                 .Area(PivotGridArea.Filter)
+                                 .Caption("SUB");
+
+                            fields.AddFor(m => m.JobLedgerEntry)
+                                 .Area(PivotGridArea.Filter)
+                                 .Caption("COSTCODE");
+
+
+                            fields.AddFor(m => m.JobMain)
+                                .Width(150)
+                                .Area(PivotGridArea.Row)
+                                .Caption("MAIN");
+
+                            fields.AddFor(m => m.JobSub)
+                                .Area(PivotGridArea.Row)
+                                .Caption("SUB");
+
+                            fields.AddFor(m => m.JobLedgerEntry)
+                                .Area(PivotGridArea.Row)
+                                .Caption("COSTCODE");
+
+
+
+                            fields.AddFor(m => m.Quantity)
+                                .Caption("จำนวนรวม")
+                                .Format(f =>
+                                {
+                                    f.Precision(2);
+                                    f.Type(Format.FixedPoint);
+                                });
+
+                            fields.AddFor(m => m.Total)
+                               .Caption("จำนวนเงิน")
+                                .Format(f =>
+                                {
+                                    f.Precision(2);
+                                    f.Type(Format.FixedPoint);
+                                });
+
+
+                            fields.AddFor(m => m.PostingDate)
+                                .DataType(PivotGridDataType.Date)
+                                .GroupInterval(PivotGridGroupInterval.Year)
+                                .Area(PivotGridArea.Column)
+                                .Caption("ปี");
+
+
+                            fields.AddFor(m => m.PostingDate)
+                                .DataType(PivotGridDataType.Date)
+
+                                .GroupInterval(PivotGridGroupInterval.Month)
+                                .Area(PivotGridArea.Column)
+                                .Caption("เดือน");
+
+                            fields.AddFor(m => m.Total)
+                                .SummaryType(SummaryType.Sum).Format(f =>
+                                {
+                                    f.Precision(2);
+                                    f.Type(Format.FixedPoint);
+                                })
+
+                                .Area(PivotGridArea.Data)
+                                .Caption("AMOUNT");
+
+
+
+
+                        })
+                    )
+                    .OnInitialized("bind_chart")
+                    .OnContentReady("getChartInstance")
+
+
+                )
+            </div>
+
+
+
+
+
+
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+
+    <script>
+
+
+
+
+        function getPivotGridInstance() {
+        
+            
+                    let elementPivotGrid = document.getElementById("pivotgrid");
+                    let instancePivotGrid = DevExpress.ui.dxPivotGrid.getInstance(elementPivotGrid);
+                    
+       
+            return instancePivotGrid;
+        }
+
+
+        function getFilterPivotGridInstance() {
+
+            let instance1 = getPivotGridInstance();
+            console.log(instance1.getDataSource());
+
+            let filterdata = "";
+            let filterhead = "";
+            let filtervalue = "";
+        
+            let filter = "";
+            let bigHead="<b>Filter Header : </b>";
+          
+            var checkBigHead = 0;
+            for (i = 0; i < instance1.getDataSource()._descriptions.filters.length; i++)
+            {
+                //check = 0;
+                filterhead =instance1.getDataSource()._descriptions.filters[i].dataField +" : ";
+                try
+                {
+
+                    for (j = 0; j < instance1.getDataSource()._descriptions.filters[i].filterValues.length; j++)
+                    {
+                        if (j == 0)
+                        {
+                            filtervalue = filtervalue+ " ";
+                        }
+                     
+                        if (j == instance1.getDataSource()._descriptions.filters[i].filterValues.length - 1)
+                        {
+                            filtervalue = filtervalue + instance1.getDataSource()._descriptions.filters[i].filterValues[j] + " ";
+                        } else
+                        {
+                             filtervalue = filtervalue + instance1.getDataSource()._descriptions.filters[i].filterValues[j] + ",";
+                        }
+
+                        check = 0;
+                    }
+                }
+                catch
+                {
+                    check = 1;
+                }
+
+
+                if (check == 0) {
+                   checkBigHead = 1;
+                   filterdata   = filterdata +  filterhead + filtervalue;
+                }
+
+                filterhead = "";
+                filtervalue = "";
+            }
+
+            if (checkBigHead == 1 )
+            {
+                filter = filter + bigHead + filterdata;
+            }
+            checkBigHead = 0;
+
+            filterdata = "";
+            filterhead = "";
+            filtervalue = "";
+
+            bigHead="<br><b>Filter Row : </b>";
+
+            for (i = 0; i < instance1.getDataSource()._descriptions.rows.length; i++) {
+                check = 0;
+                filterhead =  instance1.getDataSource()._descriptions.rows[i].dataField +" : ";
+                try {
+
+                    for (j = 0; j < instance1.getDataSource()._descriptions.rows[i].filterValues.length; j++) {
+                        if (j == 0) {
+                             filtervalue = filtervalue+ " ";
+                        }
+                       
+
+                        if (j == instance1.getDataSource()._descriptions.rows[i].filterValues.length - 1) {
+                            filtervalue = filtervalue + instance1.getDataSource()._descriptions.rows[i].filterValues[j] + " ";
+                        } else {
+                             filtervalue = filtervalue + instance1.getDataSource()._descriptions.rows[i].filterValues[j] + ",";
+                        }
+                        check = 0;
+                    }
+                } catch{
+                  check = 1;
+                }
+
+
+                if (check == 0) {
+                    checkBigHead = 1;
+                   filterdata   = filterdata +  filterhead + filtervalue;
+                }
+                
+                filterhead = "";
+                filtervalue = "";
+                
+            }
+
+
+          if (checkBigHead == 1 )
+            {
+                filter = filter + bigHead + filterdata;
+            }
+            checkBigHead = 0;
+            filterdata = "";
+            filterhead = "";
+            filtervalue = "";
+
+
+
+           bigHead= "<br><b>Filter Column : </b>";
+            //หัวข้อ
+
+            for (i = 0; i < instance1.getDataSource()._descriptions.columns.length; i++)
+            {
+                check = 0;
+                filterhead = instance1.getDataSource()._descriptions.columns[i].dataField + " : ";
+
+
+                //รายการ
+                try {
+
+                    for (j = 0; j < instance1.getDataSource()._descriptions.columns[i].filterValues.length; j++) {
+                        if (j == 0) {
+                             filtervalue = filtervalue + " ";
+                        }
+                       
+
+                        if (j == instance1.getDataSource()._descriptions.columns[i].filterValues.length - 1) {
+                            filtervalue = filtervalue + instance1.getDataSource()._descriptions.columns[i].filterValues[j] + " ";
+                        } else {
+                            filtervalue = filtervalue +instance1.getDataSource()._descriptions.columns[i].filterValues[j] + ",";
+                        }
+                        check = 0;
+                    }
+                } catch{
+                     check = 1;
+                }
+
+                 if (check == 0) {
+                   checkBigHead = 1;
+                   filterdata   = filterdata +  filterhead + filtervalue;
+                }
+
+                filterhead = "";
+                filtervalue = "";
+            }
+
+            if (checkBigHead == 1 )
+            {
+                filter = filter + bigHead + filterdata;
+            }
+            checkBigHead = 0;
+
+            filterdata = "";
+            filterhead = "";
+            filtervalue = "";
+
+
+                
+           
+
+
+
+
+
+
+            //console.log(filter);
+            return filter;
+        }
+    </script>
+
+
+
+
+
+
+    <script>
+        function customize_tooltip(args) {
+            //getPivotGridInstance();
+           
+            return {
+                html: args.seriesName + " | Total<div class='currency'>" + args.valueText + "</div>"
+            };
+
+
+        }
+
+        //กรณีมีการสร้าง Chart
+          function bind_chart(e) {
+            e.component.bindChart($("#chart"), {
+                dataFieldsDisplayMode: "splitPanes",
+                alternateDataFields: false
+            });
+
+            e.component.on("contentReady", contentReady);
+            //getChartInstance();
+        }
+
+        //กรณีมีการเปลี่ยน Filter
+        function contentReady(e) {
+            e.component.off("contentReady", contentReady);
+            var dataSource = e.component.getDataSource();
+        
+       
+            
+             
+        }
+
+        function getChartInstance() {
+            var element = document.getElementById("chart");
+            var chartInstance = DevExpress.viz.dxChart.getInstance(element);
+
+     
+            chartInstance.option('title', {
+                text:'JobCost Chart',
+                subtitle: getFilterPivotGridInstance()
+            });
+
+            return chartInstance;
+        }
+
+
+
+
+
+
+        function print() {
+            getChartInstance().print();
+            //getPivotGridInstance().exportToExcel();
+        }
+
+        function exportChart() {
+
+            DevExpress.viz.exportWidgets([getChartInstance()], {
+                fileName: "chart",
+                format: 'PNG'
+            });
+        }
+
+
+    </script>
+
+
+    <script>
+        $("body").addClass('mini-navbar');
+        SmoothlyMenu();
+        $("body").addClass('fixed-sidebar');
+        $('.sidebar-collapse').slimScroll({
+            height: '100%',
+            railOpacity: 0.9
+        });
+
+
+
+
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+

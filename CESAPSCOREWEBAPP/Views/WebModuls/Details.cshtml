@@ -1,0 +1,58 @@
+﻿@model CESAPSCOREWEBAPP.Models.WebModul
+
+@{
+    ViewData["Title"] = "รายละเอียดโมดูล";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+         + "<li>"
+         + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+         + "</li>"
+         + "<li>"
+         + "<a href='/WebModuls/Index' data-toggle='tooltip' data-placement='top' title='List'>รายการโมดูล</a>"
+         + "</li>"
+         + "<li class='active'>"
+         + "<b><a data-toggle='tooltip' data-placement='top' title='Add Title Of Users'>" + @ViewData["Title"] + "</a></b>"
+         + "</li>"
+         + "</ol>";
+}
+
+
+<div class="col-sm-6 col-lg-6 col-md-6 col-lg-offset-3">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            รหัส
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.WebModulId)
+                        </dd>
+                        <dt>
+                            ชื่อโมดูล
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.WebModulName)
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.WebModulId" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Edit">แก้ไข</a>
+        <a asp-action="Index" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Back to List">กลับรายการ</a>
+    </div>
+</div>

@@ -1,0 +1,69 @@
+﻿@model CESAPSCOREWEBAPP.Models.CaseBPC
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>CaseBPC</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.CaseBPCDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CaseBPCDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CaseBPCSubject)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CaseBPCSubject)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CaseBPCDetail)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CaseBPCDetail)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.caseBPCStatus)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.caseBPCStatus)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.caseBPCPLevel)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.caseBPCPLevel)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CaseBPCPDateFix)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CaseBPCPDateFix)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EditBy)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.EditBy)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.openCaseBy)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.openCaseBy)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="CaseBPCId" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

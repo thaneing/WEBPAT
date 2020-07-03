@@ -1,0 +1,66 @@
+﻿
+@{
+    IEnumerable<HouseRental> apply = ViewData["house"] as IEnumerable<HouseRental>;
+    Layout = null;
+}
+
+@*<!DOCTYPE html>
+
+    <html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>ApplyReport</title>
+    </head>
+    <body>
+    </body>
+    </html>*@
+<h1>ApplyReport</h1>
+
+@*<div>>@Html.Raw(ViewData["house"])</div>*@
+
+<div>
+    <table>
+        <thead>
+            <tr>
+            <tr>
+                <th>
+                    งวด
+                </th>
+                <th>
+                    รหัสพนักงาน
+                </th>
+                <th>
+                    ชื่อ-สกุล
+                </th>
+                <th>
+                    ตำแหน่ง
+                </th>
+                <th>
+                    หน่วยงาน
+                </th>
+                <th>
+                    เงินประกัน
+                </th>
+                <th>
+                    ล่วงหน้า
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var std in apply)
+            {
+                <tr>
+                    <td>@std.Period</td>
+                    <td>@std.EmpId</td>
+                    <td>@std.EmpName</td>
+                    <td>@std.EmpPosition</td>
+                    <td>@std.Site</td>
+                    <td>@std.Advanced</td>
+                    <td>@std.Deposit</td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

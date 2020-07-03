@@ -1,0 +1,646 @@
+﻿@using Microsoft.AspNetCore.Http;
+
+
+@{
+    ViewData["Title"] = "หน้าแรก";
+    ViewData["Tab"] = "";
+}
+
+<style>
+    #new {
+        height: 600px;
+        overflow: auto;
+    }
+</style>
+
+<style>
+    #new2 {
+        height: 600px;
+        overflow: auto;
+    }
+</style>
+<style>
+    #new1 {
+        height: 600px;
+        overflow: auto;
+    }
+</style>
+
+@{
+    IEnumerable<Blog> blogs = ViewData["Blog"] as IEnumerable<Blog>;
+}
+
+@{
+    IEnumerable<BlogPic> blogPics = ViewData["BlogPic"] as IEnumerable<BlogPic>;
+}
+
+
+
+
+
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12  col-md-12 col-lg-8">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>ข้อมูลข่าวสาร</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content" id="new">
+                <div class="table-responsive">
+                    @foreach (Blog blog in blogs)
+                    {
+                        <a asp-controller="Home" asp-action="BlogNew" asp-route-id="@blog.BlogId">
+                            <h2>@blog.BlogTitle</h2>
+                        </a>
+                        <p>
+                            Posted by :
+                            <b>
+                                @blog.BlogCreateBy
+                            </b>
+                            POST DATE :
+                            <b>
+                                @blog.BlogCreateDate.ToString("dd/MM/yyyy")
+                            </b>
+                        </p>
+                        <hr>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-xs-12 col-sm-12  col-md-12 col-lg-4">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <span class="label label-success pull-right">Active</span>
+                <h5>ปฏิทิน</h5>
+            </div>
+            <div class="ibox-content" id="new">
+                <div id="calender"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12  col-md-12 col-lg-4 pull-right">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <p id="status"></p>
+
+                <img src="~/Images/RSS.png" width="24" height="24" /><span style="font-size:16px;"><b> Posttoday</b></span>
+            </div>
+            <div class="ibox-content" id="new1">
+                <p id="contentdata"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-12  col-md-12 col-lg-8 pull-right">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <p id="status1"></p>
+                <img src="~/Images/RSS.png" width="24" height="24" /><span style="font-size:16px;"><b> Bank of Thailand</b></span>
+            </div>
+            <div class="ibox-content" id="new2">
+                <canvas id="canvas"></canvas>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*<div class="row">
+    <div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>ห้องประชุม</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+              <iframe src="http://192.168.18.6/Web/schedule.php" width="100%" height="800px"></iframe>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+
+
+
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><span id="eventTitle"></span></h4>
+                </div>
+                <div class="modal-body" id="detail">
+                    <button id="btnDelete" class="btn btn-default btn-sm pull-right">
+                        <span class="glyphicon glyphicon-remove"></span> Remove
+                    </button>
+                    <button id="btnEdit" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">
+                        <span class="glyphicon glyphicon-pencil"></span> Edit
+                    </button>
+                    <p id="pDetails"></p>
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+                <div class="modal-body" id="datainput">
+
+                    <input type="hidden" id="hdEventID" value="0" />
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <input type="text" id="txtSubject" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Start</label>
+                        <div class="input-group date" id="dtp1">
+                            <input type="text" id="txtStart" class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label><input type="checkbox" id="chkIsFullDay" checked="checked" />  Is Full Day event</label>
+                        </div>
+                    </div>
+                    <div class="form-group" id="divEndDate" style="display:none">
+                        <label>End</label>
+                        <div class="input-group date" id="dtp2">
+                            <input type="text" id="txtEnd" class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="txtDescription" rows="3" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Theme Color</label>
+                        <select id="ddThemeColor" class="form-control">
+                            <option value="">Default</option>
+                            <option value="red">Red</option>
+                            <option value="blue">Blue</option>
+                            <option value="black">Black</option>
+                            <option value="green">Green</option>
+                        </select>
+                    </div>
+                    <button type="button" id="btnSave" class="btn btn-success">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+    @section Scripts {
+
+
+
+
+
+
+        <script>
+            $(document).ready(function () {
+                var dataType = 'application/json; charset=utf-8';
+                var events = [];
+                var selectedEvent = null;
+                FetchEventAndRenderCalendar();
+
+
+
+
+                function FetchEventAndRenderCalendar() {
+                    events = [];
+                    $.ajax({
+                        type: "GET",
+                        url: "/api/Events",
+                        success: function (data) {
+                            $.each(data, function (i, v) {
+                                events.push({
+                                    Id: v.Id,
+                                    title: v.Subject,
+                                    description: v.Description,
+                                    start: moment(v.Start),
+                                    end: v.End != null ? moment(v.End) : null,
+                                    color: v.ThemeColor,
+                                    allDay: v.IsFullDay
+                                });
+                            })
+
+                            GenerateCalender(events);
+                        },
+                        error: function (error) {
+                            //alert('failed');
+                        }
+                    })
+
+                    var datacontent = "";
+                    //   events = [];
+                    $.ajax({
+                        type: "GET",
+                        dataType: 'json',
+                        //headers: { 'Access-Control-Allow-Origin': 'http://ces-iterp02.ces.co.th:1150/' },
+                        crossDomain: true,
+                        contentType: 'application/json; charset=utf-8',
+                        //data: { FixAccNo: fixassetno, FixAssetName: itemname1, FixAssetName1: itemname2, SiteName: site, qty: qty, TransectionEtc: etc, TransectionType: selectType },
+                        url: "/Home/Datapr",
+                        //?FixAccNo="+fixassetno+"&FixAssetName="+itemname1+"&FixAssetName1="+itemname2+"&SiteName="+site+"&qty="+qty
+                        success: function (response) {
+                            var jsondata = JSON.parse(response.data1);
+                            //console.log(jsondata.result.data);
+                            var num = 0;
+                            $.each(jsondata.result.data, function (i, v) {
+                                events.push({
+                                    Id: num + 1,
+                                    title: v.HolidayDescriptionThai,
+                                    description: v.HolidayDescriptionThai,
+                                    start: moment(v.Date),
+                                    end: v.End != null ? moment(v.End) : null,
+                                    color: 'pink',
+                                    allDay: true
+                                });
+                            });
+                            GenerateCalender(events);
+
+                        },
+                        error: function (response) {
+
+                        }
+
+                    });
+
+
+                }
+
+                function GenerateCalender(events) {
+                    $('#calender').fullCalendar('destroy');
+                    $('#calender').fullCalendar({
+                        contentHeight: 400,
+                        defaultDate: new Date(),
+                        timeFormat: 'h(:mm)a',
+                        header: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'month,basicWeek,basicDay,agenda'
+                        },
+                        eventLimit: true,
+                        eventColor: '#378006',
+                        events: events,
+                        eventClick: function (calEvent, jsEvent, view) {
+                            selectedEvent = calEvent;
+                            $('#myModal #eventTitle').text(calEvent.title);
+                            var $description = $('<div/>');
+                            $description.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("DD-MMM-YYYY HH:mm a")));
+                            if (calEvent.end != null) {
+                                $description.append($('<p/>').html('<b>End:</b>' + calEvent.end.format("DD-MMM-YYYY HH:mm a")));
+                            }
+                            $description.append($('<p/>').html('<b>Description:</b>' + calEvent.description));
+
+
+
+                            document.getElementById('datainput').style.display = "none";
+                            document.getElementById('detail').style.display = "block";
+                            $('#myModal #pDetails').empty().html($description);
+
+                            $('#myModal').modal();
+
+
+
+                        },
+                        selectable: true,
+                        select: function (start, end) {
+                            selectedEvent = {
+                                Id: 0,
+                                title: '',
+                                description: '',
+                                start: start,
+                                end: end,
+                                allDay: false,
+                                color: ''
+                            };
+                            openAddEditForm();
+                            $('#calendar').fullCalendar('unselect');
+                        },
+                        editable: true,
+                        eventDrop: function (event) {
+
+                            var stringValue = event.start.format('DD/MM/YYYY HH:mm A');
+                            var day = stringValue.substr(0, 2);
+                            var month = stringValue.substr(3, 2);
+                            var year = stringValue.substr(6, 4);
+                            var date1 = year + '-' + month + '-' + day + ' 00:00:00';
+
+
+                            try {
+                                var stringValue1 = event.end.format('DD/MM/YYYY HH:mm A');
+                                var day1 = stringValue1.substr(0, 2);
+                                var month1 = stringValue1.substr(3, 2);
+                                var year1 = stringValue1.substr(6, 4);
+                                var date2 = year1 + '-' + month1 + '-' + day1 + ' 00:00:00';
+                            } catch (err) {
+
+                            }
+
+                            var data = {
+                                Id: event.Id,
+                                Subject: event.title,
+                                Start: date1 /*event.start.format('DD/MM/YYYY HH:mm A')*/,
+                                End: event.end != null ? date2 /*event.end.format('DD/MM/YYYY HH:mm A')*/ : null,
+                                Description: event.description,
+                                ThemeColor: event.color,
+                                IsFullDay: event.allDay
+                            };
+                            SaveEvent(data);
+                        }
+                    })
+                }
+
+                $('#btnEdit').click(function () {
+
+
+                    document.getElementById('datainput').style.display = "block";
+                    document.getElementById('detail').style.display = "none";
+
+                    //Open modal dialog for edit event
+                    openAddEditForm();
+                })
+                $('#btnDelete').click(function () {
+                    if (selectedEvent != null && confirm('Are you sure?')) {
+                        $.ajax({
+                            type: "GET",
+                            url: '/Events1/Delete/' + selectedEvent.Id,
+                            success: function (data) {
+
+                                $('#myModal').modal('hide');
+                                FetchEventAndRenderCalendar();
+                            },
+                            error: function () {
+                                alert('ไม่มีสิทธิ์ใช้งาน');
+                            }
+                        })
+                    }
+                })
+
+                $('#dtp1,#dtp2').datetimepicker({
+                    format: 'DD/MM/YYYY HH:mm A'
+                });
+
+                $('#chkIsFullDay').change(function () {
+                    if ($(this).is(':checked')) {
+                        $('#divEndDate').hide();
+                    }
+                    else {
+                        $('#divEndDate').show();
+                    }
+                });
+
+                function openAddEditForm() {
+                    if (selectedEvent != null) {
+
+                        $('#hdEventID').val(selectedEvent.Id);
+                        $('#txtSubject').val(selectedEvent.title);
+                        $('#txtStart').val(selectedEvent.start.format('DD/MM/YYYY HH:mm A'));
+                        $('#chkIsFullDay').prop("checked", selectedEvent.allDay || false);
+                        $('#chkIsFullDay').change();
+                        $('#txtEnd').val(selectedEvent.end != null ? selectedEvent.end.format('DD/MM/YYYY HH:mm A') : '');
+                        $('#txtDescription').val(selectedEvent.description);
+                        $('#ddThemeColor').val(selectedEvent.color);
+
+                        if (selectedEvent.Id == 0) {
+
+                            $('#myModal #eventTitle').text("เพิ่มข้อมูล");
+                            document.getElementById('datainput').style.display = "block";
+                            document.getElementById('detail').style.display = "none";
+                        }
+
+
+
+
+
+                    }
+
+                    $('#myModal').modal();
+
+
+                }
+
+                $('#btnSave').click(function () {
+                    if ($('#txtSubject').val().trim() == "") {
+                        alert('Subject required');
+                        return;
+                    }
+                    if ($('#txtStart').val().trim() == "") {
+                        alert('Start date required');
+                        return;
+                    }
+                    if ($('#chkIsFullDay').is(':checked') == false && $('#txtEnd').val().trim() == "") {
+                        alert('End date required');
+                        return;
+                    }
+                    else {
+                        var startDate = moment($('#txtStart').val(), "DD/MM/YYYY HH:mm A").toDate();
+                        var endDate = moment($('#txtEnd').val(), "DD/MM/YYYY HH:mm A").toDate();
+                        if (startDate > endDate) {
+                            alert('Invalid end date');
+                            return;
+                        }
+                    }
+
+
+                    var stringValue = $('#txtStart').val().trim();
+                    var day = stringValue.substr(0, 2);
+                    var month = stringValue.substr(3, 2);
+                    var year = stringValue.substr(6, 4);
+                    var date1 = year + '-' + month + '-' + day + ' 00:00:00';
+
+
+                    try {
+                        var stringValue1 = $('#txtEnd').val().trim();
+                        var day1 = stringValue1.substr(0, 2);
+                        var month1 = stringValue1.substr(3, 2);
+                        var year1 = stringValue1.substr(6, 4);
+                        var date2 = year1 + '-' + month1 + '-' + day1 + ' 00:00:00';
+                    } catch (err) {
+
+                    }
+
+
+                    var data = {
+
+                        Id: $('#hdEventID').val(),
+                        Subject: $('#txtSubject').val().trim(),
+                        Start: date1/* $('#txtStart').val().trim()*/,
+                        End: $('#chkIsFullDay').is(':checked') ? null : date2/*$('#txtEnd').val().trim()*/,
+                        Description: $('#txtDescription').val(),
+                        ThemeColor: $('#ddThemeColor').val(),
+                        IsFullDay: $('#chkIsFullDay').is(':checked')
+                    }
+                    SaveEvent(data);
+                    // call function for submit data to the server
+                })
+
+
+                function SaveEvent(data) {
+                    $.ajax({
+                        type: "GET",
+                        url: '/Events1/Create',
+                        dataType: 'json',
+                        contentType: dataType,
+                        data: data,
+                        success: function (data) {
+
+                            //Refresh the calender
+                            FetchEventAndRenderCalendar();
+                            $('#myModalSave').modal('hide');
+
+                        },
+                        error: function () {
+                            alert('ไม่มีสิทธิ์ใช้งาน');
+                        }
+                    })
+                }
+            })
+        </script>
+
+        <script>
+                $(document).ready(function () {
+                    setTimeout(function () {
+                        toastr.options = {
+                            closeButton: true,
+                            progressBar: true,
+                            showMethod: 'slideDown',
+                            timeOut: 4000
+                        };
+                        toastr.success('ยินดีต้อนรับเข้าสู่เว็บไซต์', 'สวัสดี @Context.Session.GetString("TitleOfUserName")@Context.Session.GetString("Firstname")  @Context.Session.GetString("Lastname")');
+
+                    }, 1300);
+                });
+
+        </script>
+
+        <script>
+            var datacontent = "";
+            $.ajax({
+                type: "GET",
+                dataType: 'json',
+                //headers: { 'Access-Control-Allow-Origin': 'http://ces-iterp02.ces.co.th:1150/' },
+                crossDomain: true,
+                contentType: 'application/json; charset=utf-8',
+                //data: { FixAccNo: fixassetno, FixAssetName: itemname1, FixAssetName1: itemname2, SiteName: site, qty: qty, TransectionEtc: etc, TransectionType: selectType },
+                url: "/Home/Data",
+                //?FixAccNo="+fixassetno+"&FixAssetName="+itemname1+"&FixAssetName1="+itemname2+"&SiteName="+site+"&qty="+qty
+                success: function (response) {
+                    //console.log(response.data);
+                    for (i = 0; i < response.data.length; i++) {
+                        //console.log(response.data[i].link);
+                        datacontent += "<div><div style='text-align:right'>" + response.data[i].publishDate + "</div><a href='" + response.data[i].link + "' target='_blank' class='product-name'>" + response.data[i].title + "</a><div class='m-t text-righ'>" + response.data[i].content + " </div></div><hr/>";
+                    }
+                    //console.log(datacontent);
+                    document.getElementById('contentdata').innerHTML = datacontent;
+                    document.getElementById('status').innerHTML = "<span class='label label-success pull-right'>Active</span>";
+                },
+                error: function (response) {
+                    document.getElementById('status').innerHTML = "<span class='label label-danger pull-right'>Offline</span>";
+                    document.getElementById('new1').style.height = "0px";
+                    document.getElementById('new1').style.overflow = "visible";
+                }
+
+            });
+        </script>
+
+
+        <script>
+            var data = [];
+            var labels = [];
+
+            $.ajax({
+                type: "GET",
+                dataType: 'json',
+                //headers: { 'Access-Control-Allow-Origin': 'http://ces-iterp02.ces.co.th:1150/' },
+                crossDomain: true,
+                contentType: 'application/json; charset=utf-8',
+                url: "/Home/DataExcange",
+                success: function (response) {
+                    //console.log(response.result.data);
+                    //console.log(response.result.data.data_header.last_updated)
+                    $.each(response.result.data.data_detail, function (i, v) {
+                        data.push(v.rate);
+                        labels.push(v.period);
+                    })
+
+                    //console.log(data);
+                    //console.log(labels);
+                    var ctx = document.getElementById("canvas").getContext("2d");
+
+                    var myChart = new Chart(ctx, {});
+                    myChart.destroy();
+
+                    myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'THB / USD',
+                                backgroundColor: 'rgb(255, 99, 132)',
+                                borderColor: 'rgb(255, 99, 132)',
+                                data: data,
+                                fill: false
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            title: {
+                                display: true,
+                                text: 'Weighted-average Interbank Exchange Rate : Update ' + response.result.data.data_header.last_updated
+                            }
+                        }
+
+                    });
+
+                    document.getElementById('status1').innerHTML = "<span class='label label-success pull-right'>Active</span>";
+                },
+                error: function (error) {
+                    document.getElementById('status1').innerHTML = "<span class='label label-danger pull-right'>Offline</span>";
+
+                }
+            })
+        </script>
+
+
+
+    }
+
+
+

@@ -1,0 +1,199 @@
+﻿
+@{
+    ViewData["Title"] = "Position Power";
+        ViewData["Tab"] = "<ol class='breadcrumb'>"
+               + "<li>"
+               + "<a href='../../Home/Index'>Home</a>"
+               + "</li>"
+                + "<li>"
+               + "<a href='../../HRRecruites/Index'>Recruit Data</a>"
+               + "</li>"
+               + "<li class='active'>"
+               + "<a>" + @ViewData["Title"] + "</a>"
+               + "</li>"
+               + "</ol>";
+}
+
+
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+        
+
+
+
+
+
+
+            <table id="example" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>รหัส</th>
+                        <th>ฝ่าย</th>
+                        <th>แผนก</th>
+                        <th>ตำแหน่ง</th>
+                        <th>จำนวนคน</th>
+                        <th>จำนวนที่ต้องการ</th>
+                        <th>สรุป</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+
+    <script>
+
+
+        var dataType = 'application/json; charset=utf-8';
+        table = $('#example').DataTable({
+            destroy: true,
+            columnDefs:
+                [
+                    {
+                        targets: 4,
+                        className: 'dt-body-right'
+                    },
+                                        {
+                        targets: 5,
+                        className: 'dt-body-right'
+                    }
+                ],
+            "language": {
+                "decimal": ",",
+                "thousands": "."
+            },
+
+            //scrollY: 500,
+            //deferRender: true,
+            //scrollCollapse: true,
+            //scroller: {
+            //    loadingIndicator: true
+            //},
+            responsive: true,
+            //fixedHeader: true,
+            //select: {
+            //    style: 'os',
+            //    blurable: true
+            //},
+            dom: 'Bfrtip',
+            //stateSave: true,
+            buttons: [
+
+                //{
+                //    extend: 'colvis',
+                //    text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                //    //messageTop: item + " " + itemname,
+                //    titleAttr: 'Hide',
+                //    postfixButtons: ['colvisRestore']
+                //},
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                    titleAttr: 'PDF',
+                    pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                    //orientation: 'landscape',
+                    //messageTop: item + " " + itemname,
+                    customize: function (doc) {
+                        doc.defaultStyle = {
+                            font: 'THSarabun',
+                            fontSize: '12',
+
+                        };
+                        var now = new Date();
+                        var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                        doc['footer'] = (function (page, pages) {
+                            return {
+                                columns:
+                                    [
+                                        {
+                                            alignment: 'center',
+                                            text: ['Created on: ', { text: jsDate.toString() }]
+                                        },
+                                        {
+                                            alignment: 'right',
+                                            text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                        }
+                                    ],
+                                margin: 10
+                            }
+                        });
+                    }
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i> Excel',
+                    titleAttr: 'Excel',
+                    //messageTop: item + " " + itemname,
+                    autoFilter: true
+                },
+                {
+                    extend: 'copyHtml5',
+                    text: '<i class="fa fa-files-o"></i> Copy',
+                    titleAttr: 'Copy'
+
+                },
+                {
+                    text: 'JSON',
+                    action: function (e, dt, button, config) {
+                        var data = dt.buttons.exportData();
+                        $.fn.dataTable.fileSave(
+                            new Blob([JSON.stringify(data)]),
+                            'Export.json'
+                        );
+                    }
+                }
+                //,
+                //{
+                //    extend: 'selectAll'
+                //},
+                //{
+                //    extend: 'selectNone'
+                //}
+            ],
+            "ajax": {
+                "url": "/HRRecruites/GetData/",
+                "contentType": dataType,
+                "type": "GET",
+                "data": function (response) {
+                    return JSON.stringify(response.data);
+                }
+
+            },
+
+            "columns": [
+                { "data": "id" },
+                { "data": "Department" },
+
+                { "data": "Department1" },
+                { "data": "PositionData" },
+                { "data": "CountData" },
+
+                { "data": "Power" },
+
+                 { "data": "Diff" }
+
+
+            ]
+        });
+
+
+    </script>
+
+}

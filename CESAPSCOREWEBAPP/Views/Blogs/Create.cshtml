@@ -1,0 +1,255 @@
+﻿@model CESAPSCOREWEBAPP.Models.Blog
+<style>
+    #output_image {
+        max-width: 300px;
+    }
+</style>
+
+@{
+    ViewData["Title"] = "เพิ่มหัวข้อข่าว";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+                   + "<li>"
+                   + "<a href='../../Home/Index'>Home</a>"
+                   + "</li>"
+                   + "<li>"
+                   + "<a href='/Blogs/Index'>รายการข่าวสาร</a>"
+                   + "</li>"
+                   + "<li class='active'>"
+                   + "<a>" + @ViewData["Title"] + "</a>"
+                   + "</li>"
+                   + "</ol>";
+}
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="col-lg-5">
+        <div class="ibox ">
+            <div class="ibox-title">
+                <h5>@ViewData["Title"]</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <input asp-for="BlogStatus" class="form-control" type="hidden" id="BlogStatus" />
+
+
+
+                <div class="form-group">
+                    <center><img id="output_image" /></center>
+                </div>
+
+
+
+
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label"> @Html.Label("fileCoverImg", "รูปภาพหัวข้อข่าว")</label>
+                    <div class="col-lg-9">
+                        <input name="uploadPic" onchange="preview_image(event)" class="form-control" type="file" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">หัวข้อข่าวสาร</label>
+                    <div class="col-lg-9">
+                        <input asp-for="BlogTitle" class="form-control" />
+                        <span asp-validation-for="BlogTitle" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+
+
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">จากวันที่</label>
+                    <div class="col-lg-9">
+                        <div class="input-group date" id="dtp1">
+                            <input type="text" class="form-control" name="Startdate" id="StartDate1" value="@ViewBag.StartDate" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">ถึงวันที่</label>
+                    <div class="col-lg-9">
+                        <div class="input-group date" id="dtp2">
+                            <input type="text" class="form-control" name="EndDate" id="StartDate2" value="@ViewBag.EndDate" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">แนบไฟล์</label>
+                    <div class="col-lg-9">
+                        <input type="file" name="filesUpload" multiple class="form-control" />
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">สถานะ</label>
+                    <div class="col-lg-9">
+                        <select class="form-control" id="status" onchange="CheckStatus()">
+                            <option value="1">Cancle</option>
+                            <option value="2">TOP</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">หมวดหมู่</label>
+                    <div class="col-lg-9">
+                        <select asp-for="BlogCatId" class="form-control" asp-items="ViewBag.BlogCatId"></select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">ภาพประกอบ</label>
+                    <div class="col-lg-9">
+                        <input type="file" id="gallery-photo-add" name="files" multiple class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-lg-12">
+                        <div class="gallery"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="ibox ">
+            <div class="ibox-title">
+                <h5>รายละเอียด</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+
+                <div class="form-group">
+                    <textarea asp-for="BlogDetail" class="textarea" placeholder="Place some text here" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-success" />
+
+            <a asp-action="Index" class="btn btn-info">Back to List</a>
+        </div>
+    </div>
+
+
+
+
+</form>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+@section Scripts {
+
+
+    <!-- Bootstrap WYSIHTML5 -->
+    <script src="~/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+
+
+    <script>
+        function preview_image(event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('output_image');
+                output.src = reader.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+
+    <script>
+        $(function () {
+            var a = document.getElementById("status").value;
+            document.getElementById("BlogStatus").value = a;
+
+
+
+            //bootstrap WYSIHTML5 - text editor
+            $('.textarea').wysihtml5({
+                toolbar: {
+                    "font-styles": true, // Font styling, e.g. h1, h2, etc.
+                    "emphasis": true, // Italics, bold, etc.
+                    "lists": true, // (Un)ordered lists, e.g. Bullets, Numbers.
+                    "html": false, // Button which allows you to edit the generated HTML.
+                    "link": true, // Button to insert a link.
+                    "image": false, // Button to insert an image.
+                    "color": true, // Button to change color of font
+                    "blockquote": true
+                }
+            });
+
+            // Multiple images preview in browser
+            var imagesPreview = function (input, placeToInsertImagePreview) {
+                if (input.files) {
+                    var filesAmount = input.files.length;
+                    for (i = 0; i < filesAmount; i++) {
+                        var reader = new FileReader();
+                        reader.onload = function (event) {
+                            $($.parseHTML('<img>'))
+                                .attr('src', event.target.result)
+                                .attr('class', "img-thumbnail")
+                                .appendTo(placeToInsertImagePreview);
+                        }
+                        reader.readAsDataURL(input.files[i]);
+                    }
+                }
+            };
+
+            $('#gallery-photo-add').on('change', function () {
+                imagesPreview(this, 'div.gallery');
+            });
+        });
+
+    </script>
+
+    <script>
+        function CheckStatus() {
+            var a = document.getElementById("status").value;
+            document.getElementById("BlogStatus").value = a;
+        }
+    </script>
+    <script>
+        $('#dtp1,#dtp2').datetimepicker({
+            format: 'DD/MM/YYYY',
+        });
+
+    </script>
+}

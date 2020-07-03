@@ -1,0 +1,56 @@
+﻿@model CESAPSCOREWEBAPP.Models.AppRoom
+
+@{
+    ViewData["Title"] = "รายละเอียดสถานที่นัด";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+                 + "<li>"
+                 + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+                 + "</li>"
+                 + "<li>"
+                 + "<a href='/AppRooms/Index' data-toggle='tooltip' data-placement='top' title='List'>รายการสถานที่นัด</a>"
+                 + "</li>"
+                 + "<li class='active'>"
+                 + "<b><a data-toggle='tooltip' data-placement='top' title='Add Title Of Users'>" + @ViewData["Title"] + "</a></b>"
+                 + "</li>"
+                 + "</ol>";
+}
+
+<div class="col-sm-6 col-lg-6 col-md-6 col-lg-offset-3">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            สถานที่นัด
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.AppRoomName)
+                        </dd>
+                        <dt>
+                            แถบสี
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.AppRoomColor)
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a asp-action="Edit" asp-route-id="@Model.AppRoomId" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Edit">แก้ไข</a>
+    <a asp-action="Index" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Back to List">กลับรายการ</a>
+</div>

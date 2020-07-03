@@ -1,0 +1,756 @@
+﻿@{
+    Layout = null;
+}
+
+@using Microsoft.AspNetCore.Http;
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>@ViewData["Title"] - C.E.S</title>
+
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+            font-size: 16px;
+        }
+
+        #stockTable table {
+            border-collapse: collapse;
+        }
+
+            #stockTable table th, #stockTable table td {
+                padding: 2px 6px;
+            }
+
+            #stockTable table td {
+                text-align: right;
+            }
+
+        #stockTable .loading td {
+            text-align: left;
+        }
+
+        #stockTicker {
+            overflow: hidden;
+            width: 450px;
+            height: 24px;
+            border: 1px solid #999;
+        }
+
+            #stockTicker .inner {
+                width: 9999px;
+            }
+
+            #stockTicker ul {
+                display: inline-block;
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            #stockTicker li {
+                display: inline-block;
+                margin-right: 8px;
+            }
+
+            /*<li data-symbol="{Symbol}"><span class="symbol">{Symbol}</span><span class="price">{Price}</span><span class="change">{PercentChange}</span></li>*/
+            #stockTicker .symbol {
+                font-weight: bold;
+            }
+
+            #stockTicker .change {
+                font-style: italic;
+            }
+
+        .decrease {
+            -webkit-animation: decrease_color_change .5s 2 alternate;
+            -moz-animation: decrease_color_change .5s 2 alternate;
+            -ms-animation: decrease_color_change .5s 2 alternate;
+            -o-animation: decrease_color_change .5s 2 alternate;
+            animation: decrease_color_change .5s 2 alternate;
+        }
+
+        @@-webkit-keyframes decrease_color_change {
+            from {
+                background-color: white;
+            }
+
+            to {
+                background-color: rgb(255,148,148);
+            }
+        }
+
+        @@-moz-keyframes decrease_color_change {
+            from {
+                background-color: white;
+            }
+
+            to {
+                background-color: rgb(255,148,148);
+            }
+        }
+
+        @@-ms-keyframes decrease_color_change {
+            from {
+                background-color: white;
+            }
+
+            to {
+                background-color: rgb(255,148,148);
+            }
+        }
+
+        @@-o-keyframes decrease_color_change {
+            from {
+                background-color: white;
+            }
+
+            to {
+                background-color: rgb(255,148,148);
+            }
+        }
+
+        @@keyframes decrease_color_change {
+            from {
+                background-color: white;
+            }
+
+            to {
+                background-color: rgb(255,148,148);
+            }
+        }
+
+
+        .increase {
+            -webkit-animation: increase_color_change .5s 2 alternate;
+            -moz-animation: increase_color_change .5s 2 alternate;
+            -ms-animation: increase_color_change .5s 2 alternate;
+            -o-animation: increase_color_change .5s 2 alternate;
+            animation: increase_color_change .5s 2 alternate;
+        }
+
+        @@-webkit-keyframes increase_color_change {
+            from {
+                background-color: white;
+            }
+
+            to {
+                background-color: rgb(154,240,117);
+            }
+        }
+
+        @@-moz-keyframes increase_color_change {
+            from {
+                background-color: white;
+            }
+
+            to {
+                background-color: rgb(154,240,117);
+            }
+        }
+
+        @@-ms-keyframes increase_color_change {
+            from {
+                background-color: white;
+            }
+
+            to {
+                background-color: rgb(154,240,117);
+            }
+        }
+
+        @@-o-keyframes increase_color_change {
+            from {
+                background-color: white;
+            }
+
+            to {
+                background-color: rgb(154,240,117);
+            }
+        }
+
+        @@keyframes increase_color_change {
+            from {
+                background-color: white;
+            }
+
+            to {
+                background-color: rgb(154,240,117);
+            }
+        }
+
+        .high {
+            background: rgb(154,240,117);
+            transition: background 1s;
+        }
+    </style>
+
+
+
+
+
+
+    <style type="text/css">
+        .container {
+            background-color: #99CCFF;
+            border: thick solid #808080;
+            padding: 20px;
+            margin: 20px;
+        }
+    </style>
+
+    <style>
+        canvas {
+            cursor: crosshair;
+            border: 1px solid #000000;
+        }
+    </style>
+
+    <link href="~/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/plugins/jquery-ui-1.12.1/jquery-ui.css" />
+
+    <link href="~/lib_bower/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="~/css/plugins/iCheck/custom.css" rel="stylesheet">
+
+    <link href="~/css/plugins/steps/jquery.steps.css" rel="stylesheet">
+
+    <!-- Toastr style -->
+    <link href="~/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+
+
+    <link href="~/css/plugins/jQueryUI/jquery-ui-1.10.4.custom.min.css" rel="stylesheet">
+
+
+    <!-- Date Picker -->
+    <link rel="stylesheet" href="~/plugins/DateTimePicker/bootstrap-datetimepicker.min.css">
+
+    <!-- Daterange picker -->
+    <link href="~/node_modules/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
+
+    <!-- bootstrap wysihtml5 - text editor -->
+    <link rel="stylesheet" href="~/node_modules/bootstrap3-wysihtml5-npm/dist/bootstrap3-wysihtml5.min.css">
+
+
+
+    @*<link href="~/css/plugins/dataTables/datatables.min.css" rel="stylesheet">*@
+
+    <!--Datatable-->
+
+    <link href="~/node_modules/datatables.net-dt/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/node_modules/datatables.net-autofill-dt/css/autoFill.dataTables.min.css" rel="stylesheet" />
+    <link href="~/node_modules/datatables.net-buttons-dt/css/buttons.dataTables.css" rel="stylesheet" />
+    <link href="~/node_modules/datatables.net-colreorder-dt/css/colReorder.dataTables.min.css" rel="stylesheet" />
+    <link href="~/node_modules/datatables.net-fixedcolumns-dt/css/fixedColumns.dataTables.min.css" rel="stylesheet" />
+    <link href="~/node_modules/datatables.net-fixedheader-dt/css/fixedHeader.dataTables.min.css" rel="stylesheet" />
+    <link href="~/node_modules/datatables.net-keytable-dt/css/keyTable.dataTables.min.css" rel="stylesheet" />
+    <link href="~/node_modules/datatables.net-responsive-dt/css/responsive.dataTables.min.css" rel="stylesheet" />
+    <link href="~/node_modules/datatables.net-rowgroup-dt/css/rowGroup.dataTables.min.css" rel="stylesheet" />
+    <link href="~/node_modules/datatables.net-rowreorder-dt/css/rowReorder.dataTables.min.css" rel="stylesheet" />
+    <link href="~/node_modules/datatables.net-scroller-dt/css/scroller.dataTables.min.css" rel="stylesheet" />
+    <link href="~/node_modules/datatables.net-select-dt/css/select.dataTables.min.css" rel="stylesheet" />
+
+    <link href="~/plugins/DatatableSearchPanel/dataTables.searchPane.min.css" rel="stylesheet" />
+
+
+
+
+    <!-- Step-->
+    <link href="~/css/plugins/steps/jquery.steps.css" rel="stylesheet">
+
+
+    <!-- fullCalendar -->
+    <link rel="stylesheet" href="~/node_modules/fullcalendar/dist/fullcalendar.min.css">
+    <link rel="stylesheet" href="~/node_modules/fullcalendar/dist/fullcalendar.print.min.css" media="print">
+
+
+
+
+
+
+
+    <link href="~/css/animate.css" rel="stylesheet">
+    <link href="~/css/style.css" rel="stylesheet">
+
+
+
+    <!-- sweetAlert-->
+    <script src="~/node_modules/sweetAlert/dist/sweetalert.min.js"></script>
+
+
+
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- ./wrapper -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+</head>
+
+<body>
+
+
+
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <canvas id="canvas" width="800" height="500" onmouseout="clearMousePositions()"></canvas>
+                            <select id="color">
+                                <option value="black">Black</option>
+                                <option value="red">Red</option>
+                                <option value="yellow">Yellow</option>
+                                <option value="green">Green</option>
+                                <option value="blue">Blue</option>
+                            </select>
+                            <div id="output"></div>
+                            <input type="file" id="imageLoader" name="files" multiple class="form-control" />
+                        </div>
+
+
+
+
+
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="col-lg-6">
+                    <div class="ibox chat-view">
+                        <div class="ibox-title">
+                            <small class="pull-right text-muted">Last message:  Mon Jan 26 2015 - 18:39:23</small>
+                            Chat room panel
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="col-md-9 ">
+                                    <div class="chat-discussion">
+
+                                        <ul id="discussion"></ul>
+                                        @*<div class="chat-message left">
+                                                       <img class="message-avatar" src="img/a1.jpg" alt="">
+                                                       <div class="message">
+                                                           <a class="message-author" href="#"> Michael Smith </a>
+                                                           <span class="message-date"> Mon Jan 26 2015 - 18:39:23 </span>
+                                                           <span class="message-content">
+                                                               Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                                                           </span>
+                                                       </div>
+                                            </div>*@
+
+
+
+                                        @*<div class="chat-message right">
+                                                <img class="message-avatar" src="img/a4.jpg" alt="">
+                                                <div class="message">
+                                                    <a class="message-author" href="#"> Karl Jordan </a>
+                                                    <span class="message-date">  Fri Jan 25 2015 - 11:12:36 </span>
+                                                    <span class="message-content">
+                                                        Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover.
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="chat-message right">
+                                                <img class="message-avatar" src="img/a2.jpg" alt="">
+                                                <div class="message">
+                                                    <a class="message-author" href="#"> Michael Smith </a>
+                                                    <span class="message-date">  Fri Jan 25 2015 - 11:12:36 </span>
+                                                    <span class="message-content">
+                                                        There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration.
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="chat-message left">
+                                                <img class="message-avatar" src="img/a5.jpg" alt="">
+                                                <div class="message">
+                                                    <a class="message-author" href="#"> Alice Jordan </a>
+                                                    <span class="message-date">  Fri Jan 25 2015 - 11:12:36 </span>
+                                                    <span class="message-content">
+                                                        All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet.
+                                                        It uses a dictionary of over 200 Latin words.
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="chat-message right">
+                                                <img class="message-avatar" src="img/a6.jpg" alt="">
+                                                <div class="message">
+                                                    <a class="message-author" href="#"> Mark Smith </a>
+                                                    <span class="message-date">  Fri Jan 25 2015 - 11:12:36 </span>
+                                                    <span class="message-content">
+                                                        All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet.
+                                                        It uses a dictionary of over 200 Latin words.
+                                                    </span>
+                                                </div>
+                                            </div>*@
+
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="chat-users">
+                                        <div class="users-list">
+
+
+                                            <ul id="listlogin"></ul>
+
+                                            @*<div class="chat-user">
+                                                    <img class="chat-avatar" src="img/a4.jpg" alt="">
+                                                    <div class="chat-user-name">
+                                                        <a href="#">Karl Jordan</a>
+                                                    </div>
+                                                </div>
+                                                <div class="chat-user">
+                                                    <img class="chat-avatar" src="img/a1.jpg" alt="">
+                                                    <div class="chat-user-name">
+                                                        <a href="#">Monica Smith</a>
+                                                    </div>
+                                                </div>
+                                                <div class="chat-user">
+                                                    <span class="pull-right label label-primary">Online</span>
+                                                    <img class="chat-avatar" src="img/a2.jpg" alt="">
+                                                    <div class="chat-user-name">
+                                                        <a href="#">Michael Smith</a>
+                                                    </div>
+                                                </div>
+                                                <div class="chat-user">
+                                                    <span class="pull-right label label-primary">Online</span>
+                                                    <img class="chat-avatar" src="img/a3.jpg" alt="">
+                                                    <div class="chat-user-name">
+                                                        <a href="#">Janet Smith</a>
+                                                    </div>
+                                                </div>
+                                                <div class="chat-user">
+                                                    <img class="chat-avatar" src="img/a5.jpg" alt="">
+                                                    <div class="chat-user-name">
+                                                        <a href="#">Alice Smith</a>
+                                                    </div>
+                                                </div>
+                                                <div class="chat-user">
+                                                    <img class="chat-avatar" src="img/a6.jpg" alt="">
+                                                    <div class="chat-user-name">
+                                                        <a href="#">Monica Cale</a>
+                                                    </div>
+                                                </div>
+                                                <div class="chat-user">
+                                                    <img class="chat-avatar" src="img/a2.jpg" alt="">
+                                                    <div class="chat-user-name">
+                                                        <a href="#">Mark Jordan</a>
+                                                    </div>
+                                                </div>
+                                                <div class="chat-user">
+                                                    <span class="pull-right label label-primary">Online</span>
+                                                    <img class="chat-avatar" src="img/a3.jpg" alt="">
+                                                    <div class="chat-user-name">
+                                                        <a href="#">Janet Smith</a>
+                                                    </div>
+                                                </div>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="chat-message-form">
+                                        <div class="input-group">
+                                            <textarea class="form-control custom-control" id="message" rows="3" style="resize:none" placeholder="Enter message text"></textarea>
+                                            <span class="input-group-addon btn btn-primary" id="sendmessage">Send</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- jQuery 3 -->
+    <script src="~/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="~/plugins/jquery-ui-1.12.1/jquery-ui.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+
+
+
+    @*<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
+                crossorigin="anonymous"></script>*@
+
+    <script src="~/lib/@@aspnet/signalr/dist/browser/signalr.js"></script>
+
+
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            //var messageInput = document.getElementById('message');
+            // Get the user name and store it to prepend to messages.
+            var name = '@Context.Session.GetString("Username")';
+            var pic = '@Context.Session.GetString("Pic")';
+            // Set initial focus to message input box.
+            //messageInput.focus();
+            // Start the connection.
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl('/chatHub')
+                .build();
+            // Create a function that the hub can call to broadcast messages.
+            connection.on('listlogin', function (name,pic) {
+                // Html encode display name and message.
+                var encodedName = name;
+                var encodePic = pic;
+                //var encodedMsg = message;
+                // Add the message to the page.
+                var liElement = document.createElement('div');
+                liElement.innerHTML = ' <div class="chat-user"><img class="chat-avatar" src="/images/Users/64/'+encodePic+'" alt=""><div class="chat-user-name"> <a href="#">' + encodedName + ' </a></div></div>';
+                document.getElementById('listlogin').appendChild(liElement);
+
+            });
+
+
+            // Transport fallback functionality is now built into start.
+            connection.start()
+                .then(function () {
+
+                    //window.addEventListener("load",function() {
+                    function Check(name,pic) {
+                        //document.getElementById('sendlistlogin').addEventListener('click', function (event) {
+                            // Call the Send method on the hub.
+                            connection.invoke('SendUser', name,pic);
+                        event.preventDefault();
+                        console.log('connection started');
+                        //});
+                    }
+                    Check(name,pic);
+                })
+                .catch(error => {
+                    console.error(error.message);
+                });
+
+        });
+    </script>
+
+
+
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            var messageInput = document.getElementById('message');
+            // Get the user name and store it to prepend to messages.
+             // Using Date() function
+          var d = Date().toString();
+
+          // Converting the number value to string
+            a = d.toString()
+            var name = '@Context.Session.GetString("Username")';
+            var pic = '@Context.Session.GetString("Pic")';
+            var date = a;
+            // Set initial focus to message input box.
+            messageInput.focus();
+            // Start the connection.
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl('/chatHub')
+                .build();
+            // Create a function that the hub can call to broadcast messages.
+            connection.on('broadcastMessage', function (name, message,pic,date) {
+                // Html encode display name and message.
+                var encodedName = name;
+                var encodedMsg = message;
+                var encodedPic = pic;
+                var encodeDate = Date().toString();
+                // Add the message to the page.
+
+
+
+
+                var liElement = document.createElement('div');
+                if (name == '@Context.Session.GetString("Username")') {
+                    liElement.innerHTML = ' <div class="chat-message right"><img class="message-avatar" src="/images/Users/64/' + encodedPic + '" alt=""><div class="message"><a class="message-author" href="#"> ' + encodedName + ' </a><span class="message-date">'+encodeDate+'</span><span class="message-content">' + encodedMsg + '</span></div></div>';
+                } else {
+                    liElement.innerHTML = ' <div class="chat-message left"><img class="message-avatar" src="/images/Users/64/' + encodedPic + '" alt=""><div class="message"><a class="message-author" href="#"> ' + encodedName + ' </a><span class="message-date">'+encodeDate+'</span><span class="message-content">' + encodedMsg + '</span></div></div>';
+                }
+                    document.getElementById('discussion').appendChild(liElement);
+            });
+
+            // Transport fallback functionality is now built into start.
+            connection.start()
+                .then(function () {
+                    console.log('connection started');
+                    document.getElementById('sendmessage').addEventListener('click', function (event) {
+                        // Call the Send method on the hub.
+                        connection.invoke('send', name, messageInput.value,pic, date);
+                        // Clear text box and reset focus for next comment.
+                        messageInput.value = '';
+                        messageInput.focus();
+                        event.preventDefault();
+                    });
+                })
+                .catch(error => {
+                    console.error(error.message);
+            });
+        });
+    </script>
+
+
+
+
+    <script>
+        var imageLoader = document.getElementById('imageLoader');
+        imageLoader.addEventListener('change', handleImage, false);
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d');
+        function handleImage(e) {
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                var img = new Image();
+                img.onload = function () {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 10, 10);
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(e.target.files[0]);
+            EditPic();
+        }
+    </script>
+
+    <!--board-->
+    <script type="text/javascript">
+        function EditPic() {
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+            var canvasx = $(canvas).offset().left;
+            var canvasy = $(canvas).offset().top;
+            var last_mousex = last_mousey = 0;
+            var mousex = mousey = 0;
+            var mousedown = false;
+            var tooltype = 'draw';
+            $(canvas).on('mousedown', function (e) {
+                last_mousex = mousex = parseInt(e.clientX - canvasx);
+                last_mousey = mousey = parseInt(e.clientY - canvasy);
+                mousedown = true;
+            });
+            $(canvas).on('mouseup', function (e) {
+                mousedown = false;
+            });
+            var drawCanvas = function (prev_x, prev_y, x, y, clr) {
+                ctx.beginPath();
+                console.log("X: " + x + " Y: " + y);
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = clr
+                ctx.lineWidth = 3;
+                ctx.moveTo(prev_x, prev_y);
+                ctx.lineTo(x, y);
+                ctx.lineJoin = ctx.lineCap = 'round';
+                ctx.stroke();
+            };
+            $(canvas).on('mousemove', function (e) {
+                mousex = parseInt(e.clientX - canvasx);
+                mousey = parseInt(e.clientY - canvasy);
+                var clr = $('select[id=color]').val()
+                if ((last_mousex > 0 && last_mousey > 0) && mousedown) {
+                    drawCanvas(mousex, mousey, last_mousex, last_mousey, clr);
+                    connection.invoke('draw', last_mousex, last_mousey, mousex, mousey, clr);
+                }
+                last_mousex = mousex;
+                last_mousey = mousey;
+                $('#output').html('current: ' + mousex + ', ' + mousey + '<br />last: ' + last_mousex + ', ' + last_mousey + '<br />mousedown: ' + mousedown);
+            });
+            var mouse_down = false;
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl('/chatHub')
+                .build();
+            connection.on('draw', function (prev_x, prev_y, x, y, clr) {
+                console.log("X: " + x + " Y: " + y);
+                drawCanvas(prev_x, prev_y, x, y, clr);
+            });
+            connection.start();
+            clearMousePositions = function () {
+                last_mousex = 0;
+                last_mousey = 0;
+            }
+        }
+    </script>
+
+    <script>
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+            var canvasx = $(canvas).offset().left;
+            var canvasy = $(canvas).offset().top;
+            var last_mousex = last_mousey = 0;
+            var mousex = mousey = 0;
+            var mousedown = false;
+            var tooltype = 'draw';
+            $(canvas).on('mousedown', function (e) {
+                last_mousex = mousex = parseInt(e.clientX - canvasx);
+                last_mousey = mousey = parseInt(e.clientY - canvasy);
+                mousedown = true;
+            });
+            $(canvas).on('mouseup', function (e) {
+                mousedown = false;
+            });
+            var drawCanvas = function (prev_x, prev_y, x, y, clr) {
+                ctx.beginPath();
+                console.log("X: " + x + " Y: " + y);
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = clr
+                ctx.lineWidth = 3;
+                ctx.moveTo(prev_x, prev_y);
+                ctx.lineTo(x, y);
+                ctx.lineJoin = ctx.lineCap = 'round';
+                ctx.stroke();
+            };
+            $(canvas).on('mousemove', function (e) {
+                mousex = parseInt(e.clientX - canvasx);
+                mousey = parseInt(e.clientY - canvasy);
+                var clr = $('select[id=color]').val()
+                if ((last_mousex > 0 && last_mousey > 0) && mousedown) {
+                    drawCanvas(mousex, mousey, last_mousex, last_mousey, clr);
+                    connection.invoke('draw', last_mousex, last_mousey, mousex, mousey, clr);
+                }
+                last_mousex = mousex;
+                last_mousey = mousey;
+                $('#output').html('current: ' + mousex + ', ' + mousey + '<br />last: ' + last_mousex + ', ' + last_mousey + '<br />mousedown: ' + mousedown);
+            });
+            var mouse_down = false;
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl('/chatHub')
+                .build();
+            connection.on('draw', function (prev_x, prev_y, x, y, clr) {
+                console.log("X: " + x + " Y: " + y);
+                drawCanvas(prev_x, prev_y, x, y, clr);
+            });
+            connection.start();
+            clearMousePositions = function () {
+                last_mousex = 0;
+                last_mousey = 0;
+            }
+    </script>
+
+
+
+
+
+
+
+</body>
+
+</html>

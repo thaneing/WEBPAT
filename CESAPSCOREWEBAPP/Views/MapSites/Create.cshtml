@@ -1,0 +1,59 @@
+﻿@model CESAPSCOREWEBAPP.Models.MapSite
+
+@{
+    ViewData["Title"] = "เพิ่มข้อมูลแผนที่หน่วยงาน";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+                  + "<li>"
+                  + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+                  + "</li>"
+                  + "<li>"
+                  + "<a href='/MapSites/Index' data-toggle='tooltip' data-placement='top' title='List'>รายการแผนที่</a>"
+                  + "</li>"
+                  + "<li class='active'>"
+                  + "<b><a data-toggle='tooltip' data-placement='top' title='Add Title Of Users'>" + @ViewData["Title"] + "</a></b>"
+                  + "</li>"
+                  + "</ol>";
+}
+
+
+<form asp-action="Create">
+    <div class="col-sm-6 col-lg-6 col-md-6 col-lg-offset-3 ">
+        <div class="ibox ">
+            <div class="ibox-title">
+                <h5>@ViewData["Title"]</h5>
+               
+            </div>
+            <div class="ibox-content">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="SiteName" class="control-label"></label>
+                    
+                    <select name="SiteName" class="form-control" asp-items="ViewBag.SiteName"></select>
+
+                </div>
+                <div class="form-group">
+                    <label asp-for="SiteAddress" class="control-label"></label>
+                    <textarea name="SiteAddress" class="form-control"></textarea>
+                    <span asp-validation-for="SiteAddress" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Latitude" class="control-label"></label>
+                    <input asp-for="Latitude" class="form-control" />
+                    <span asp-validation-for="Latitude" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Longitude" class="control-label"></label>
+                    <input asp-for="Longitude" class="form-control" />
+                    <span asp-validation-for="Longitude" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="บันทึก" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Save" />
+                    <a asp-action="Index" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Back to List">กลับรายการ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+

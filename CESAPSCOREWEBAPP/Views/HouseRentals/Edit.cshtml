@@ -1,0 +1,494 @@
+﻿@model CESAPSCOREWEBAPP.Models.HouseRental
+
+
+@{
+    IEnumerable<SourceAutoComplete> sourceAutoCompletes = ViewData["SourceAutoCompletes"] as IEnumerable<SourceAutoComplete>;
+    //IEnumerable<HouseRentalFile> files = ViewData["file"] as IEnumerable<HouseRentalFile>;
+
+    ViewData["Title"] = "แก้ไขข้อมูลการเบิกค่าเช่าห้องพัก";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+             + "<li>"
+             + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+             + "</li>"
+             + "<li>"
+            + "<a href='/HouseRentals/Index' data-toggle='tooltip' data-placement='top' title='List'>รายการเช่าห้องพัก</a>"
+             + "</li>"
+             + "<li class='active'>"
+             + "<b><a data-toggle='tooltip' data-placement='top' title='Add'>" + @ViewData["Title"] + "</a></b>"
+             + "</li>"
+             + "</ol>";
+}
+
+<div class="col-sm-8 col-lg-8 col-md-8 col-lg-offset-2" style="display:none">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>ค้นหาข้อมูลพนักงาน</h5>
+
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label class="control-label">ชื่อพนักงาน</label>
+                        <select id="e9" class="select2-results__option--highlighted form-control" onchange="myFunction()">
+                            @foreach (var branchs in sourceAutoCompletes)
+                            {
+                                <option value="@branchs.name">@branchs.code</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="col-sm-12 col-lg-8 col-md-12 col-lg-offset-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>แก้ไขข้อมูลการเบิกค่าเช่าห้องพัก</h5>
+
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="ID" id="idh" />
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-8 col-md-8">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label">รหัสพนักงานงาน</label>
+                                                <input asp-for="EmpId" id="EmpId" class="form-control" readonly />
+                                                <span asp-validation-for="EmpId" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label">ชื่อ-สกุล</label>
+                                                <input asp-for="EmpName" id="EmpName" class="form-control" readonly />
+                                                <span asp-validation-for="EmpName" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label">หน่วยงาน</label>
+                                                <input asp-for="Site" id="Site" class="form-control" readonly />
+                                                <span asp-validation-for="Site" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label">ตำแหน่ง</label>
+                                                <input asp-for="EmpPosition" id="EmpPosition" class="form-control" readonly />
+                                                <span asp-validation-for="EmpPosition" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-4 col-md-4">
+                                    <label class="pull-right">จำนวนเงินทั้งหมด (บาท)</label>
+                                    @*<input id="cal" style="font-size:60px;width:300px;height:100px;text-align:right;color:red" class="form-control pull-right" step=".01" readonly />*@
+                                    @*<input id="calthaibath" />*@
+                                    <span id="cal" style="font-size:60px;width:300px;height:100px;text-align:right;color:red" class="pull-right"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">หมายเลขห้อง</label>
+                                        <input asp-for="RoomNumber" id="RoomNumber" class="form-control" />
+                                        <span asp-validation-for="RoomNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">ชื่อห้องพัก</label>
+                                        <input asp-for="HouseName" id="HouseName" class="form-control" />
+                                        <span asp-validation-for="HouseName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">ค่าเช่าห้อง (บาท)</label>
+                                        <input asp-for="RoomPrice" class="form-control" type="number" step=".01" id="RoomPrice" style="text-align:right" />
+                                        <span asp-validation-for="RoomPrice" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-12 col-md-12">
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">วันที่ทำรายการ</label>
+                                        <div class="input-group date" id="dtp1">
+                                            <input type="text" class="form-control" name="CreateDate" value="@ViewBag.StartDate" id="txtStart" />
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-8 col-md-8">
+                                    <div class="form-group">
+                                        <label class="control-label">ประเภทห้องพัก</label>
+                                        <select asp-for="TypeRooms" id="TypeRooms" class="form-control" asp-items="Html.GetEnumSelectList<HouseRental.TypeRoom>()"></select>
+                                        <span asp-validation-for="TypeRooms" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">จำนวนเงินค่าเช่า (บจ.)</label>
+                                        <input asp-for="Price" class="form-control" type="number" step=".01" id="Price" onkeyup="getBathText3(this)" style="text-align:right" />
+                                        <span asp-validation-for="Price" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-8 col-md-8">
+                                    <div class="form-group">
+                                        <label class="control-label">จำนวนเงินภาษาไทย</label>
+                                        <input asp-for="Thaibath" id="Thaibath3" class="form-control" readonly />
+                                        <span asp-validation-for="Thaibath" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">เงินประกัน</label>
+                                        <input asp-for="Deposit" class="form-control" type="number" step=".01" id="Deposit" onkeyup="getBathText1(this)" style="text-align:right" />
+                                        <span asp-validation-for="Deposit" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-8 col-md-8">
+                                    <div class="form-group">
+                                        <label class="control-label">จำนวนเงินล่วงหน้าภาษาไทย</label>
+                                        <input id="Thaibath1" class="form-control" asp-for="DepositText" readonly />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">เงินล่วงหน้า</label>
+                                        <input asp-for="Advanced" class="form-control" type="number" step=".01" id="Advanced" onkeyup="getBathText2(this)" style="text-align:right" />
+                                        <span asp-validation-for="Advanced" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-8 col-md-8">
+                                    <div class="form-group">
+                                        <label class="control-label">จำนวนเงินล่วงหน้าภาษาไทย</label>
+                                        <input id="Thaibath2" class="form-control" asp-for="AdvancedText" readonly />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label class="control-label">หมายเหตุ</label>
+                                <textarea asp-for="Etc" class="form-control"></textarea>
+                                <span asp-validation-for="Etc" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label class="form-label">แนบไฟล์</label>
+                                <input type="file" name="filesUpload" multiple class="form-control" id="fileUp" onchange="OnUploadCheck(event)" />
+                                <p style="color:red" id="sizeover"></p>
+                                <span style="color:darkgray">** อัพโหลดฉเพาะไฟล์ pdf เท่านั้น ขนาดไม่เกิน 2 MB</span>
+                            </div>
+                            <label>รายการไฟล์แนบ</label>
+                            @*@{
+                foreach (HouseRentalFile file in files)
+                {
+
+                    <div class="form-group" id="@file.HouseRentalFileID">
+                        <a href="~/File/HouseRental/@file.HouseRentalFileName"><i class="fa fa-paperclip"></i>@file.HouseRentalFileName</a> <a data-id-type="@file.HouseRentalFileID" onclick="DeleteFile(this);"><span style="color:red"><i class="fa fa-times"></i></span></a>
+                    </div>
+
+
+                }
+            }*@
+                            <span id="view"></span>
+
+                        </div>
+
+
+                        <div class="col-lg-4" style="display:none">
+                            <div class="form-group">
+                                <label asp-for="Statuss" class="control-label"></label>
+                                <select asp-for="Statuss" class="form-control" asp-items="Html.GetEnumSelectList<HouseRental.Status>()"></select>
+                                <span asp-validation-for="Statuss" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4" style="display:none">
+                            <div class="form-group">
+                                <label asp-for="CreateBy" class="control-label"></label>
+                                <input asp-for="CreateBy" class="form-control" />
+                                <span asp-validation-for="CreateBy" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4" style="display:none">
+                            <div class="form-group">
+                                <label asp-for="CreateDate" class="control-label"></label>
+                                <input asp-for="CreateDate" class="form-control" />
+                                <span asp-validation-for="CreateDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-4" style="display:none">
+                            <div class="form-group">
+                                <label asp-for="UpdateBy" class="control-label"></label>
+                                <input asp-for="UpdateBy" class="form-control" />
+                                <span asp-validation-for="UpdateBy" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4" style="display:none">
+                            <div class="form-group">
+                                <label asp-for="UpdateDate" class="control-label"></label>
+                                <input asp-for="UpdateDate" type="datetime" class="form-control" />
+                                <span asp-validation-for="UpdateDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-lg col-12 pull-right">
+                                <input type="submit" value="บันทึก" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Save" />
+                                <a asp-action="Index" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Back">กลับรายการ</a>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+
+
+
+        $('#dtp1,#dtp3,#dtp4').datetimepicker({
+            format: 'DD/MM/YYYY',
+        });
+        $('#datetime1').datetimepicker({
+            format: 'DD/MM/YYYY HH:mm:ss',
+        });
+
+
+    </script>
+
+    <script>
+        $("#e9").select2();
+    </script>
+
+    <script>
+        function myFunction() {
+            var x = document.getElementById("e9").value;
+            var date = document.getElementById("txtStart").value;
+            $.ajax({
+                type: "GET",
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                url: "/HouseRentals/CheckEmployee/?empId=" + x + "&CheckDate=" + date,
+                success: function (response) {
+                    document.getElementById("EmpId").value = response.dataemp[0].Code;
+                    document.getElementById("EmpName").value = response.dataemp[0].Name;
+                    document.getElementById("EmpPosition").value = response.dataemp[0].PositionName;
+                    document.getElementById("Site").value = response.dataemp[0].Site;
+
+                    if (response.houserental.length > 0) {
+                        document.getElementById("RoomNumber").value = response.houserental[0].RoomNumber;
+                        document.getElementById("HouseName").value = response.houserental[0].HouseName;
+                        document.getElementById("TypeRooms").value
+                    }
+
+
+
+
+                },
+                failure: function (response) {
+                    swal({
+                        title: "ไม่สำเร็จ!",
+                        text: "กรุณาทำรายการใหม่อีกครั้ง",
+                        icon: "warning",
+                        button: "ตกลง",
+                    });
+                }
+            });
+        }
+    </script>
+
+    <script>
+        getBathText1();
+        getBathText2();
+        getBathText3();
+
+        function getBathText1() {
+            var inputNumber = parseFloat(document.getElementById('Deposit').value);
+            document.getElementById("Thaibath1").value = bahttext(inputNumber);
+            Calculate();
+        }
+
+
+        function getBathText2() {
+            var inputNumber = parseFloat(document.getElementById('Advanced').value);
+            document.getElementById("Thaibath2").value = bahttext(inputNumber);
+            Calculate();
+        }
+
+        function getBathText3() {
+            var inputNumber = parseFloat(document.getElementById('Price').value);
+            document.getElementById("Thaibath3").value = bahttext(inputNumber);
+            Calculate();
+        }
+        function Calculate() {
+            var number1 = document.getElementById('Deposit').value;
+            var number2 = document.getElementById('Advanced').value;
+            var number3 = document.getElementById('Price').value;
+            document.getElementById('cal').innerHTML = (parseFloat(number1) + parseFloat(number2) + parseFloat(number3)).toLocaleString("en");
+
+            //document.getElementById('calthaibath').value = bahttext(parseFloat(number1) + parseFloat(number2) + parseFloat(number3));
+        }
+    </script>
+
+    <script>
+        function DeleteFile(animal) {
+            var id = animal.getAttribute("data-id-type");
+
+            //alert(id);
+            swal({
+                title: "คุณต้องการลบไฟล์นี้ใช่หรือไม่?",
+                text: " ",
+                //html: true,
+                icon: "warning",
+                buttons: [
+                    'No',
+                    'yes'
+                ],
+
+                dangerMode: true,
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        type: "POST",
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: { id: id },
+                        url: "/HouseRentals/Deletefile/" + id,
+                        success: function (response) {
+                            //console.log(response.name);
+                            swal("ลบสำเร็จ", {
+                                title: "ลบไฟล์สำเร็จ ",
+                                icon: "success",
+                                button: false,
+
+                            });
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1000)
+
+                        },
+                        error: function () {
+                            swal({
+                                title: "คุณไม่มีสิทธิ์ในการลบข้อมูลนี้!",
+                                icon: "warning",
+                                button: "ตกลง",
+                            });
+
+                        }
+                    });
+
+                }
+                else {
+                    swal("ยกเลิกการลบ " + name, " ", "error");
+                }
+            })
+
+        }
+    </script>
+
+    <script>
+        function OnUploadCheck(event) {
+            var extall = "pdf";
+            var file = document.getElementById("fileUp").value;		//file = document.form1.filUpload.value;
+            ext = file.split('.').pop().toLowerCase();
+            var oFile = document.getElementById("fileUp").files[0];
+
+            var input = $("#fileUp");
+
+            if (parseInt(extall.indexOf(ext)) < 0 || oFile.size > 2097152) {
+                swal({
+                    title: "ไม่ถูกต้อง",
+                    text: "อัพโหลดเฉพาะไฟล์ pdf เท่านั้น ขนาดไม่เกิน 2 MB",
+                    icon: "error",
+                    button: "ตกลง",
+                });
+
+                input = input.val('').clone(true);
+                return false;
+            }
+            return true;
+        }
+    </script>
+    <script>
+
+       var id = document.getElementById('idh').value;
+    $.ajax({
+        type: "GET",
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        data: { id: id},
+        url: "/HouseRentals/Showfile/",
+
+        success: function (response) {
+            $("#view").html(response.listFile);
+            //document.getElementById("sum1").innerHTML = response.sumdata + " ไฟล์";
+
+        },
+
+        failure: function (response) {
+            alert("fail");
+        }
+    });
+    </script>
+
+}

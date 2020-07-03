@@ -1,0 +1,436 @@
+﻿@model IEnumerable<CESAPSCOREWEBAPP.Models.CaseBPC>
+
+@{
+    ViewData["Title"] = "BPC Case";
+}
+
+
+
+
+
+
+
+<div class="col-lg-12">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>
+                        <a asp-action="Create" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="เพิ่มเคส BPC">Create New</a>
+                        <a class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Line Alert" onclick="sendapi();">Line Alert</a>
+                    </p>
+                    <table class="table table-striped table-bordered table-hover dataTables-example" id="Datatable1">
+                        <thead>
+                            <tr>
+                                <th>
+                                    No.
+                                </th>
+                                <th>
+                                    วันที่
+                                </th>
+                                <th>
+                                    Case MA.
+                                </th>
+                                <th>
+                                    หัวข้อเมล
+                                </th>
+
+                                <th>
+                                    สถานะ
+                                </th>
+                                <th>
+                                    ระดับ
+                                </th>
+                                <th>
+                                    แก้ไขเมื่อ
+                                </th>
+                                <th>
+                                    ระยะเวลา
+                                </th>
+                                <th>
+                                    แก้ไขโดย
+                                </th>
+                                <th>
+                                    ผู้ส่ง
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                            <tr>
+                                <td align="center">
+                                    @Html.DisplayFor(modelItem => item.CaseBPCId)
+                                </td>
+                                <td align="center">
+                                    @item.CaseBPCDate.ToString("yyyy-MM-dd")
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CaseMA)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CaseBPCSubject)
+                                </td>
+
+                                <td align="center">
+                                    @Html.DisplayFor(modelItem => item.caseBPCStatus)
+                                </td>
+                                <td align="center">
+                                    @Html.DisplayFor(modelItem => item.caseBPCPLevel)
+                                </td>
+                                <td align="center">
+                                    @{
+                                        var datefix = "";
+                                        try
+                                        {
+
+                                            DateTime date1 = (DateTime)item.CaseBPCPDateFix;
+                                            datefix = date1.ToString("yyyy-MM-dd");
+                                        }
+                                        catch
+                                        {
+                                            datefix = "";
+                                        }
+
+                                        @datefix
+                                    }
+                                </td>
+                                <td align="center">
+                                    @{
+                                        int elapsedDays;
+                                        try
+                                        {
+
+                                            DateTime date1 = (DateTime)item.CaseBPCPDateFix;
+
+                                            TimeSpan t = date1 - item.CaseBPCDate;
+                                            elapsedDays = t.Days;
+
+
+                                        }
+                                        catch
+                                        {
+                                            DateTime date1 = DateTime.Now;
+                                            TimeSpan t = date1 - item.CaseBPCDate;
+                                            elapsedDays = t.Days;
+                                        }
+
+                                        @elapsedDays
+                                    }
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.EditBy)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.openCaseBy)
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.CaseBPCId" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="แก้ไข"><i class="fa fa-edit"></i></a>
+                                    <a asp-action="Details" asp-route-id="@item.CaseBPCId" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="รายละเอียด"><i class="fa fa-eye"></i></a>
+                                    <a class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="ลบ" data-id-type="@item.CaseBPCId" data-animal-type="@item.CaseBPCSubject" onclick="deleteItem(this);"><i class="fa fa-trash"></i></a>
+                                    @*<a asp-action="Delete" asp-route-id="@item.CaseBPCId">Delete</a>*@
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script>
+        function deleteItem(deletebutton) {
+            var id = deletebutton.getAttribute("data-id-type");
+            var name = deletebutton.getAttribute("data-animal-type");
+            swal({
+                title: "คุณต้องการลบ" + name + " หรือไม่?",
+                text: " ",
+                //html: true,
+                icon: "warning",
+                buttons: [
+                    'No',
+                    'yes'
+                ],
+
+                dangerMode: true,
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        type: "POST",
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: { id: id },
+                        url: "/CaseBPCs/remove/" + id,
+                        success: function (response) {
+                            //console.log(response.name);
+                            swal("ลบสำเร็จ", {
+                                title: "ลบสำเร็จ " + response.name,
+                                icon: "success",
+                                button: false,
+
+                            });
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1000)
+
+                        },
+                        error: function () {
+                            swal({
+                                title: "คุณไม่มีสิทธิ์ในหน้านี้!",
+                                icon: "warning",
+                                button: "ตกลง",
+                            });
+
+                        }
+                    });
+
+                }
+                else {
+                    swal("ยกเลิกการลบ " + name, " ", "error");
+                }
+            })
+
+
+        }
+
+    </script>
+
+
+    <script>
+        function sendapi() {
+            //sendLineNotify();
+            swal({
+                title: "คุณต้องการส่งข้อมูล หรือไม่?",
+                text: " ",
+                //html: true,
+                icon: "warning",
+                buttons: [
+                    'No',
+                    'yes'
+                ],
+
+                dangerMode: true,
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+
+                    $.ajax({
+                        type: "GET",
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        //data: { id: id },
+                        url: "/CaseBPCs/LineAlertAPI/",
+                        success: function (response) {
+                            //console.log(response.name);
+                            swal("ส่งข้อมูลสำเร็จ", {
+                                title: "ส่งข้อมูลจำนวน " + response.name + " รายการ",
+                                icon: "success",
+                                button: false,
+
+                            });
+                            //setTimeout(function () {
+                            //    location.reload();
+                            //}, 1000)
+
+                        },
+                        error: function () {
+                            swal("ส่งข้อมูลไม่สำเร็จ", {
+                                title: "ส่งข้อมูลไม่สำเร็จ โปรตรวจสอบ Token และการเชื่อมต่อ Internet",
+                                icon: "warning",
+                                button: "ตกลง",
+                            });
+
+                        }
+                    });
+
+                }
+                else {
+                    swal("ยกเลิกการส่งข้อมูล", "Success");
+                }
+            })
+
+
+
+
+
+
+
+
+
+
+        }
+
+
+        //token = "Jyy0r8Q1n9EKFjoR1XpbRthx9wfaRky66FlpQqDEGZC";
+        //message = "test";
+        //var msg = message;
+       
+        //  //$.ajax({
+        //  //  url: "https://notify-api.line.me/api/notify",
+        //  //  type: "POST",
+        //  //  crossDomain: true,
+        //  //  dataType: 'json',
+        //  //  contentType: 'application/x-www-form-urlencoded',
+
+        //  //   data: { message: msg },
+        //  //  headers: {
+        //  //    Authorization : "Bearer " + token
+        //  //  },
+        //  //  success: function (result) {
+
+        //  //       alert("login success");
+        //  //  },
+        //  //  error: function (XMLHttpRequest, textStatus, errorThrown) {
+        //  //        alert("Unsuccess");
+        //  //  }
+        //  //});
+        //$.ajax({
+
+        //    url: 'https://notify-api.line.me/api/notify',
+        //    crossDomain: true,
+        //    type: 'POST',
+        //    contentType: "application/json; charset=utf-8",
+        //    data: { message: msg },
+        //     dataType: 'jsonp',
+        //    beforeSend: function(xhr) {
+        //         xhr.setRequestHeader("Authorization", "Bearer "+token)
+        //    }, success: function(data){
+        //        alert(data);
+           
+        //     }
+        //})
+
+
+
+        //$.ajax({
+        //    type: "post",
+       
+        //    url: 'https://notify-api.line.me/api/notify',
+        //    data: { message: msg },
+        //    dataType: "json",
+        //    contentType: 'application/json',
+        //    headers: {
+        //        'Authorization': 'Bearer ' + token,
+        //        'Content-Type': 'application/x-www-form-urlencoded'
+        //    },
+        //    success: function (response) {
+        //        //accessToken = response.token;
+        //        //console.log(accessToken);
+        //        alert("login success");
+        //        //getAgentList();
+        //    },
+        //    error: function (response) {
+        //        alert("login Unsuccess");
+        //    }
+        //});
+
+
+
+
+           $('#Datatable1').DataTable({
+                responsive: true,
+                dom: '<"html5buttons"B>lTfgitp',
+
+                buttons: [
+                    //{
+                    //    extend: 'colvis',
+                    //    text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                    //    titleAttr: 'Hide',
+                    //    postfixButtons: ['colvisRestore']
+                    //},
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                        titleAttr: 'PDF',
+                        pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                        orientation: 'landscape',
+                        customize: function (doc) {
+                            doc.defaultStyle = {
+                                font: 'THSarabun',
+                                fontSize: '12',
+
+                            };
+
+                            //Create a date string that we use in the footer. Format is dd-mm-yyyy
+                            var now = new Date();
+                            var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                            doc['footer'] = (function (page, pages) {
+                                return {
+                                    columns:
+                                        [
+                                            {
+                                                alignment: 'center',
+                                                text: ['Created on: ', { text: jsDate.toString() }]
+                                            },
+                                            {
+                                                alignment: 'right',
+                                                text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                            }
+                                        ],
+                                    margin: 10
+                                }
+                            });
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        titleAttr: 'Excel',
+                        autoFilter: true
+                    },
+                    {
+                        extend: 'copyHtml5',
+                        text: '<i class="fa fa-files-o"></i> Copy',
+                        titleAttr: 'Copy'
+                    },
+                    {
+                        text: 'JSON',
+                        action: function (e, dt, button, config) {
+                            var data = dt.buttons.exportData();
+                            $.fn.dataTable.fileSave(
+                                new Blob([JSON.stringify(data)]),
+                                'Export.json'
+                            );
+                        }
+                    }
+                    //,
+                    //{
+                    //    extend: 'selectAll'
+                    //},
+                    //{
+                    //    extend: 'selectNone'
+                    //}
+
+
+                ]
+
+            })
+
+
+
+
+
+
+
+    </script>
+
+
+}

@@ -1,0 +1,53 @@
+﻿@model CESAPSCOREWEBAPP.Models.AppEtc
+
+@{
+    ViewData["Title"] = "รายละเอียดเหตุผล";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+                 + "<li>"
+                 + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+                 + "</li>"
+                 + "<li>"
+                 + "<a href='/AppEtcs/Index' data-toggle='tooltip' data-placement='top' title='List'>รายการเหตุผลการนัด</a>"
+                 + "</li>"
+                 + "<li class='active'>"
+                 + "<b><a data-toggle='tooltip' data-placement='top' title='Add Title Of Users'>" + @ViewData["Title"] + "</a></b>"
+                 + "</li>"
+                 + "</ol>";
+}
+
+
+<div class="col-sm-6 col-lg-6 col-md-6 col-lg-offset-3">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <dl class="horizontal">
+                        <dt>
+                            เหตุผล
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.AppEtcName)
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <a asp-action="Edit" class="btn btn-info" asp-route-id="@Model.AppEtcId" data-toggle="tooltip" data-placement="top" title="Edit">แก้ไข</a>
+        <a asp-action="Index" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Back to List">กลับรายการ</a>
+    </div>
+</div>

@@ -1,0 +1,4 @@
+﻿@using CESAPSCOREWEBAPP
+@using CESAPSCOREWEBAPP.Models
+@using DevExpress.AspNetCore
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

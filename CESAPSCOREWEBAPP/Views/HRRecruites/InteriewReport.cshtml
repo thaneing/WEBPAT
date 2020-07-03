@@ -1,0 +1,531 @@
+﻿@{
+    ViewData["Title"] = "Interview Report";
+}
+
+
+<style>
+
+    progress {
+        text-align: center;
+    }
+
+        progress:after {
+            content: attr(value)'%';
+        }
+
+    th {
+        font-size: 12px;
+    }
+
+    td {
+        font-size: 12px;
+    }
+    /* Style the tab */
+    .tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+            /* Change background color of buttons on hover */
+            .tab button:hover {
+            }
+
+            /* Create an active/current tablink class */
+            .tab button.active {
+            }
+
+    /* Style the tab content */
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+
+    #ibox-head {
+        height: 200px;
+        /*box-shadow: 0 12px 34px rgba(0, 0, 0, 0.12)*/
+    }
+
+    #ibox2 {
+        height: 425px;
+    }
+    /* Style Progress abr */
+    #bg-progressGen {
+        background-color: #ffaaaa;
+    }
+
+    #bg-progressAge {
+        background-color: #3be8b0;
+    }
+
+    #bg-progressPC {
+        background-color: #81ceff;
+    }
+
+    #bg-progressMn {
+        background-color: #ffc845;
+    }
+
+    #bg-progressDep {
+        background-color: #98ce1e;
+    }
+
+    #bg-progressDep1 {
+        background-color: #d2de61;
+    }
+
+    .font-size {
+        font-size: 23px;
+    }
+
+    .slide {
+        width: 1vw;
+    }
+
+    .purple-btn {
+        text-align: center;
+        color: #fff;
+        background-color: #ae63e4;
+        border: none;
+        border-radius: 3px;
+    }
+
+        .purple-btn:hover {
+            background-color: #a361d3
+        }
+</style>
+
+
+
+<!--end chart-->
+<!--ค้นหาข้อมูล Dushbord ตามวันที่-->
+
+<div class="col-lg-12 connectedSortable">
+    <!-- TO DO List -->
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <i class="ion ion-clipboard"></i>
+            <h3>วันที่การนัดสัมภาษณ์</h3>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="col-lg-2 col-xs-4">
+                        <label>จากวันที่ : </label>
+                        <div class="form-group">
+                            <div class="input-group date" id="dtp1">
+                                <input type="text" class="form-control" name="Startdate" autocomplete="off" id="StartDate1" value="@ViewBag.StartDate" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-4">
+                        <label>ถึง : </label>
+                        <div class="form-group">
+                            <div class="input-group date" id="dtp2">
+                                <input type="text" class="form-control" name="Enddate" autocomplete="off" id="StartDate2" value="@ViewBag.EndDate" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <br />
+                        <a class="btn btn-info" onclick="Submit1()" data-toggle="tooltip" data-placement="top" title="ค้นหา">
+                            <i class="fa fa-search"></i> Search
+                        </a>
+                        @*<button class="btn btn-warning" onclick="ChartTab()">
+                            <i class="ion-ios-calculator"></i>
+                            Chart Report
+                        </button>*@
+                    </div>
+                </div>
+       
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
+            <div class="tabs-container">
+                <ul class="nav nav-tabs">
+                    <li class="active" id="tab1"><a data-toggle="tab" href="#tab-1">รายงานผลการนัด <i class="fa fa-file-text"></i></a></li>
+                    <li class="" id="tab2"><a data-toggle="tab" href="#tab-2">กราฟรายงานผลการนัด <i class="fa fa-area-chart"></i></a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active"><!--table-->
+                        <div class="panel-body">
+                            <div class="col-xs-12 col-sm-12  col-md-12 col-lg-12" id="DashboardDiv">
+                                <table id='example1' class="table table-striped table-bordered table-hover dataTables-example table-responsive">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2" align='center'>No.</th>
+                                            <th rowspan="2" align='center'>ฝ่าย</th>
+                                            <th rowspan="2" align='center'>แผนก</th>
+                                            <th rowspan="2" align='center'>ตำแหน่ง</th>
+                                            <th rowspan="2" align='center'>ขาด</th>
+                                            <th rowspan="2" align="center">นัดสัมภาษณ์</th>
+                                            <th colspan="2" align='center'>ตอบรับสัมภาษณ์</th>
+                                            <th colspan="4" align='center'>หมายเหตุ</th>
+                                        </tr>
+                                        <tr>
+                                            <th align="right">คน</th>
+                                            <th align='right'>%</th>
+                                            <th align='right'>ติดธุระ(คน)</th>
+                                            <th align='right'>ได้งานแล้ว(คน)</th>
+                                            <th align='right'>ไม่สะดวกเดินทาง(คน)</th>
+                                            <th align='right'>อื่นๆ(คน)</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+            
+
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-2" class="tab-pane"><!--chart-->
+                        <div class="panel-body">
+                            <div class="col-lg-8 col-lg-offset-2">
+                                <div class="box-body chart-responsive">
+                                    <canvas id="canvas1"></canvas>
+                                    <progress id="animationProgress1" max="1" value="0" style="width: 100%"></progress>
+                                </div>
+                            </div> 
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Scripts {
+    <script>
+        $('#dtp1,#dtp2').datetimepicker({
+            format: 'DD/MM/YYYY',
+        });
+    </script>
+
+    <script>
+        function Submit1() {
+            var date1 = document.getElementById("StartDate1").value;
+            var date2 = document.getElementById("StartDate2").value;
+
+            var dataType = 'application/json; charset=utf-8';
+
+
+            table = $('#example1').DataTable({
+                destroy: true,
+                columnDefs:
+                    [
+                        {
+                            targets: 4,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 5,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 6,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 7,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 8,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 9,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 10,
+                            className: 'dt-body-right'
+                        }
+
+                    ],
+
+
+                "language": {
+                    "decimal": ",",
+                    "thousands": "."
+                },
+
+                "pageLength": 25,
+
+                dom: 'Bfrtip',
+
+
+                buttons: [
+
+                    {
+                        extend: 'colvis',
+                        text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                        //messageTop: "รายงาน PV&AP : "+StartDate1 + "-" + StartDate2,
+                        titleAttr: 'Hide',
+                        postfixButtons: ['colvisRestore']
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                        titleAttr: 'PDF',
+                        pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                        orientation: 'landscape',
+                        //messageTop: "รายงาน PV&AP : "+StartDate1 + "-" + StartDate2,
+                        customize: function (doc) {
+                            doc.defaultStyle = {
+                                font: 'THSarabun',
+                                fontSize: '12',
+
+                            };
+                            var now = new Date();
+                            var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                            doc['footer'] = (function (page, pages) {
+                                return {
+                                    columns:
+                                        [
+                                            {
+                                                alignment: 'center',
+                                                text: ['Created on: ', { text: jsDate.toString() }]
+                                            },
+                                            {
+                                                alignment: 'right',
+                                                text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                            }
+                                        ],
+                                    margin: 10
+                                }
+                            });
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        titleAttr: 'Excel',
+                        //messageTop: "รายงาน PV&AP : "+StartDate1 + "-" + StartDate2,
+                        autoFilter: true
+                    },
+                    {
+                        extend: 'copyHtml5',
+                        text: '<i class="fa fa-files-o"></i> Copy',
+                        titleAttr: 'Copy'
+
+                    },
+                    {
+                        text: 'JSON',
+                        action: function (e, dt, button, config) {
+                            var data = dt.buttons.exportData();
+                            $.fn.dataTable.fileSave(
+                                new Blob([JSON.stringify(data)]),
+                                'Export.json'
+                            );
+                        }
+                    },
+                    {
+                        extend: 'selectAll'
+                    },
+                    {
+                        extend: 'selectNone'
+                    }
+                ],
+                "ajax": {
+                    "url": "/HRRecruites/GetTableResuiteData/?StartDate=" + date1 + "&EndDate=" + date2,
+                    "contentType": dataType,
+                    "type": "GET",
+                    "data": function (response) {
+                        return JSON.stringify(response.data);
+                    }
+
+                },
+
+                "columns": [
+
+
+                    { "data": "RowNumber" },
+                    { "data": "DepartmentName" },
+                    { "data": "Department1Name" },
+                    { "data": "PositionName" },
+                    { "data": "RecuireNow" },
+                    { "data": "Apptotal" },
+                    { "data": "AppTel" },
+                    { "data": "PerAppTel" },
+                    { "data": "AppEtc2" },
+                    { "data": "AppEtc3" },
+                    { "data": "AppEtc4" },
+                    { "data": "AppEtc5" }
+
+                    //{ "data": "InitialEntryGlobalDim2" },
+                    // { "data": "CountDocument" },
+
+
+
+
+                ]
+
+            });
+
+
+
+            $.ajax({
+                type: "GET",
+                url: "/HRRecruites/GetAddWeek/?date1=" + date1 + "&date2=" + date2,
+                success: function (data1) {
+                    label2 = [];
+                    data2 = [];
+                    $.each(data1, function (i, v1) {
+                        label2.push(v1.X);
+                        data2.push(v1.Y);
+                    })
+
+                    var progress = document.getElementById('animationProgress1');
+                    var ctx = document.getElementById("canvas1").getContext("2d");
+
+                    var myChart1 = new Chart(ctx, {});
+                    myChart1.destroy();
+
+                    myChart1 = new Chart(ctx, {
+                        type: "bar",
+                        data: {
+                            labels: label2,
+                            datasets: [
+                                {
+                                    label: "จำนวนที่นัด",
+                                    fillColor: "rgba(151,187,205,0.5)",
+                                    strokeColor: "rgba(151,187,205,0.8)",
+                                    highlightFill: "rgba(151,187,205,0.75)",
+                                    highlightStroke: "rgba(151,187,205,1)",
+                                    data: data2
+                                }
+                            ]
+                        },
+                        options: {
+
+                            title: {
+                                display: true,
+                                text: 'จำนวนการนัด'
+                            },
+                            legend: {
+                                legendPosition: 'right',
+                                display: true,
+                                labels: {
+                                    fontColor: 'rgb(255, 99, 132)'
+                                }
+                            },
+                            scales: {
+                                yAxes: [
+                                    {
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }
+                                ]
+                            },
+                            animation: {
+                                duration: 2000,
+                                onProgress: function (animation) {
+                                    progress.value = animation.currentStep / animation.numSteps;
+                                },
+                                onComplete: function () {
+                                    window.setTimeout(function () {
+                                        progress.value = 0;
+                                    }, 2000);
+                                }
+                            }
+                        }
+                    });
+                }
+            })
+
+
+
+
+
+        }
+    </script>
+
+    @*<script>
+            $.ajax({
+                type: "GET",
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                //data: { FixAccNo: fixassetno, FixAssetName: itemname1, FixAssetName1: itemname2, SiteName: site, qty: qty,TransectionEtc : etc,TransectionType:selectType} ,
+                url: "/Users/GetData/",
+
+                success: function (response) {
+                    //เรียกธรรมดา
+                    document.getElementById("emp").innerHTML = response.TotalEmployee + " คน";
+                    document.getElementById("male").innerHTML = response.TotalMale + " คน";
+                    document.getElementById("female").innerHTML = response.TotalFemale + " คน";
+                    document.getElementById("monly").innerHTML = response.Monly + " คน";
+                    document.getElementById("dayly").innerHTML = response.Dayly + " คน";
+                    document.getElementById("ho").innerHTML = response.Ho + " คน";
+                    document.getElementById("stores").innerHTML = response.Store + " คน";
+                    document.getElementById("sites").innerHTML = response.Sites + " คน";
+
+                    document.getElementById("percenMale").innerHTML = response.percenMale + "%";
+                    document.getElementById("percenFemale").innerHTML = response.percenFemale + "%";
+                    document.getElementById("percenMonly").innerHTML = response.percenMonly + "%";
+                    document.getElementById("percenDayly").innerHTML = response.percenDayly + "%";
+                    document.getElementById("percenHo").innerHTML = response.percenHo + "%";
+                    document.getElementById("percenStores").innerHTML = response.percenStores + "%";
+                    document.getElementById("percenSites").innerHTML = response.percenSites + "%";
+
+                    //เรียกใช้แบบการ query และแทรก table กับการ query
+                    $("#tableGen").html(response.tableGen);
+                    $("#tableAge").html(response.tableAge);
+                    $("#tableLevel").html(response.tableLevel);
+                    $("#tableManagement").html(response.tableManagement);
+                    $("#tableCon").html(response.tableCon);
+                    $("#tableAdminFinancail").html(response.tableAdminFinancail);
+                    $("#tableTechEst").html(response.tableTechEst);
+                    $("#tableDepCon").html(response.tableDepCon);
+                    $("#tableDepAF").html(response.tableDepAF);
+                    $("#tableDepTE").html(response.tableDepTE);
+                    $("#tableDep1Cons").html(response.tableDep1Cons);
+                    $("#tableDep1AdminF").html(response.tableDep1AdminF);
+                    $("#tableDep1TechE").html(response.tableDep1TechE);
+
+                    ;
+                },
+
+                failure: function (response) {
+                    alert("fail");
+                }
+            });
+
+
+
+        </script>*@
+
+
+
+}

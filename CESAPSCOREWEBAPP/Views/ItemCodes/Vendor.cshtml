@@ -1,0 +1,576 @@
+﻿
+@{
+    ViewData["Title"] = "Purchase By Vendor Code";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+       + "<li>"
+       + "<a href='../../Home/Index'>Home</a>"
+       + "</li>"
+
+       + "<li class='active'>"
+       + "<a>" + @ViewData["Title"] + "</a>"
+       + "</li>"
+       + "</ol>";
+
+
+}
+
+
+
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+
+            <h5>@ViewData["Title"]</h5>
+
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+
+            </div>
+        </div>
+        <div class="ibox-content">
+
+
+            @*@(Html.DevExtreme().PivotGrid()
+                    .ID("sales")
+                    .AllowSorting(true)
+                    .AllowSortingBySummary(true)
+                    .AllowFiltering(true)
+                    .Height(620)
+                    .ShowBorders(true)
+                    .FieldChooser(fc => fc
+                        .AllowSearch(true)
+                        .ApplyChangesMode(ApplyChangesMode.Instantly))
+                    .RowHeaderLayout(PivotGridRowHeadersLayout.Tree)
+                    .Scrolling(e => e.Mode(PivotGridScrollingMode.Virtual))
+                    .DataSource(d => d
+
+
+                       .Store(s => s.Mvc().Controller("PurchaseOrder").LoadAction("GetDataFilter"))
+                        //.RemoteOperations(true)
+                        //.Store(s => s.RemoteController()
+                        //    .Key("OrderID")
+                        //    .LoadUrl("https://localhost:5001/ItemCodes/GetItem?Item=030102010000")
+                        //)
+
+                        .Fields(fields =>
+                            {
+                            fields.Add()
+                                .Caption("Category")
+                                .DataField("Location")
+                                .Width(250)
+
+                                .SortOrder(SortOrder.Asc)
+                                //.Expanded(true)
+                                .Area(PivotGridArea.Row);
+
+                            fields.Add()
+                                .Caption("Subcategory")
+                                .DataField("VendorName")
+                                .Width(250)
+
+                                .SortOrder(SortOrder.Asc)
+                                .Area(PivotGridArea.Row);
+
+                            fields.Add()
+                                .Caption("Date")
+                                .DataField("OrderDate")
+                                .DataType(PivotGridDataType.Date)
+                                .GroupInterval(PivotGridGroupInterval.Year)
+                                .Area(PivotGridArea.Column);
+                            fields.Add()
+                                .Caption("Date")
+                                .DataField("OrderDate")
+                                .DataType(PivotGridDataType.Date)
+                                .GroupInterval(PivotGridGroupInterval.Quarter)
+                                .Area(PivotGridArea.Column);
+
+
+                            fields.Add()
+                                .Caption("Date")
+                                .DataField("OrderDate")
+                                .DataType(PivotGridDataType.Date)
+                                .GroupInterval(PivotGridGroupInterval.Month)
+                                .Area(PivotGridArea.Column);
+
+                            fields.Add()
+                                .Caption("Unit Cost")
+                                .DataField("UnitCost")
+                                .SummaryType(SummaryType.Sum)
+                                .Format(Format.FixedPoint)
+                                .Area(PivotGridArea.Data);
+                        })
+                    )
+                )*@
+
+
+
+
+
+
+
+            <div class="table-responsive">
+
+
+                <table id='example' class="table table-striped table-bordered table-hover dataTables-example">
+                    <thead>
+                        <tr>
+                            <th align='center'>Vendor No</th>
+
+                            <th align='center'>Vendor Name</th>
+           
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+@*<div id="myModal" class="modal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><span id="title"></span></h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <table id="example1" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+
+                                <th>Ven.No</th>
+                                <th>Ven.Name</th>
+                                <th>Location</th>
+                                <th>Description</th>
+
+                                <th>UNM</th>
+                                <th>Qry.</th>
+                                <th>Unit</th>
+                                <th>Amount</th>
+                                <th>JobCost</th>
+                                <th>Doc.No</th>
+                                <th>RefPR</th>
+
+                            </tr>
+                        </thead>
+                    </table>
+
+
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+<div id="inline-content" class="hidden">
+    <h2><span id="title"></span></h2>
+    <table id="example1" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>Date</th>
+
+
+                <th>Location</th>
+                <th>ItemNo</th>
+                <th>Description</th>
+                <th>Description2</th>
+
+                <th>Unit Of Measure</th>
+                <th>Qty.</th>
+                <th>UnitCost</th>
+                <th>Amount</th>
+                <th>JobCost</th>
+                <th>Doc.No</th>
+                <th>Detail</th>
+
+            </tr>
+        </thead>
+    </table>
+</div>
+
+
+
+
+
+
+
+@section Scripts {
+
+    <script>
+        //var applyChangesModes = ["instantly", "onDemand"];
+
+
+
+
+    </script>
+
+
+    <script>
+        //alert(item);
+
+
+        var dataType = 'application/json; charset=utf-8';
+        table = $('#example').DataTable({
+            destroy: true,
+            
+
+            "language": {
+                "decimal": ",",
+                "thousands": "."
+            },
+
+            "pageLength": 25,
+
+            // rowGroup: {
+            //    dataSrc: 2
+            //},
+            //fixedHeader: true,
+            //scrollY: 600,
+            //deferRender: true,
+            //scrollCollapse: true,
+            //scroller: {
+            //    loadingIndicator: true
+            //},
+            //responsive: {
+            //    breakpoints: [
+            //        { name: 'bigdesktop', width: Infinity },
+            //        { name: 'meddesktop', width: 1480 },
+            //        { name: 'smalldesktop', width: 1280 },
+            //        { name: 'medium', width: 1188 },
+            //        { name: 'tabletl', width: 1024 },
+            //        { name: 'btwtabllandp', width: 848 },
+            //        { name: 'tabletp', width: 768 },
+            //        { name: 'mobilel', width: 480 },
+            //        { name: 'mobilep', width: 320 }
+            //    ]
+            //},
+            dom: 'Bfrtip',
+            // stateSave: true,
+
+            buttons: [
+
+                //{
+                //    extend: 'colvis',
+                //    text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                //    // messageTop: item + " " + itemname,
+                //    titleAttr: 'Hide',
+                //    postfixButtons: ['colvisRestore']
+                //},
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                    titleAttr: 'PDF',
+                    pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                    orientation: 'landscape',
+                    //messageTop: item + " " + itemname,
+                    customize: function (doc) {
+                        doc.defaultStyle = {
+                            font: 'THSarabun',
+                            fontSize: '12',
+
+                        };
+                        var now = new Date();
+                        var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                        doc['footer'] = (function (page, pages) {
+                            return {
+                                columns:
+                                    [
+                                        {
+                                            alignment: 'center',
+                                            text: ['Created on: ', { text: jsDate.toString() }]
+                                        },
+                                        {
+                                            alignment: 'right',
+                                            text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                        }
+                                    ],
+                                margin: 10
+                            }
+                        });
+                    }
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i> Excel',
+                    titleAttr: 'Excel',
+                    //messageTop: item + " " + itemname,
+                    autoFilter: true
+                },
+                {
+                    extend: 'copyHtml5',
+                    text: '<i class="fa fa-files-o"></i> Copy',
+                    titleAttr: 'Copy'
+
+                },
+                {
+                    text: 'JSON',
+                    action: function (e, dt, button, config) {
+                        var data = dt.buttons.exportData();
+                        $.fn.dataTable.fileSave(
+                            new Blob([JSON.stringify(data)]),
+                            'Export.json'
+                        );
+                    }
+                }
+                //,
+                //{
+                //    extend: 'selectAll'
+                //},
+                //{
+                //    extend: 'selectNone'
+                //}
+            ],
+            "ajax": {
+                "url": "/ItemCodes/GetDataVendor",
+                "contentType": dataType,
+                "type": "GET",
+                "data": function (response) {
+                    return JSON.stringify(response.data);
+                }
+
+            },
+
+            "columns": [
+
+                { "data": "ItemNo" },
+
+                { "data": "Description" }
+
+
+
+
+            ]
+
+
+
+
+        });
+
+
+
+
+    </script>
+
+
+
+
+
+    <script>
+
+        function selectDetail(appid) {
+
+            var item = appid.getAttribute("data-animal-type");
+            var itemName = appid.getAttribute("data-item-type");
+
+
+            document.getElementById("title").innerHTML = item + " " + itemName;
+
+
+            //alert(item);
+            var dataType = 'application/json; charset=utf-8';
+            tabledata = $('#example1').DataTable({
+                destroy: true,
+                columnDefs:
+                    [
+                        {
+                            targets: 6,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 7,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 8,
+                            className: 'dt-body-right'
+                        }
+                    ],
+                "language": {
+                    "decimal": ",",
+                    "thousands": "."
+                },
+
+                //scrollY: 500,
+                //deferRender: true,
+                //scrollCollapse: true,
+                //scroller: {
+                //    loadingIndicator: true
+                //},
+                responsive: true,
+                //fixedHeader: true,
+                //select: {
+                //    style: 'os',
+                //    blurable: true
+                //},
+                dom: 'Bfrtip',
+                //stateSave: true,
+                buttons: [
+
+                    {
+                        extend: 'colvis',
+                        text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                        messageTop: item + " " + itemName,
+                        titleAttr: 'Hide',
+                        postfixButtons: ['colvisRestore']
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                        exportOptions: {
+                          columns: ':visible'
+                         },
+                        titleAttr: 'PDF',
+                        pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                        orientation: 'landscape',
+                        title: 'รายงานใบสั้งงานตาม Vendor No :'+item+' Vendor Name :' +itemName ,
+                        messageTop: item + " " + itemName,
+                        customize: function (doc) {
+                            doc.defaultStyle = {
+                                font: 'THSarabun',
+                                fontSize: '12',
+
+                            };
+                            var now = new Date();
+                            var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                            doc['footer'] = (function (page, pages) {
+                                return {
+                                    columns:
+                                        [
+                                            {
+                                                alignment: 'center',
+                                                text: ['Created on: ', { text: jsDate.toString() }]
+                                            },
+                                            {
+                                                alignment: 'right',
+                                                text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                            }
+                                        ],
+                                    margin: 10
+                                }
+                            });
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        title: 'รายงานใบสั้งงานตาม Vendor No :'+item+' Vendor Name :' +itemName ,
+                        exportOptions: {
+                          columns: ':visible'
+                         },
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        titleAttr: 'Excel',
+                        messageTop: item + " " + itemName,
+                        autoFilter: true
+                    },
+                    {
+                        extend: 'copyHtml5',
+                        text: '<i class="fa fa-files-o"></i> Copy',
+                        titleAttr: 'Copy'
+
+                    },
+                    {
+                        text: 'JSON',
+                        action: function (e, dt, button, config) {
+                            var data = dt.buttons.exportData();
+                            $.fn.dataTable.fileSave(
+                                new Blob([JSON.stringify(data)]),
+                                'Export.json'
+                            );
+                        }
+                
+                    },
+                    {
+                        extend: 'selectAll'
+                    },
+                    {
+                        extend: 'selectNone'
+                    }
+                ],
+                "ajax": {
+                    "url": "/ItemCodes/GetVendor/?Item=" + item,
+                    "contentType": dataType,
+                    "type": "GET",
+                    "data": function (response) {
+                        return JSON.stringify(response.data);
+                    }
+
+                },
+
+                "columns": [
+                    { "data": "OrderDate" },
+
+   
+                    { "data": "Location" },
+                    { "data": "ItemNo" },
+                 
+                    { "data": "Description" },
+                    { "data": "Description2" },
+                    { "data": "UnitOfMeasure" },
+                    { "data": "Quantity", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "UnitCost", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "Amount", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "JobTaskNo" },
+                    { "data": "DocumentNo" },
+                    { "data": "RefPR" }
+                ]
+
+
+
+
+            });
+
+
+            // Standard Modal
+            $('.modaal-inline-content').modaal({
+                type: 'inline',
+                accessible_title: 'Modal title',
+                before_open: function () {
+                    //console.log('log before open');
+                },
+                before_close: function () {
+                    //console.log('log before close');
+                },
+                after_open: function () {
+                    //console.log('log after open');
+                },
+                after_close: function () {
+                    //console.log('log after close');
+                },
+                should_open: function () {
+                    //console.log('just checking to see if we should open');
+                    return true;
+                }
+            });
+
+
+            $('.fullscreen').modaal({
+                fullscreen: true,
+                content_source: '#inline-content'
+            });
+
+            //$('#myModal').modal();
+        }
+
+    </script>
+
+
+
+}
+

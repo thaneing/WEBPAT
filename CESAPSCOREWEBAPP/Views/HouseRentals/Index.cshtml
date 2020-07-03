@@ -1,0 +1,1439 @@
+﻿@model CESAPSCOREWEBAPP.Models.HouseRental
+@using Microsoft.AspNetCore.Http;
+
+@{
+
+
+    ViewData["Title"] = "รายการเบิกค่าเช่าห้องพัก";
+}
+
+<style>
+    /* Only for the demo */
+    .hasmenu {
+        border: 1px solid #008;
+        margin: 3px;
+        padding: 5px;
+        width: 30px;
+    }
+
+    /* Optionally define a fixed width for menus */
+    .ui-menu {
+        width: 220px;
+    }
+        /* Allow to use <kbd> elements inside the title to define shortcut hints. */
+        .ui-menu kbd {
+            padding-left: 1em;
+            float: right;
+        }
+
+    /* An ugly trick to use a filter icon */
+    .ui-icon-volume-off.ui-icon-filter {
+        -ms-transform: rotate(270deg);
+        -webkit-transform: rotate(270deg);
+        transform: rotate(270deg);
+    }
+
+    .size {
+        height: 126px;
+    }
+
+    .fixscoll {
+        overflow-y: auto;
+        height: 75px;
+    }
+</style>
+
+
+<div class="spiner-example" id="popup" style="display:none">
+    <div class="sk-spinner sk-spinner-three-bounce">
+        <div class="sk-bounce1"></div>
+        <div class="sk-bounce2"></div>
+        <div class="sk-bounce3"></div>
+    </div>
+</div>
+<div class="col-sm-12 col-lg-6 col-md-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>เงื่อนไขการค้นหา</h5>
+
+        </div>
+        <div class="ibox-content ">
+            <div class="row">
+
+                <div class="col-lg-5 col-md-5">
+                    <div class="form-group">
+                        <label>หน่วยงาน : </label>
+                        <div class="container-fluid">
+                            <select class="form-control" asp-items="ViewBag.JobNo" id="joblist"></select>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-lg-5 col-md-5">
+                    <div class="form-group">
+                        <label class="control-label">งวดที่ </label>
+                        <div class="input-group date" id="dpt9">
+                            <input type="text" class="form-control" autocomplete="off" value="@ViewBag.StartDate" id="txtStart" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                @*<button class="btn btn-primary dim btn-dim" type="button" onclick="SearchData();"><i class="fa fa-search"></i> Search</button>*@
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-12 col-lg-6 col-md-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>แนบไฟล์ประจำงวด</h5>
+
+        </div>
+        <div class="ibox-content ">
+            <div class="row">
+                <div class="col-lg-7">
+                    <div class="form-group">
+
+                        <div class="fixscoll">
+                            <div class="full-height-scroll">
+
+                                <div>
+                                    <span id="show"></span>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5 ">
+                    <div class="pull-right">
+                        <button class="btn btn-success dim btn-dim " type="button" onclick="Upload();"><i class="fa fa-upload"></i> Upload File</button>
+                        <button class="btn btn-warning dim btn-dim " type="button" onclick="Send();"><i class="glyphicon glyphicon-envelope"></i> Send Mail</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="col-sm-12 col-lg-12 col-md-12">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>รายละเอียด </h5>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <p>
+                        <a asp-action="Create" class="btn btn-primary">Create</a>
+                        <button class="btn btn-info" type="button" onclick="PrintData();"> Print Report</button>
+                        <button class="btn btn-success" id="Wait" value="0" onclick="createnext()">Save Next Month</button>
+                        @*<input id="choose" hidden/>*@
+                    </p>
+                    <div class="table-responsive">
+                        <table id='example1' class="table table-striped table-bordered table-hover dataTables-example">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        เลือก
+                                    </th>
+                                    <th>
+                                        <i class="glyphicon glyphicon-paperclip" style="font-size:12px"></i>
+                                    </th>
+                                    <th>
+                                        สถานะ
+                                    </th>
+                                    <th>
+                                        วันที่จ่าย
+                                    </th>
+
+                                    <th>
+                                        รหัสพนักงาน
+                                    </th>
+                                    <th>
+                                        ชื่อ-สกุล
+                                    </th>
+                                    <th>
+                                        ตำแหน่ง
+                                    </th>
+                                    <th>
+                                        หน่วยงาน
+                                    </th>
+
+                                    <th>
+                                        การพัก
+                                    </th>
+                                    <th>
+                                        เลขห้อง
+                                    </th>
+                                    <th>
+                                        ชื่อหอพัก
+                                    </th>
+
+                                    <th>
+                                        ค่าเช่าห้อง
+                                    </th>
+                                    <th>
+                                        เงินประกัน
+                                    </th>
+                                    <th>
+                                        ล่วงหน้า
+                                    </th>
+                                    <th>
+                                        ค่าเช่าห้อง(บจ.)
+                                    </th>
+
+
+
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Modal*@
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">เพิ่มไฟล์ข้อมูลการเช่า</h4>
+            </div>
+            <form asp-action="Upload" asp-controller="HouseRentals" method="post" enctype="multipart/form-data" onSubmit="JavaScript:return checknull();">
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label class="form-label">แนบไฟล์</label>
+                        <input type="file" name="filesUpload" multiple class="form-control" id="filep" accept=".pdf" onchange="checksizefile(event)" />
+                        <input class="form-control" id="rentalid" name="ID" type="hidden" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">รายการไฟล์ </label><span style="color:darkgray"> (อัพโหลดฉเพาะไฟล์ pdf เท่านั้น ขนาดไม่เกิน 2 MB )</span>
+                        <p id="files"></p>
+                        @*<span id="sum1"></span>*@
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-lg-2 pull-right">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="tooltip" data-placement="top" title="Close">ยกเลิก</button>
+                    </div>
+                    <input type="submit" value="บันทึก" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Save" />
+                    @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>*@
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+@*Modal*@
+<!-- Modal Month-->
+<div id="myModalFileMonth" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">เพิ่มไฟล์ข้อมูลการเช่าประจำเดือน</h4>
+            </div>
+            <form asp-action="UploadMonth" asp-controller="HouseRentals" method="post" enctype="multipart/form-data" onSubmit="JavaScript:return checknull();">
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <div class="form-group">
+                            <label>Job : </label>
+                            <input class="form-control" id="listJob" name="joba" readonly />
+                            @*<select class="form-control" asp-items="ViewBag.JobNo2" id="listJob" name="joba"></select>*@
+                        </div>
+
+                        @*<input class="form-control" id="month" name="FileMonthDate" />*@
+                        <div class="form-group">
+                            <label class="form-label">งวดที่ : </label>
+                            <input class="form-control" id="dateperoi" name="month" readonly />
+                            @*<div class="input-group date" id="dpt10">
+                                    <input type="text" class="form-control" autocomplete="off" value="@ViewBag.StartDate" name="month" id="dateperoi" />
+
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>*@
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">แนบไฟล์</label>
+                            <input type="file" name="filesUpload2" multiple class="form-control" id="fileUp" onchange="OnUploadCheck(event)" />
+                            <p style="color:red" id="sizeover"></p>
+                            <span style="color:darkgray">** อัพโหลดฉเพาะไฟล์ pdf เท่านั้น ขนาดไม่เกิน 3 MB</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-lg-2 pull-right">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="tooltip" data-placement="top" title="Close">ยกเลิก</button>
+                    </div>
+                    <input type="submit" value="บันทึก" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Save" />
+                    @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>*@
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+
+@*Modal*@
+<!-- Modal Month View-->
+<div id="myModalView" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">รายการไฟล์แนบ</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <span id="view"></span>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="col-lg-2 pull-right">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="tooltip" data-placement="top" title="Close">ยกเลิก</button>
+                </div>
+                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>*@
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@*Modal*@
+<!-- Modal Month Details-->
+<div id="myModalDetails" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">รายการละเอียด</h4>
+            </div>
+
+            <div class="modal-body">
+                <div style="font-size:13px">
+                    <div class="form-group">
+                        <h2 id="empName"></h2>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">รหัสพนักงาน </label>
+                        <span id="empId"> </span>
+                        <label class="control-label">ตำแหน่ง </label>
+                        <span id="empPos"></span>
+                        <label class="control-label">หน่วยงาน</label>
+                        <span id="site"> </span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">ชื่อหอพัก </label>
+                        <span id="houseName"></span>
+                        <label class="control-label">เลขที่หอพัก </label>
+                        <span id="roomNo"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">วันที่เช่า </label>
+                        <span id="posDate"> </span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">ค่าที่พัก </label>
+                        <span id="price"></span> <label class="control-label">บาท </label>
+                        <label class="control-label"></label>
+                        <span id="thaibath"> </span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">เงินประกัน </label>
+                        <span id="Deposit"></span> <label class="control-label">บาท </label>
+                        <label class="control-label"></label>
+                        <span id="DepositText"> </span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">เงินล่วงหน้า </label>
+                        <span id="Advance"></span> <label class="control-label">บาท </label>
+                        <label class="control-label"></label>
+                        <span id="AdvancedText"> </span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">หมายเหตุ </label>
+                        <span id="etc"> </span>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">ประเภทห้องพัก </label>
+                        <span id="type"> </span>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">สถานะ </label>
+                        <span id="status"></span>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@*Modal*@
+<!-- Modal Email-->
+<div id="myModalEmail" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">ส่ง Email</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+
+                    <h3>แจ้งรายการขออนุมัติเบิกค่าเช่าห้องพัก</h3>
+                    <label>หน่วยงาน : </label> <span id="sitemail"></span>
+                    <label>ประจำงวด : </label> <span id="per"></span><br />
+                    <label>E-mail To :</label> <span> <span id="mail"></span> <label> ผู้รับ : </label><span id="name"></span> </span>
+                </div>
+                <div class="form-group">
+
+                    <label>กรอก E-mail ผู้ส่ง</label>
+                    <div class="input-group date col-lg-8">
+                        <input autocomplete="off" type="text" class="form-control col-lg-5" id="mailform" />
+                        <span class="input-group-addon">
+                            <span>@@ces.co.th</span>
+                        </span>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    @*<p>รายละเอียด</p>*@
+                    <div class="table-responsive">
+                        <span id="Listmail"></span>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-lg-2 pull-right">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="tooltip" data-placement="top" title="Close">ยกเลิก</button>
+                </div>
+                <button type="button" class="btn btn-success" data-dismiss="modal" data-toggle="tooltip" data-placement="top" title="Send Mail" onclick="SendApproval();">ส่ง E-mail</button>
+                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>*@
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div id="myModalSaveNext" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">เพิ่มรายการการขอเบิกอนุมัติ</h4>
+            </div>
+            <div class="modal-body">
+  
+                <div class="form-group">
+                    <input id="choose" hidden />
+                    <label class="control-label col-lg-offset-2">วันที่ทำรายการ</label>
+                    <div class="input-group date col-lg-8 col-lg-offset-2" id="dtp1">
+                        <input type="text" class="form-control" name="CreateDate"  value="@ViewBag.StartDateCreate" id="txtPost" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                    <div class="col-lg-8 col-lg-offset-2">
+                        @*<span style="color:lightgray">ต้องเป็นรายการที่มีการ</span> <span class="label label-success">อนุมัติ</span> เท่านั้น*@
+                        <br />
+                        <label style="font-size:16px">รายการที่บันทึกในงวดถัดไป จำนวน </label><span> <label id="num" style="font-size:16px"></label></span><span> <label style="font-size:16px">รายการ</label></span>  
+                    </div>
+
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <div class="col-lg-2 pull-right">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="tooltip" data-placement="top" title="Close">ยกเลิก</button>
+                </div>
+                <button type="button" class="btn btn-success" data-dismiss="modal" data-toggle="tooltip" data-placement="top" title="Save" onclick="SaveNext()">เพิ่ม</button>
+                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>*@
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        $('#dpt9').datetimepicker({
+
+            format: 'YYYY-MM',
+
+        }).on("dp.change", function (selectedDate) {
+            SearchData();
+        });
+        $('#dpt10').datetimepicker({
+            format: 'YYYY-MM',
+        });
+        $('#dtp1').datetimepicker({
+            format: 'DD/MM/YYYY'
+        });
+
+
+    </script>
+
+    <script>
+        SearchData();
+        function SearchData() {
+            var thday = new Array("อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์");
+            var thmonth = new Array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
+            var job = document.getElementById("joblist").value;
+            var month = document.getElementById("txtStart").value;
+            var res = month.substring(7, 5);
+            var year = month.substring(0, 4);
+            var textPeriod = thmonth[parseInt(res) - 1] + ' ' + year;
+            //alert(textPeriod);
+
+
+            var dataType = 'application/json; charset=utf-8';
+
+            // use a global for the submit and return data rendering in the examples
+
+
+
+
+            table = $('#example1').DataTable({
+
+
+                destroy: true,
+                jQueryUI: true,
+                dom: 'l<"H"Rf>t<"F"ip>',
+                columnDefs:
+                    [
+
+                 
+                        {
+                            targets: 11,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 12,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 13,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 14,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            orderable: false,
+                            className: 'select-checkbox',
+                            targets: 0
+                        }
+                    ],
+                select: {
+                    style: 'multi',
+                    selector: 'td:first-child',
+
+                },
+
+                "language": {
+                    "decimal": ",",
+                    "thousands": "."
+                },
+
+                //scrollY: 500,
+                //deferRender: true,
+                //scrollCollapse: true,
+                //scroller: {
+                //    loadingIndicator: true
+                //},
+                //responsive: true,
+                //fixedHeader: true,
+                //select: {
+                //    style: 'os',
+                //    blurable: true
+                //},
+                "order": [[9, "asc"]],
+                "pageLength": 25,
+                dom: 'Bfrtip',
+                //stateSave: true,
+                buttons: [
+
+                    {
+                        extend: 'colvis',
+                        text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                        messageTop: 'สรุปค่าเช่าห้องพนักงานหน่วยงาน : ' + job + ' ประจำงวด : ' + textPeriod,
+
+                        titleAttr: 'Hide',
+                        postfixButtons: ['colvisRestore']
+                    },
+                    {
+                        extend: 'selectAll'
+                    },
+                    {
+                        extend: 'selectNone'
+                    }
+                ],
+                "ajax": {
+                    "url": "/HouseRentals/GetData/?Job=" + job + "&Month=" + month,
+                    //"url": "/HouseRentals/GetData/?Job=" + job + "&Month=" + month,
+                    "contentType": dataType,
+                    "type": "GET",
+                    "data": function (response) {
+                        return JSON.stringify(response.data);
+                    },
+
+
+                },
+
+                "columns": [
+                    {
+                        "data": " ", render: function (data, type, row) {
+                            return "<span></span>";
+                        }
+                    },
+                    {
+                        "data": "Count", render: function (data, type, row) {
+                            if (data > 0) {
+                                return "<span><i  class='glyphicon glyphicon-paperclip' style='font-size:12px'></i></</span>";
+                            }
+                            else {
+                                return "<span></span>";
+                            }
+
+                        }
+                    },
+                    {
+                        "data": "Statuss",
+                        render: function (data, type, row) {
+                            if (data === 0) {
+                                return "<span class='label label-warning'>รออนุมัติ</span>";
+                            } else if (data === 1) {
+                                return "<span class='label label-success'>อนุมัติ</span>";
+                            } else {
+                                return "<span class='label label-danger'>ยกเลิก</span>";
+                            }
+                        }
+                    },
+                    { "data": "Paymentdate" },
+                    { "data": "EmpId" },
+                    { "data": "EmpName" },
+                    { "data": "EmpPosition" },
+                    { "data": "Site" },
+                    {
+                        "data": "TypeRooms",
+                        render: function (data, type, row) {
+                            if (data === 0) {
+                                return 'เดี่ยว';
+                            } else if (data === 1) {
+                                return 'คู่';
+                            }
+                            else {
+                                return 'รอพักคู่';
+                            }
+                        }
+                    },
+                    { "data": "RoomNumber" },  
+                    { "data": "HouseName" },
+                    { "data": "RoomPrice", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "Deposit", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "Advanced", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "Price", render: $.fn.dataTable.render.number(',', '.', 2, '') }
+
+
+
+                ]
+            });
+
+
+            $(document).contextmenu({
+                delegate: ".dataTable tr",
+                menu: [
+                    { title: "Show", cmd: "show", uiIcon: "ui-icon-search" },
+                    { title: "Edit", cmd: "edit", uiIcon: "ui-icon-pencil" },
+                    { title: "Delete", cmd: "delete", uiIcon: "ui-icon-close" },
+                    { title: "Filter", cmd: "filter", uiIcon: "ui-icon-volume-off ui-icon-filter" },
+                    { title: "Remove filter", cmd: "nofilter", uiIcon: "ui-icon-volume-off ui-icon-filter" },
+                    //{ title: "Upload", cmd: "upload", uiIcon: "ui-icon-folder-open" },
+                    { title: "View File", cmd: "view", uiIcon: "ui-icon-contact" }
+                ],
+                select: function (event, ui) {
+                    //var data = table.data();
+
+                    console.log(ui.target[0]._DT_CellIndex.row);
+                    console.log(ui.target[0]._DT_CellIndex.column);
+
+                    var row = ui.target[0]._DT_CellIndex.row;
+                    var colum = ui.target[0]._DT_CellIndex.column
+                    var data = table.row(row).data()
+                    var celltext = ui.target.text();
+
+                    switch (ui.cmd) {
+
+                        case "show":
+
+                            var type = $("#type").val();
+
+                            $('#myModalDetails').modal();
+                            console.log(data.ID);
+                            //เรียกไฟล์ที่ Upload ขึ้นมา Show
+                            $.ajax({
+                                type: "GET",
+                                dataType: 'json',
+                                contentType: 'application/json; charset=utf-8',
+                                data: { id: data.ID },
+                                url: "/HouseRentals/ShowDetails/",
+
+                                success: function (response) {
+                                    //$("#files").html(response.listFile);
+                                    document.getElementById("empId").innerHTML = response.EmpID;
+                                    document.getElementById("empName").innerHTML = response.EmpName;
+                                    document.getElementById("empPos").innerHTML = response.EmpPosition;
+                                    document.getElementById("site").innerHTML = response.Site;
+                                    document.getElementById("houseName").innerHTML = response.HouseName;
+                                    document.getElementById("roomNo").innerHTML = response.RoomNumber;
+                                    document.getElementById("posDate").innerHTML = response.PostingDate;
+                                    document.getElementById("price").innerHTML = response.Price;
+                                    document.getElementById("etc").innerHTML = response.Etc;
+                                    //document.getElementById("thaibath").innerHTML = response.Thaibath;
+                                    document.getElementById("Deposit").innerHTML = response.Deposit;
+                                    //document.getElementById("DepositText").innerHTML = response.DepositText;
+                                    document.getElementById("Advance").innerHTML = response.Advance;
+                                    //document.getElementById("AdvancedText").innerHTML = response.AdvancedText;
+
+
+                                    var types = response.TypeRooms;
+
+                                    if (types == 0) {
+                                        document.getElementById("type").innerHTML = "เดี่ยว";
+                                    }
+                                    else {
+                                        document.getElementById("type").innerHTML = "คู่";
+                                    }
+
+                                    var status = response.Statuss;
+                                    //alert(a);
+                                    if (status == 0) {
+                                        document.getElementById("status").innerHTML = "<label class='label label-warning' style='font-size:12px'>รออนุมัติ</label>";
+                                    } else if (status == 1) {
+                                        document.getElementById("status").innerHTML = "<label class='label label-success' style='font-size:12px'>อนุมัติ</label>";
+                                    } else {
+                                        document.getElementById("status").innerHTML = "<label class='label label-danger' style='font-size:12px'>ยกเลิก</label>";
+                                    }
+
+
+
+                                },
+
+                                failure: function (response) {
+                                    alert("fail");
+                                }
+                            });
+                            break;
+                        case "edit":
+
+                            if (data.Statuss != 0) {
+                                swal({
+                                    title: "ผิดพลาด",
+                                    text: "ข้อมูลงวดที่ : " + data.Period + " ไม่สามารถแก้ไขข้อมูลได้",
+                                    icon: "error",
+                                    button: "ตกลง",
+                                });
+                            } else {
+                                console.log(data.ID);
+                                url = '/HouseRentals/Edit/?id=' + data.ID;
+                                window.location.href = url;
+                            }
+                            break;
+                        case "filter":
+                            table
+                                .column(colum)
+                                .search('^' + celltext + '$', true)
+                                .draw();
+                            break;
+                        case "nofilter":
+                            table
+                                .search('')
+                                .columns().search('')
+                                .draw();
+                            break;
+                        case "delete":
+
+                            if (data.Statuss != 0) {
+                                swal({
+                                    title: "ผิดพลาด",
+                                    text: " งวดที่ : " + data.Period + " ไม่สามารถลบข้อมูลได้",
+                                    icon: "error",
+                                    button: "ตกลง",
+                                });
+                            } else {
+                                //console.log(data.ID);
+                                //url = '/HouseRentals/Delete/' + data.ID;
+                                //window.location.href = url;
+                                //alert(id);
+                                swal({
+                                    title: "คุณต้องการลบข้อมูลงวดที่ : " + data.Period + " นี้ใช่หรือไม่?",
+                                    text: " ",
+                                    //html: true,
+                                    icon: "warning",
+                                    buttons: [
+                                        'No',
+                                        'yes'
+                                    ],
+
+                                    dangerMode: true,
+                                }).then(function (isConfirm) {
+                                    if (isConfirm) {
+                                        $.ajax({
+                                            type: "POST",
+                                            dataType: 'json',
+                                            contentType: 'application/json; charset=utf-8',
+                                            data: { id: data.ID },
+                                            url: "/HouseRentals/DeleteRantal/" + data.ID,
+                                            success: function (response) {
+                                                //console.log(response.name);
+                                                swal("ลบสำเร็จ", {
+                                                    title: "ลบไฟล์สำเร็จ ",
+                                                    icon: "success",
+                                                    button: false,
+
+                                                });
+                                                //setTimeout(function () {
+                                                //    location.reload();
+                                                //}, 800)
+                                                SearchData();
+
+                                            },
+                                            error: function () {
+                                                swal({
+                                                    title: "คุณไม่มีสิทธิ์ในการลบข้อมูลนี้!",
+                                                    icon: "warning",
+                                                    button: "ตกลง",
+                                                });
+
+                                            }
+                                        });
+
+                                    }
+                                    else {
+                                        swal("ยกเลิกการลบ งวดที่ : " + data.Period, " ", "error");
+                                    }
+                                })
+                            }
+
+                            break;
+                       
+                        case "view":
+
+                            document.getElementById('rentalid').value = data.ID;
+                            $.ajax({
+                                type: "GET",
+                                dataType: 'json',
+                                contentType: 'application/json; charset=utf-8',
+                                data: { id: data.ID },
+                                url: "/HouseRentals/Viewfile/",
+
+                                success: function (response) {
+                                    console.log(response.count);
+                                    if (response.count > 0) {
+                                        $('#myModalView').modal();
+                                        $("#view").html(response.listFile);
+                                    } else {
+                                        swal({
+                                            title: "ไม่มีไฟล์อัพโหลดของพนักงานนี้!",
+                                            icon: "warning",
+                                            button: "ตกลง",
+                                        });
+                                    }
+
+
+
+
+                                },
+
+                                failure: function (response) {
+                                    alert("fail");
+                                }
+                            });
+                            break;
+
+                    }
+                },
+                beforeOpen: function (event, ui) {
+                    var $menu = ui.menu,
+                        $target = ui.target,
+                        extraData = ui.extraData;
+
+                }
+
+            });
+
+        }
+        //console.log(job);
+        $(document).ready(function () {
+            $('#joblist').on('change', function () {
+                SearchData();
+                //.search(this.value())
+                ShowFilePeriod();
+            });
+
+        });
+
+        //$(document).ready(function () {
+        //    $('#dpt9').datepicker({})
+        //       .change(dateChanged)
+        //        .on('changeDate', dateChanged);
+        //});
+
+
+        function SaveNext() {
+            var id = document.getElementById('choose').value;
+            var post = document.getElementById('txtPost').value;
+         
+            $.ajax({
+                type: "GET",
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: { id: id, post: post },
+                url: "/HouseRentals/CreateNextPeriod/",
+                //data: { id: id},
+                //url: "/HouseRentals/Checkstring/",
+                success: function (response) {
+                    console.log(response.checkS);
+
+
+                    if (response.checkS > 0) {
+
+                        swal({
+                            title: "ผิดพลาด",
+                            text: "มีรายการที่ยังไม่อนุมัติ ไม่สามารถเพิ่มข้อมูลได้",
+                            icon: "error",
+                            button: "ตกลง",
+                        });
+
+                    } else {
+                        swal({
+                            title: "สำเร็จ",
+                            text: "บันทึก จำนวน " + table.rows('.selected').data().length + " รายการ",
+                            icon: "success",
+                            button: "ตกลง",
+                        });
+                        SearchData();
+                    }
+                },
+                failure: function (response) {
+                    swal({
+                        title: "ผิดพลาด",
+                        text: "ไม่สามารถทำรายการได้",
+                        icon: "error",
+                        button: "ตกลง",
+                    });
+                }
+            });
+            
+
+        }
+    </script>
+    <script>
+        function createnext() {
+
+          
+              var length = table.rows('.selected').data().length;
+
+            console.log(length);
+                 var code = "";
+            for (i = 0; i < table.rows('.selected').data().length; i++) {
+
+                //console.log(table.rows('.selected').data()[i]);
+                if (i == 0) {
+                    code = table.rows('.selected').data()[i].ID;
+                } else {
+                    code += "," + table.rows('.selected').data()[i].ID;
+                }
+
+            }
+            var id = document.getElementById('choose').value = code;
+            if (id == "") {
+
+                swal({
+                    title: "กรุณาเลือกรายการที่จะเพิ่มก่อน!",
+                    icon: "error",
+                    button: "ตกลง",
+                });
+            } else {
+                $('#myModalSaveNext').modal();
+                document.getElementById('num').value = length;
+                console.log(document.getElementById('num').innerHTML = length);
+            }
+        }
+      
+       
+    </script>
+    <script>
+        function DeleteFile(animal) {
+            var id = animal.getAttribute("data-id-type");
+
+            //alert(id);
+            swal({
+                title: "คุณต้องการลบไฟล์นี้ใช่หรือไม่?",
+                text: " ",
+                //html: true,
+                icon: "warning",
+                buttons: [
+                    'No',
+                    'yes'
+                ],
+
+                dangerMode: true,
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        type: "POST",
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: { id: id },
+                        url: "/HouseRentals/Deletefile/" + id,
+                        success: function (response) {
+                            //console.log(response.name);
+                            swal("ลบสำเร็จ", {
+                                title: "ลบไฟล์สำเร็จ ",
+                                icon: "success",
+                                button: false,
+
+                            });
+                            setTimeout(function () {
+                                location.reload();
+                            }, 800)
+
+                        },
+                        error: function () {
+                            swal({
+                                title: "คุณไม่มีสิทธิ์ในการลบข้อมูลนี้!",
+                                icon: "warning",
+                                button: "ตกลง",
+                            });
+
+                        }
+                    });
+
+                }
+                else {
+                    swal("ยกเลิกการลบ " + name, " ", "error");
+                }
+            })
+
+        }
+    </script>
+    <script>
+        function Upload() {
+            var job = document.getElementById('joblist').value;
+            var month = document.getElementById('txtStart').value;
+
+            if (job == 'All') {
+                swal({
+                    title: "กรุณาเลือกหน่วยงาน!",
+                    icon: "error",
+                    button: "ตกลง",
+                });
+                return false;
+            } else {
+                $('#myModalFileMonth').modal();
+                document.getElementById('listJob').value = job;
+                document.getElementById('dateperoi').value = month;
+            }
+
+        }
+    </script>
+
+
+    <script>
+        function DeleteFileMonth(animal) {
+            var id = animal.getAttribute("data-id-type");
+            @*var user = @Context.Session.GetString("Username");*@
+
+            //alert(id);
+            swal({
+                title: "คุณต้องการลบไฟล์นี้ใช่หรือไม่?",
+                text: " ",
+                //html: true,
+                icon: "warning",
+                buttons: [
+                    'No',
+                    'yes'
+                ],
+
+                dangerMode: true,
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        type: "POST",
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: { id: id },
+                        url: "/HouseRentals/DeletefileMonth/" + id,
+                        success: function (response) {
+                            //console.log(response.name);
+                            swal("ลบสำเร็จ", {
+                                title: "ลบไฟล์สำเร็จ ",
+                                icon: "success",
+                                button: false,
+
+                            });
+                            setTimeout(function () {
+                                location.reload();
+                            }, 800)
+
+                        },
+                        error: function () {
+                            swal({
+                                title: "คุณไม่มีสิทธิ์ในการลบข้อมูลนี้!",
+                                icon: "warning",
+                                button: "ตกลง",
+                            });
+
+                        }
+                    });
+
+                }
+                else {
+                    swal("ยกเลิกการลบ " + name, " ", "error");
+                }
+            })
+
+        }
+
+    </script>
+    <script>
+        function ShowFilePeriod() {
+            //$('#myModalShow').modal();
+            var month = document.getElementById('txtStart').value;
+            var job = document.getElementById('joblist').value;
+
+            $.ajax({
+                type: "GET",
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                //data: { id: data.ID },
+                url: "/HouseRentals/ShowfileMonth/?Job=" + job + "&Month=" + month,
+
+                success: function (response) {
+                    $("#show").html(response.listshow);
+                    //document.getElementById("sumdata").innerHTML ="รวมทั้งหมด "+ response.sumdata + " ไฟล์";
+                },
+                failure: function (response) {
+                    alert("fail");
+                }
+            });
+        }
+    </script>
+
+
+
+    <script>
+        function SendApproval() {
+
+            var mailform = document.getElementById('mailform').value;
+            var Job = document.getElementById('joblist').value;
+            var Month = document.getElementById('txtStart').value;
+
+            //alert(Job);
+
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: {
+                    mailform: mailform,
+                    Job: Job,
+                    Month: Month
+                },
+                url: "/HouseRentals/SendRental/?mailform=" + mailform + "&Job=" + Job + "&Month=" + Month,
+                success: function (respons) {
+
+
+                    if (respons.check == 0) {
+                        swal({
+                            title: "ส่งข้อมูลเรียบร้อย!",
+                            icon: "success",
+                            button: "ตกลง",
+                        });
+                    }
+                    else {
+                        swal({
+                            title: "ส่งข้อมูลไม่สำเร็จ!",
+                            icon: "error",
+                            button: "ตกลง",
+                        });
+                    }
+                },
+                error: function () {
+                    swal({
+                        title: "ส่งข้อมูลไม่สำเร็จ!",
+                        icon: "error",
+                        button: "ตกลง",
+                    });
+
+                }
+
+            });
+        }
+    </script>
+    <script>
+        function Send() {
+
+
+            var thday = new Array("อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัส", "ศุกร์", "เสาร์");
+            var thmonth = new Array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
+            var job = document.getElementById("joblist").value;
+            var month = document.getElementById("txtStart").value;
+            var res = month.substring(7, 5);
+            var year = month.substring(0, 4);
+            var textPeriod = thmonth[parseInt(res) - 1] + ' ' + year;
+
+            var job = document.getElementById('joblist').value;
+            var month = document.getElementById('txtStart').value;
+
+
+
+            document.getElementById("sitemail").innerHTML = job;
+            document.getElementById("per").innerHTML = textPeriod;
+
+            if (job == 'All') {
+                swal({
+                    title: "ไม่ถูกต้อง",
+                    text: "กรุณาเลือกหน่วยงานก่อน!!",
+                    icon: "error",
+                    button: "ตกลง",
+                });
+                return false;
+            } else {
+
+                $.ajax({
+                    type: "GET",
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    //data: { id: data.ID },
+                    url: "/HouseRentals/Detailmail/?Job=" + job + "&Month=" + month,
+
+                    success: function (response) {
+                        //$("#show").html(response.listshow);
+                        if (response.countfile < 1) {
+                            swal({
+                                title: "ไม่มีการอัพโหลดไฟล์ประจำงวด",
+                                text: "กรุณาตรวจสอบไฟล์!!",
+                                icon: "error",
+                                button: "ตกลง",
+                            });
+                            return false;
+                        } else if (response.count < 1) {
+                            swal({
+                                title: "ไม่มีข้อมูล",
+                                text: "กรุณาตรวจสอบ!!",
+                                icon: "error",
+                                button: "ตกลง",
+                            });
+                            return false;
+                        }
+                        else {
+                            $('#myModalEmail').modal();
+                            document.getElementById("mail").innerHTML = response.email;
+                            document.getElementById("name").innerHTML = response.name;
+                            $("#Listmail").html(response.lists);
+                        }
+
+                    },
+                    failure: function (response) {
+                        alert("fail");
+                    }
+                });
+            }
+
+        }
+    </script>
+
+
+    <script>
+        function checksizefile(event) {
+            /*     var oFile = document.getElementById("fileUp").files[0];*/ // <input type="file" id="fileUpload" accept=".jpg,.png,.gif,.jpeg"/>
+
+            var pFile = document.getElementById("filep").files[0];
+            var extall = "pdf";
+            var file = document.getElementById("filep").value;		//file = document.form1.filUpload.value;
+            ext = file.split('.').pop().toLowerCase();
+
+            if (parseInt(extall.indexOf(ext)) < 0 || pFile.size > 2097152) {
+                swal({
+                    title: "ไม่ถูกต้อง",
+                    text: "อัพโหลดเฉพาะไฟล์ pdf เท่านั้น ขนาดไม่เกิน 2 MB",
+                    icon: "error",
+                    button: "ตกลง",
+                });
+                return false;
+            }
+            return true;
+
+
+        }
+    </script>
+    <script>
+        function OnUploadCheck(event) {
+            var extall = "pdf";
+            var file = document.getElementById("fileUp").value;		//file = document.form1.filUpload.value;
+            ext = file.split('.').pop().toLowerCase();
+            var oFile = document.getElementById("fileUp").files[0];
+
+            var input = $("#fileUp");
+
+            if (parseInt(extall.indexOf(ext)) < 0 || oFile.size > 3145728) {
+                swal({
+                    title: "ไม่ถูกต้อง",
+                    text: "อัพโหลดเฉพาะไฟล์ pdf เท่านั้น ขนาดไม่เกิน 3 MB",
+                    icon: "error",
+                    button: "ตกลง",
+                });
+
+                input = input.val('').clone(true);
+                return false;
+            }
+            return true;
+        }
+    </script>
+
+    <script>
+        function checknull() {
+            var file1 = $("#fileUp").val();
+            //var file2 = $("#filep").val();
+
+            if (file1 == '') {
+                swal({
+                    title: "ไม่ถูกต้อง",
+                    text: "กรุณาเพิ่มไฟล์ก่อน!!",
+                    icon: "error",
+                    button: "ตกลง",
+                });
+                return false;
+            }
+            return true;
+            //if (file2 == '') {
+            //    swal({
+            //        title: "ไม่ถูกต้อง",
+            //        text: "กรุณาเพิ่มไฟล์ก่อน!!",
+            //        icon: "error",
+            //        button: "ตกลง",
+            //    });
+
+            //    return false;
+            //}
+        }
+    </script>
+
+
+    <script>
+        function PrintData() {
+            var job = document.getElementById("joblist").value;
+            var month = document.getElementById("txtStart").value;
+
+            if (job == 'All') {
+                swal({
+                    title: "ไม่ถูกต้อง",
+                    text: "กรุณาเลือกหน่วยงานก่อน!!",
+                    icon: "error",
+                    button: "ตกลง",
+                });
+                return false;
+            } else {
+                $.ajax({
+                    type: "GET",
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    //data: { id: data.ID },
+                    url: "/HouseRentals/CheckRentalsEmp/?Job=" + job + "&Month=" + month,
+
+                    success: function (response) {
+                        //$("#show").html(response.listshow);
+                        var count = response.count;
+                        if (count > 0) {
+
+                            url = '/HouseRentals/RentalsEmp?Job=' + job + "&Month=" + month;
+                            window.location.href = url;
+
+                        }
+                        else {
+                            swal({
+                                title: "ไม่ถูกต้อง",
+                                text: "ไม่มีรายการที่รอการอนุมัติการขอเบิกค่าเช่าห้องพัก!!",
+                                icon: "error",
+                                button: "ตกลง",
+                            });
+                            return false;
+                        }
+
+                    },
+                    failure: function (response) {
+                        alert("fail");
+                    }
+                });
+
+            }
+
+
+        }
+    </script>
+    <script>
+        $("#joblist").select2();
+    </script>
+}
+

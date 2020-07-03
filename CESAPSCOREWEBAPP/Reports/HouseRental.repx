@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XtraReportsLayoutSerializer SerializerVersion="18.2.7.0" Ref="1" ControlType="DevExpress.XtraReports.UI.XtraReport, DevExpress.XtraReports.v18.2, Version=18.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Name="HouseRental" Margins="25, 25, 13, 11" PaperKind="A4" PageWidth="827" PageHeight="1169" Version="18.2" DataSource="#Ref-0" Font="TH Sarabun New, 11.999999pt, charSet=0">
+  <Bands>
+    <Item1 Ref="2" ControlType="TopMarginBand" Name="TopMargin" HeightF="13" />
+    <Item2 Ref="3" ControlType="BottomMarginBand" Name="BottomMargin" HeightF="10.958354" />
+    <Item3 Ref="4" ControlType="DetailBand" Name="Detail" HeightF="241.208374">
+      <Controls>
+        <Item1 Ref="5" ControlType="XRLabel" Name="label10" Multiline="true" Text="ลงชื่อ .................................ผู้รับเงิน" TextAlignment="TopRight" SizeF="211.458282,23" LocationFloat="140.625, 173.916687" Padding="2,2,0,0,100">
+          <StylePriority Ref="6" UseTextAlignment="false" />
+        </Item1>
+        <Item2 Ref="7" ControlType="XRLabel" Name="label9" Multiline="true" Text="หมายเหตุ : " SizeF="80.20833,23.0000038" LocationFloat="10.0000067, 151.583374" Padding="2,2,0,0,100" />
+        <Item3 Ref="8" ControlType="XRLabel" Name="label8" Multiline="true" Text="จำนวน :" SizeF="80.20833,23.0000038" LocationFloat="23.958334, 115.541695" Padding="2,2,0,0,100" />
+        <Item4 Ref="9" ControlType="XRLabel" Name="label7" Multiline="true" Text="บาท" SizeF="80.20833,23.0000038" LocationFloat="240.625, 92.54168" Padding="2,2,0,0,100" />
+        <Item5 Ref="10" ControlType="XRLabel" Name="label6" Multiline="true" Text="ค่าที่พัก :" SizeF="80.20833,23.0000038" LocationFloat="23.958334, 92.54168" Padding="2,2,0,0,100" />
+        <Item6 Ref="11" ControlType="XRLabel" Name="label5" Multiline="true" Text="ชื่อ - สกุล :" SizeF="80.20833,23.0000038" LocationFloat="10.0000067, 69.5416641" Padding="2,2,0,0,100" />
+        <Item7 Ref="12" ControlType="XRLabel" Name="label4" Multiline="true" Text="รหัสพนักงาน : " SizeF="80.20833,23.0000038" LocationFloat="10.0000067, 46.54166" Padding="2,2,0,0,100" />
+        <Item8 Ref="13" ControlType="XRLabel" Name="label3" Multiline="true" Text="วันที่จ่าย" SizeF="52.0833435,23" LocationFloat="240.625, 33.0000076" Padding="2,2,0,0,100" />
+        <Item9 Ref="14" ControlType="XRLabel" Name="label2" Multiline="true" Text="บริษัท ซี.อี.เอส จำกัด" SizeF="111.458344,22.9999981" LocationFloat="240.624939, 3.000005" Padding="2,2,0,0,100" />
+        <Item10 Ref="15" ControlType="XRLabel" Name="label1" Multiline="true" Text="สลิปค่าที่พักพนักงาน" TextAlignment="TopCenter" SizeF="170.833359,46.5416756" LocationFloat="50, 0" Font="TH Sarabun New, 20.2499981pt, style=Bold, charSet=0" Padding="2,2,0,0,100">
+          <StylePriority Ref="16" UseFont="false" UseTextAlignment="false" />
+        </Item10>
+      </Controls>
+    </Item3>
+    <Item4 Ref="17" ControlType="ReportHeaderBand" Name="ReportHeader" HeightF="23.4583378" />
+    <Item5 Ref="18" ControlType="ReportFooterBand" Name="ReportFooter" />
+  </Bands>
+  <ComponentStorage>
+    <Item1 Ref="0" ObjectType="DevExpress.DataAccess.ObjectBinding.ObjectDataSource,DevExpress.DataAccess.v18.2" Name="objectDataSource1" Base64="PE9iamVjdERhdGFTb3VyY2UgTmFtZT0ib2JqZWN0RGF0YVNvdXJjZTEiPjxEYXRhU291cmNlIFR5cGU9IkNFU0FQU0NPUkVXRUJBUFAuTW9kZWxzLkhvdXNlUmVudGFsLCBDRVNBUFNDT1JFV0VCQVBQLCBWZXJzaW9uPTEuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbCIgLz48L09iamVjdERhdGFTb3VyY2U+" />
+  </ComponentStorage>
+</XtraReportsLayoutSerializer>

@@ -1,0 +1,292 @@
+﻿
+@{
+    ViewData["Title"] = "Item Ledger Report";
+        ViewData["Tab"] = "<ol class='breadcrumb'>"
+                   + "<li>"
+                   + "<a href='../../Home/Index'>Home</a>"
+                   + "</li>"
+
+                   + "<li class='active'>"
+                   + "<a>" + @ViewData["Title"] + "</a>"
+                   + "</li>"
+                   + "</ol>";
+
+
+}
+
+<style>
+
+    .tableFixHead {
+        overflow-y: auto;
+        height: 800px;
+    }
+
+        .tableFixHead th {
+            position: sticky;
+            top: 0;
+        }
+
+    /* Just common table stuff. Really. */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px 16px;
+    }
+
+    th {
+        background: #eee;
+    }
+
+
+    thead input {
+        width: 100%;
+    }
+    /* Style the tab */
+    .tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+            /* Change background color of buttons on hover */
+            .tab button:hover {
+            }
+
+            /* Create an active/current tablink class */
+            .tab button.active {
+            }
+
+    /* Style the tab content */
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+
+
+    /* Button used to open the chat form - fixed at the bottom of the page */
+    .open-button {
+        background-color: #555;
+        color: white;
+        padding: 16px 20px;
+        border: none;
+        cursor: pointer;
+        opacity: 0.8;
+        position: fixed;
+        bottom: 50px;
+        right: 28px;
+        width: 380px;
+    }
+
+    /* The popup chat - hidden by default */
+    .chat-popup {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        right: 15px;
+        border: 3px solid #f1f1f1;
+        z-index: 9;
+        bottom: 50px;
+    }
+
+    /* Add styles to the form container */
+    .form-container {
+        max-width: 400px;
+        padding: 10px;
+        background-color: white;
+    }
+
+    /* Full-width textarea */
+    .data {
+        width: 400px;
+        padding: 15px;
+        margin: 5px 0 22px 0;
+        border: none;
+        background: #f1f1f1;
+        resize: none;
+        height: 500px;
+        overflow: scroll;
+    }
+
+    /* When the textarea gets focus, do something */
+    .form-container textarea:focus {
+        background-color: #ddd;
+        outline: none;
+    }
+
+    /* Set a style for the submit/send button */
+    .form-container .btn {
+        background-color: rgb(0,174,239);
+        color: white;
+        padding: 16px 20px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        margin-bottom: 10px;
+        opacity: 0.8;
+    }
+
+    /* Add a red background color to the cancel button */
+    .form-container .cancel {
+        background-color: darkslategray;
+    }
+
+    /* Add some hover effects to buttons */
+    .form-container .btn:hover, .open-button:hover {
+        opacity: 1;
+    }
+</style>
+
+
+
+
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"] </h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <form method="post" asp-controller="CheckLedgers" asp-action="Index" id="searchfrom">
+                    <div class="col-lg-2 col-xs-4">
+                        <div class="form-group">
+                            <label>จากวันที่ : </label>
+                            <div class="input-group date" id="dtp1">
+                                <input type="text" class="form-control" name="Startdate" id="StartDate1" value="@ViewBag.StartDate" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-4">
+                        <div class="form-group">
+                            <label>ถึง : </label>
+                            <div class="input-group date" id="dtp2">
+                                <input type="text" class="form-control" name="Enddate" id="StartDate2" value="@ViewBag.EndDate" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <button class="btn btn-primary dim btn-dim" type="button" onclick="Submit1()"><i class="fa fa-search"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="col-xs-12 col-sm-12  col-md-6 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>รายละเอียด </h5> <input id="myInput" type="text" class="pull-right" placeholder="&#xF002 Search.." style="font-family:Arial, FontAwesome">
+            
+        </div>
+        <div class="ibox-content">
+           
+            <div class="tableFixHead">
+                <!-- info row -->
+                @Html.Raw(ViewBag.table)
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    <script>
+        $('#dtp1,#dtp2').datetimepicker({
+            format: 'DD/MM/YYYY',
+        });
+    </script>
+    <script>
+        //SAVE VAEULU Estimate
+        //var stringValue = $('#StartDate1').val().trim();
+        //var day = stringValue.substr(0, 2);
+        //var month = stringValue.substr(3, 2);
+        //var year = stringValue.substr(6, 4);
+        //var date1 = year + '-' + month + '-' + day;
+        //var stringValue1 = $('#StartDate2').val().trim();
+        //var day1= stringValue1.substr(0, 2);
+        //var month1 = stringValue1.substr(3, 2);
+        //var year1 = stringValue1.substr(6, 4);
+        //var date2 = year1 + '-' + month1 + '-' + day1;
+
+
+
+        $(document).ready(function () {
+            $("#myInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+
+
+
+        function Submit1() {
+
+            document.getElementById('searchfrom').submit();
+
+        }
+
+
+        $(function () {
+
+            pdfMake.fonts = {
+                THSarabun: {
+                    normal: 'THSarabun.ttf',
+                    bold: 'THSarabun Bold.ttf',
+                    italics: 'THSarabun Italic.ttf',
+                    bolditalics: 'THSarabun BoldItalic.ttf'
+                }
+            }
+            $(document).ready(function () {
+
+
+                var table = $('#v_CheckLedgers').DataTable({
+                    searching: false,
+                    orderCellsTop: true,
+                    fixedHeader: true,
+                    responsive: true,
+                    paging: false,
+                    ordering: false
+                });
+            });
+        });
+
+    </script>
+
+}

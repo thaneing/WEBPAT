@@ -1,0 +1,422 @@
+﻿
+@{
+
+    IEnumerable<SourceAutoComplete> sourceAutoCompletes = ViewData["SourceAutoCompletes"] as IEnumerable<SourceAutoComplete>;
+
+    ViewData["Title"] = "GR remaining";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+   + "<li>"
+   + "<a href='../../Home/Index'>Home</a>"
+   + "</li>"
+
+   + "<li class='active'>"
+   + "<a>" + @ViewData["Title"] + "</a>"
+   + "</li>"
+   + "</ol>";
+}
+
+
+<style>
+    th {
+        font-size: 12px;
+    }
+
+    td {
+        font-size: 11px;
+    }
+</style>
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>@ViewData["Title"]</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label>หน่วยงาน : </label>
+
+                            <input id="joblist" name="site" value="@ViewBag.Site" autocomplete="off" class="typeahead_1 form-control" />
+                            @*<select class="form-control" asp-items="ViewBag.JobNo" id="joblist" onchange="showListHistory(this)"></select>*@
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-2">
+                        <label>ประเภท : </label>
+                        <div class="form-group">
+                            <select class="form-control" id="TypeData">
+                                <option value="3">ทั้งหมด</option>
+                                <option value="0">Purchase Order</option>
+                                <option value="1">Job Order</option>
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary dim btn-dim" type="button" onclick="Searchdata();"><i class="fa fa-search"></i> Search</button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox" id="ibox1">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"] - Chart </h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+
+
+
+            @(Html.DevExtreme().Chart()
+                .ID("chart")
+                .CommonSeriesSettings(s => s.Type(SeriesType.Bar)
+                    .Label(l => l
+                    .Visible(true)
+                    .Format(f => f
+                        .Type(Format.FixedPoint)
+                        .Precision(2)
+
+                    )
+                  )
+                )
+                .Title("รายการ GR คงค้าง")
+                .Tooltip(t => t.Enabled(true).CustomizeTooltip("customize_tooltip").Format(f => f
+                        .Type(Format.FixedPoint)
+                        .Precision(2)
+
+                    ))
+
+
+
+            )
+
+        </div>
+    </div>
+</div>
+
+        <div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+            <div class="ibox" id="ibox1">
+                <div class="ibox-title">
+                    <h5>@ViewData["Title"] - Detail </h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="sk-spinner sk-spinner-wave">
+                        <div class="sk-rect1"></div>
+                        <div class="sk-rect2"></div>
+                        <div class="sk-rect3"></div>
+                        <div class="sk-rect4"></div>
+                        <div class="sk-rect5"></div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id='example' class="table table-striped table-bordered table-hover dataTables-example">
+                            <thead>
+                                <tr>
+                                    <th align='center'>GRDate</th>
+                                    <th align='center'>GRDoc.</th>
+                                    <th align='center'>GRAmount</th>
+                                    <th align='center'>APDate</th>
+                                    <th align='center'>APDoc.</th>
+                                    <th align='center'>APAmount</th>
+                                    <th align='center'>Order</th>
+                                    <th align='center'>PR</th>
+                                    <th align='center'>ShipmentNo.</th>
+                                    <th align='center'>Ven. No.</th>
+                                    <th align='center'>Ven. Name</th>
+                                    <th align='center'>JobGL</th>
+                                    @*<th align='center'>Type</th>*@
+                                </tr>
+                            </thead>
+                            @*<tfoot align="right">
+                                    <tr>
+                                        <th style="text-align:right;" colspan="9"></th>
+
+                                        <th style="text-align:right;"></th>
+                                        <th colspan="3"></th>
+                                        <th style="text-align:right;"></th>
+                                    </tr>
+                                </tfoot>*@
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        @section Scripts {
+
+
+
+            <script>
+                function Searchdata() {
+
+                    var dataType = 'application/json; charset=utf-8';
+                    var site = document.getElementById("joblist").value;
+                     var TypeData = document.getElementById("TypeData").value;
+                   
+                    $.ajax({
+                        type: "GET",
+                        url: "/DetailVendor/GendataNoAP?Site=" + site+"&TypeData="+TypeData,
+                        dataType: 'json',
+                        contentType: dataType,
+                        //data: data,
+                        success: function (response) {
+
+
+
+                            $('#ibox1').children('.ibox-content').toggleClass('sk-loading');
+                            var dataType = 'application/json; charset=utf-8';
+                            table = $('#example').DataTable({
+                                destroy: true,
+                                columnDefs:
+                                    [
+                                        {
+                                            targets: 2,
+                                            className: 'dt-body-right'
+                                        },
+                                        {
+                                            targets: 5,
+                                            className: 'dt-body-right'
+                                        }
+
+
+                                    ],
+
+
+                                //searchPane: true,
+                                "order": [[0, "asc"]],
+                                "language": {
+                                    "decimal": ",",
+                                    "thousands": "."
+                                },
+
+                                "pageLength": 25,
+                                responsive: true,
+                                dom: 'Bfrtip',
+                                buttons: [
+
+                                    {
+                                        extend: 'colvis',
+                                        text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                                        //messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                                        titleAttr: 'Hide',
+                                        postfixButtons: ['colvisRestore']
+                                    },
+                                    {
+                                        extend: 'pdfHtml5',
+                                        text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                                        titleAttr: 'PDF',
+                                        pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                                        orientation: 'landscape',
+                                        messageTop: "Posted Purchase Report",
+                                        customize: function (doc) {
+                                            doc.defaultStyle = {
+                                                font: 'THSarabun',
+                                                fontSize: '12',
+
+                                            };
+                                            var now = new Date();
+                                            var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                                            doc['footer'] = (function (page, pages) {
+                                                return {
+                                                    columns:
+                                                        [
+                                                            {
+                                                                alignment: 'center',
+                                                                text: ['Created on: ', { text: jsDate.toString() }]
+                                                            },
+                                                            {
+                                                                alignment: 'right',
+                                                                text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                                            }
+                                                        ],
+                                                    margin: 10
+                                                }
+                                            });
+                                        }
+                                    },
+                                    {
+                                        extend: 'excelHtml5',
+                                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                                        titleAttr: 'Excel',
+                                        messageTop: "Posted Purchase Report",
+                                        autoFilter: true
+                                    },
+                                    {
+                                        extend: 'copyHtml5',
+                                        text: '<i class="fa fa-files-o"></i> Copy',
+                                        titleAttr: 'Copy'
+
+                                    },
+                                    {
+                                        text: 'JSON',
+                                        action: function (e, dt, button, config) {
+                                            var data = dt.buttons.exportData();
+                                            $.fn.dataTable.fileSave(
+                                                new Blob([JSON.stringify(data)]),
+                                                'Export.json'
+                                            );
+                                        }
+                                    }
+                                ],
+                                "data": response.data,
+
+
+                                "columns": [
+
+                                    { "data": "GRDate" },
+                                    { "data": "DocumentReceipt" },
+                                    { "data": "AmountReceipt", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                                    { "data": "PostingDate" },
+                                    { "data": "DocumentInv" },
+                                    { "data": "AmountVat", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                                    { "data": "RefPOJO" },
+                                    { "data": "RefPR" },
+                                    { "data": "Type" },
+                                    { "data": "PayToVendorNo" },
+                                    { "data": "PayToVendorName" },
+                                    { "data": "JobGL" }
+
+                                ],
+
+                                "initComplete": function (settings, json) {
+                                    $('#ibox1').children('.ibox-content').toggleClass('sk-loading');
+                                    $('div.spiner-example').remove();
+                                }
+                            });
+
+                            label1 = [];
+                            data1 = [];
+                            $.each(response.xy, function (i, v) {
+                                label1.push(v.x);
+                                data1.push(v.y);
+                            })
+
+                            //console.log(response.dataSource);
+                            var element = document.getElementById("chart");
+                            var chartInstance = DevExpress.viz.dxChart.getInstance(element);
+                            chartInstance.option({
+                                  scrollBar: {
+                                    visible: true
+                                },
+                                tickInterval: 1,
+                                dataSource: response.dataSource,
+                                series: {
+                                    label: {
+                                        visible: true,
+                                        backgroundColor: "#c18e92"
+                                    },
+                                    color: "#79cac4",
+                                    type: "bar",
+                                    argumentField: "x",
+                                    name: "Site",
+                                    valueField: "y"
+                                },
+                                title: "รายการ GR คงค้าง",
+                                argumentAxis: {
+                                    label: {
+                                        customizeText: function () {
+                                            return this.valueText;
+                                        }
+                                    }
+                                },
+                                valueAxis: {
+                                 
+                                    label: {
+                                        visible: true
+                                    }
+                                },
+                                "export": {
+                                    enabled: true
+                                },
+                                legend: {
+                                    visible: true
+                                }
+                            });
+
+                        },
+                        error: function () {
+                            alert('ไม่มีสิทธิ์ใช้งาน');
+                        }
+                    })
+
+                }
+
+
+
+                function customize_tooltip(args) {
+                    //getPivotGridInstance();
+
+                    return {
+                        html: args.argumentText + " | Total<div class='currency'>" + args.valueText + "</div>"
+                    };
+
+
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+            </script>
+
+
+            <script>
+                $('#dtp1,#dtp2').datetimepicker({
+                    format: 'YYYY-MM-DD',
+                });
+            </script>
+
+
+            <script>
+    var WebModels = @Html.Raw(Json.Serialize(sourceAutoCompletes));
+      //  var str = JSON.stringify(WebModels);
+        //console.log(JSON.stringify(WebModels));
+
+    //console.log(WebModels);
+       $('.typeahead_1').typeahead({
+                source: WebModels
+            });
+
+            </script>
+
+
+        }
+

@@ -1,0 +1,199 @@
+﻿@model CESAPSCOREWEBAPP.Models.User
+@using Microsoft.AspNetCore.Http;
+@{
+    ViewData["Title"] = "แก้ไข Username";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+                  + "<li>"
+                  + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+                  + "</li>"
+                  + "<li>"
+                  + "<a href='/Users/Index' data-toggle='tooltip' data-placement='top' title='List Members'>รายการสมาชิก</a>"
+                  + "</li>"
+                  + "<li class='active'>"
+                  + "<b><a data-toggle='tooltip' data-placement='top' title='AddUsername'>" + @ViewData["Title"] + "</a></b>"
+                  + "</li>"
+                  + "</ol>";
+}
+
+<div class="col-sm-9 col-lg-9 col-md-9">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+           
+        </div>
+
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <form asp-action="EditUsername" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input name="id" type="hidden" value="@ViewBag.Id" />
+                        <div class="form-group">
+                            <label class="control-label" id="usernameuser">Username : </label>
+                            <label name="Username" id="usernameUser">@ViewBag.Username</label>
+                            <input name="Username" id="username" class="form-control" value="@ViewBag.Username" />
+
+                        </div>
+
+                        <div class="form-group" id="oldpass" style="display:none">
+                            <label class="control-label">Password เก่า</label>
+                            <input id="passwordold" name="passwordold" type="password" class="form-control" />
+                        </div>
+
+
+                        <div class="form-group" id="newpass" style="display:none">
+                            <label class="control-label">Password ใหม่</label>
+                            <input id="passwordnew" name="passwordnew" type="password" class="form-control" />
+                        </div>
+
+
+                        <div class="form-group" id="newpass1" style="display:none">
+                            <label class="control-label">Re-Password ใหม่</label>
+                            <input id="passwordnew1" name="passwordnew1" type="password" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">สิทธิ์การเข้าถึง : </label>
+                            <label id="PermisionName">@ViewBag.PermistionName</label>
+                            @*<input name="PermisionId" type="hidden" class="form-control" value="@ViewBag.PermisionId" />*@
+                            <select name="PermisionId" id="PermisionId" class="form-control" asp-items="ViewBag.PermisionId"></select>   
+                           
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">ประเภทของผู้ใช้ : </label>
+                            <label id="TypeOfUserName">@ViewBag.TypeOfUserName</label>
+                            @*<input name="TypeOfUserId" type="hidden" class="form-control" value="@ViewBag.TypeOfUserId" />*@
+                            <select name="TypeOfUserId" id="TypeOfUserId" class="form-control" asp-items="ViewBag.TypeOfUserId" type="hidden"></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">สถานะ : </label>
+                            <labe  id="CheckUserName">@ViewBag.CheckUserName</labe>
+                            @*<input name="CheckUserId" type="hidden" class="form-control" value="@ViewBag.CheckUserId" />*@
+                            <select name="CheckUserId" id="CheckUserId" class="form-control" asp-items="ViewBag.CheckUserId" type="hidden"></select>
+                        </div>
+
+                        <input type="checkbox" id="checkpass" onchange="checkChangePass()" /><label class="control-label">เปลี่ยนพาสเวิร์ด</label>
+
+                        <input name="UserId" type="hidden" class="form-control" value="@Html.DisplayFor(model => model.UserId)" />
+
+                        <div class="form-group">
+                            <input type="submit" value="บันทึก" class="btn btn-primary pull-right" data-toggle="tooltip" data-placement="top" title="Save" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div>
+        <a asp-action="Index" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Back to List"><i class="glyphicon glyphicon-chevron-left"></i>  กลับรายการ</a>
+    </div>
+</div>
+
+<div class="col-sm-3 col-lg-3 col-md-3">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>ข้อมูลผู้ใช้</h5>          
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <center><img src="/images/Users/256/@Html.DisplayFor(model => model.Pic)" /></center>
+
+                    <div class="col-lg-12">
+                        <ul class="list-group list-group-unbordered">
+                            <li class="list-group-item">
+                                <b>ชื่อ-สกุล</b> <a class="pull-right">@Html.DisplayFor(model => model.TitleOfUsers.TitleOfUserName)@Html.DisplayFor(model => model.Firstname) @Html.DisplayFor(model => model.Lastname)</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>ชื่อเล่น</b> <a class="pull-right">@Html.DisplayFor(model => model.Nickname)</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>วันเกิด</b> <a class="pull-right">@Html.DisplayFor(model => model.BirthName)</a>
+                            </li>
+
+                            <li class="list-group-item">
+                                <b>หน่วยงาน</b> <a class="pull-right">@Html.DisplayFor(model => model.Branchs.BranchName) </a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>ฝ่าย</b> <a class="pull-right">@Html.DisplayFor(model => model.Organizs.Departments.DepartmentName) </a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>แผนก</b> <a class="pull-right">@Html.DisplayFor(model => model.Organizs.Department1s.Department1Name) </a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>ตำแหน่ง</b> <a class="pull-right">@Html.DisplayFor(model => model.Organizs.Positions.PositionName) </a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Email</b> <a class="pull-right">@Html.DisplayFor(model => model.EmailContact)</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Tel</b> <a class="pull-right">@Html.DisplayFor(model => model.MobileTel) หรือ @Html.DisplayFor(model => model.ExtTel) </a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>สถานะ</b> <a class="pull-right">@Html.DisplayFor(model => model.StatusUser.StatusUserName) </a>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+
+
+    var a = @Context.Session.GetString("TypeOfUserId");
+    if (a != "3") {
+
+        //document.getElementById('CheckUserId').disabled = true;
+
+        //document.getElementById('TypeOfUserId').disabled = true;
+        //document.getElementById('PermisionId').disabled = true;
+        
+         document.getElementById('username').style.display = "none";
+        document.getElementById('CheckUserId').style.display = "none";
+
+        document.getElementById('TypeOfUserId').style.display = "none";
+        document.getElementById('PermisionId').style.display = "none";
+
+
+    } else {
+      
+         document.getElementById('usernameUser').style.display = "none";
+        document.getElementById('PermisionName').style.display = "none";
+        document.getElementById('TypeOfUserName').style.display = "none";
+        document.getElementById('CheckUserName').style.display = "none";
+    }
+    //alert(a);
+
+    </script>
+
+    <script>
+
+        function checkChangePass() {
+            var check = document.getElementById("checkpass").checked;
+            if (check == true) {
+                document.getElementById("oldpass").style.display = "";
+                document.getElementById("newpass").style.display = "";
+                document.getElementById("newpass1").style.display = "";
+
+            } else {
+                document.getElementById("oldpass").style.display = "none";
+                document.getElementById("newpass").style.display = "none";
+                document.getElementById("newpass1").style.display = "none";
+                document.getElementById("passwordold").value = "";
+                document.getElementById("passwordnew").value = "";
+                document.getElementById("passwordnew1").value = "";
+
+            }
+        }
+    </script>
+}
+
+

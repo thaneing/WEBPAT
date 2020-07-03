@@ -1,0 +1,159 @@
+﻿@model CESAPSCOREWEBAPP.Models.Manual
+
+@{
+    ViewData["Title"] = "เพิ่มคู่มือ";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+               + "<li>"
+               + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+               + "</li>"
+               + "<li>"
+               + "<a href='/Manuals/Index' data-toggle='tooltip' data-placement='top' title='List'>คู่มือ</a>"
+               + "</li>"
+               + "<li class='active'>"
+               + "<b><a data-toggle='tooltip' data-placement='top' title='Edit Manual'>" + @ViewData["Title"] + "</a></b>"
+               + "</li>"
+               + "</ol>";
+}
+
+
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="col-sm-6 col-lg-6 col-md-6">
+        <div class="ibox ">
+            <div class="ibox-title">
+                <h5>เพิ่มข้อมูลคู่มือ</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label class="control-label">ชื่อคู่มือ</label>
+                            <input asp-for="ManualName" class="form-control" />
+                            <span asp-validation-for="ManualName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">ลิงค์เชื่อมต่อ</label>
+                            <input asp-for="ManualLink" class="form-control" />
+                            <span asp-validation-for="ManualLink" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label">แนบไฟล์ (เลือกได้มากกว่า 1 ไฟล์)</label>
+
+                            <input type="file" name="filesUpload" multiple class="form-control" />
+
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">รายการยอดนิยม</label>
+                            <select asp-for="ManualHits" class="form-control" asp-items="Html.GetEnumSelectList<Manual.ManualHit>()"></select>
+                            <span asp-validation-for="ManualHits" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">แสดงคู่มือ</label>
+                            <select asp-for="ManualEnables" class="form-control" asp-items="Html.GetEnumSelectList<Manual.ManualEnable>()"></select>
+                            <span asp-validation-for="ManualEnables" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">หมวดหมู่คู่มือ</label>
+                            <select asp-for="ManualCatId" class="form-control" asp-items="ViewBag.ManualCatId"></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label">ภาพประกอบคู่มือ</label>
+                            <input type="file" id="gallery-photo-add" name="files" multiple class="form-control" />
+                        </div>
+                        <div class="form-group pull-right">
+                            <input type="submit" value="บันทึก" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Save" />
+                            <a asp-action="Index" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Back to List">กลับรายการ</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-6 col-md-6">
+        <div class="ibox ">
+            <div class="ibox-title">
+                <h5>รายละเอียด</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <div class="form-group">
+                            @*<label class="control-label">รายละเอียด</label>*@
+                            <textarea asp-for="ManuaDetail" class="textarea" placeholder="Place some text here" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">
+
+                        </textarea>
+                            <span asp-validation-for="ManuaDetail" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-lg-12">
+                                <div class="gallery" ></div>
+                            </div>
+                        </div>
+                       
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <!-- Bootstrap WYSIHTML5 -->
+    <script src="~/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+   
+
+    <script>
+        $(function () {
+         
+            //bootstrap WYSIHTML5 - text editor
+            $('.textarea').wysihtml5({
+                toolbar: {
+                    "font-styles": true, // Font styling, e.g. h1, h2, etc.
+                    "emphasis": true, // Italics, bold, etc.
+                    "lists": true, // (Un)ordered lists, e.g. Bullets, Numbers.
+                    "html": false, // Button which allows you to edit the generated HTML.
+                    "link": true, // Button to insert a link.
+                    "image": false, // Button to insert an image.
+                    "color": true, // Button to change color of font
+                    "blockquote": true
+                }
+            });
+
+            // Multiple images preview in browser
+            var imagesPreview = function (input, placeToInsertImagePreview) {
+                if (input.files) {
+                    var filesAmount = input.files.length;
+                    for (i = 0; i < filesAmount; i++) {
+                        var reader = new FileReader();
+                        reader.onload = function (event) {
+                            $($.parseHTML('<img>'))
+                                .attr('src', event.target.result)
+                                .attr('class', "img-thumbnail")
+                                .attr('style','width:220px;visibility: visible;height:200px;')
+                                .appendTo(placeToInsertImagePreview);
+                        }
+                        reader.readAsDataURL(input.files[i]);
+                    }
+                }
+            };
+
+            $('#gallery-photo-add').on('change', function () {
+                imagesPreview(this, 'div.gallery');
+            });
+        });
+
+    </script>
+
+
+}

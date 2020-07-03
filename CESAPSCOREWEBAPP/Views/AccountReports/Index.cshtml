@@ -1,0 +1,1156 @@
+﻿
+@{
+
+    IEnumerable<V_Job> jobNos = ViewData["JobNo"] as IEnumerable<V_Job>;
+    IEnumerable<ConditionReport> Account = ViewData["AccountNo"] as IEnumerable<ConditionReport>;
+
+    IEnumerable<V_Job> jobGLs = ViewData["JobGL"] as IEnumerable<V_Job>;
+    IEnumerable<ConditionReport> AccountGLs = ViewData["AccountGL"] as IEnumerable<ConditionReport>;
+
+    ViewData["Title"] = "Account Report";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+    + "<li>"
+    + "<a href='../../Home/Index'>Home</a>"
+    + "</li>"
+
+    + "<li class='active'>"
+    + "<a>" + @ViewData["Title"] + "</a>"
+    + "</li>"
+    + "</ol>";
+}
+
+
+<style>
+
+    input.empty {
+        font-family: FontAwesome;
+        font-style: normal;
+        font-weight: normal;
+        text-decoration: inherit;
+    }
+
+
+
+
+
+    th {
+        font-size: 0.7vw;
+    }
+
+    td {
+        font-size: 0.7vw;
+    }
+</style>
+
+<style>
+    #new {
+        height: 615px;
+        overflow: auto;
+    }
+
+
+    .tableFixHead1 {
+        overflow-y: auto;
+        height: 460px;
+    }
+
+        .tableFixHead1 th {
+            position: sticky;
+            top: 0;
+        }
+
+
+    .tableFixHead {
+        overflow-y: auto;
+        height: 500px;
+    }
+
+        .tableFixHead th {
+            position: sticky;
+            top: 0;
+        }
+
+    /* Just common table stuff. Really. */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px 16px;
+    }
+
+    th {
+        background: #eee;
+    }
+
+    .size {
+        height: 650px;
+    }
+
+    .fixscoll {
+        overflow-y: auto;
+        height: 75px;
+    }
+</style>
+
+
+
+
+
+<div id="myModalGL" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">ตั้งค่า Filter GL</h4>
+            </div>
+            <div class="modal-body" id="detail">
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-6 col-lg-6 col-md-6">
+                            <div class="tableFixHead1 table-responsive" id="new">
+
+                                <table id="mysiteGL" class="table table-striped">
+                                    <thead>
+                                        <tr class="header">
+                                            <th>ค้นหา : <input id="myInputGL1" /> </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id='mysiteGLdata1'>
+                                        @foreach (V_Job jobGL in jobGLs)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <input @*class="i-checks"*@ type="checkbox" value="@jobGL.JobNo"
+                                                           @{ var GL = ""; foreach (ConditionReport userjobGL in AccountGLs) { if (userjobGL.ReportValue == jobGL.JobNo) { GL = "checked"; } } }
+                                                           @GL data-animalGL-type="@jobGL.JobNo" id="@jobGL.JobNo" onclick="saveDataGL(this);">
+
+                                                    @jobGL.JobNo
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-6 col-md-6">
+                            <div class="ibox ">
+                                <div class="ibox-title">
+                                    <h5>รายการที่เลือก</h5>
+
+                                </div>
+                                <div class="ibox-content size">
+                                    <div>
+                                        <span id="showGL"></span>
+
+                                        <span id="testGL"></span>@*a*@
+                                    </div>
+                                    <div class="fixscoll full-height-scroll">
+                                        <div id="external-events">
+
+                                            <span id="selectItemGL" style="font-size:20px"></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.reload();">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">ตั้งค่า Filter Account No.</h4>
+            </div>
+            <div class="modal-body" id="detail">
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-6 col-lg-6 col-md-6">
+                            <div class="tableFixHead1 table-responsive" id="new">
+
+                                <table id="mysite" class="table table-striped">
+                                    <thead>
+                                        <tr class="header">
+                                            <th>ค้นหา : <input id="myInput1" /> </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id='mysite1'>
+                                        @foreach (V_Job jobno in jobNos)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <input @*class="i-checks"*@ type="checkbox" value="@jobno.JobNo"
+                                                           @{ var a = ""; foreach (ConditionReport userjob in Account) { if (userjob.ReportValue == jobno.JobNo) { a = "checked"; } } }
+                                                           @a data-animal-type="@jobno.JobNo" id="@jobno.JobNo" onclick="saveData(this);">
+
+                                                    @jobno.JobNo
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-6 col-md-6">
+                            <div class="ibox ">
+                                <div class="ibox-title">
+                                    <h5>รายการที่เลือก</h5>
+
+                                </div>
+                                <div class="ibox-content size">
+                                    <div>
+                                        <span id="show"></span>
+
+                                        <span id="test"></span>@*a*@
+                                    </div>
+                                    <div class="fixscoll full-height-scroll">
+                                        <div id="external-events">
+                                            <span id="selectItemHO" style="font-size:20px"></span>
+                                            <span id="selectItem" style="font-size:20px"></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.reload();">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"] </h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <button onclick="SettingData();">Default Account No.</button>
+            <button onclick="SettingDataGL();">Default GL</button>
+
+
+            <div class="charts">
+                <div id="buttonGroup">
+                    @(Html.DevExtreme().Button()
+                        .Icon("print")
+                        .Text("Print")
+                        .OnClick("print")
+                        .ElementAttr("class", "row-element")
+                    )
+                    @(Html.DevExtreme().Button()
+                        .Icon("export")
+                        .Text("Export")
+                        .OnClick("exportChart")
+                        .ElementAttr("class", "row-element")
+                    )
+
+                </div>
+                @(Html.DevExtreme().Chart()
+                    .ID("chart")
+                    .CommonSeriesSettings(s => s.Type(SeriesType.Bar)
+                        .Label(l => l
+                        .Visible(true)
+                        .Format(f => f
+                            .Type(Format.FixedPoint)
+                            .Precision(2)
+
+                        )
+                      )
+                    )
+                    .Title("Account GL")
+
+                    .Tooltip(t => t.Enabled(true).CustomizeTooltip("customize_tooltip").Format(f => f
+                            .Type(Format.FixedPoint)
+                            .Precision(2)
+
+                        ))
+
+
+
+                )
+
+
+
+            </div>
+
+
+            <div id="pivotgrid-demo">
+                @{
+
+                    //string[] site = { "41001010", "41002010", "41003010", "5900003M", "5900002M", "5900001M", "53001020", "53001010", "52190092", "52190091", "52190022", "52190021", "52190007", "52190006", "52190005", "52190004", "52190003", "52190002", "52190001", "52130018", "52130017", "52130016", "52130015", "52130014", "52130013", "52130012", "52130011", "52120013", "52120012", "52120011", "52120010", "52110030", "52110020", "52110010", "52100020", "52100010", "52090050", "52090040", "52090030", "52090020", "52090010", "52080030", "52080020", "52080010", "52070020", "52070010", "52060020", "52060010", "52050060", "52050020", "52050010", "52040020", "52040010", "52030031" };
+
+                    List<String> termsList = new List<String>();
+                    foreach (ConditionReport userjob in Account)
+                    {
+                        termsList.Add(userjob.ReportValue);
+                    }
+
+                }
+
+
+                @{
+
+                    //string[] site = { "41001010", "41002010", "41003010", "5900003M", "5900002M", "5900001M", "53001020", "53001010", "52190092", "52190091", "52190022", "52190021", "52190007", "52190006", "52190005", "52190004", "52190003", "52190002", "52190001", "52130018", "52130017", "52130016", "52130015", "52130014", "52130013", "52130012", "52130011", "52120013", "52120012", "52120011", "52120010", "52110030", "52110020", "52110010", "52100020", "52100010", "52090050", "52090040", "52090030", "52090020", "52090010", "52080030", "52080020", "52080010", "52070020", "52070010", "52060020", "52060010", "52050060", "52050020", "52050010", "52040020", "52040010", "52030031" };
+
+                    List<String> termsListGL = new List<String>();
+                    foreach (ConditionReport userjobGL in AccountGLs)
+                    {
+                        termsListGL.Add(userjobGL.ReportValue);
+                    }
+
+                }
+
+
+
+
+                @(Html.DevExtreme().PivotGrid<AccountReport>
+                  ()
+                  .ID("pivotgrid")
+                  .AllowSortingBySummary(true)
+                  .AllowFiltering(true)
+                  .FieldPanel(p => p
+                  .ShowColumnFields(true)
+                  .ShowDataFields(true)
+                  .ShowFilterFields(true)
+                  .ShowRowFields(true)
+                  .AllowFieldDragging(true)
+                  .Visible(true)
+                  )
+                  .HeaderFilter(h => h
+                  .AllowSearch(true)
+                  //.ShowRelevantValues(true)
+                  .Width(300)
+                  .Height(400)
+                  )
+
+
+                  .ShowBorders(true)
+                  .ShowColumnGrandTotals(true)
+                  .ShowRowGrandTotals(true)
+                  .ShowRowTotals(true)
+                  .ShowColumnTotals(true)
+                  .FieldChooser(c => c.Enabled(true).Height(400))
+                  .Export(e => e.Enabled(true).FileName("JobGLReport"))
+                  .Scrolling(fc => fc.Mode(PivotGridScrollingMode.Virtual))
+                  .DataSource(d => d
+                  .Store(s => s.Mvc().Controller("AccountReports").LoadAction("Get"))
+
+                  .Fields(fields =>
+                  {
+                      fields.AddFor(m => m.CloseAcc)
+                      .Area(PivotGridArea.Filter)
+                      .Caption("CloseAcc");
+
+
+                      fields.AddFor(m => m.CostCode)
+                      .Area(PivotGridArea.Filter)
+                      .Caption("CostCode");
+
+                      fields.AddFor(m => m.PostingDate)
+                      .DataType(PivotGridDataType.Date)
+                      .Area(PivotGridArea.Filter)
+                      .GroupInterval(PivotGridGroupInterval.Year)
+                      .Caption("Year");
+
+
+                      fields.AddFor(m => m.PostingDate)
+                      .DataType(PivotGridDataType.Date)
+                      .Area(PivotGridArea.Filter)
+                      .GroupInterval(PivotGridGroupInterval.Month)
+                      .Caption("Mount");
+
+
+                      fields.AddFor(m => m.PostingDate)
+                      .DataType(PivotGridDataType.Date)
+                      .Area(PivotGridArea.Filter)
+                      .Caption("Date");
+
+
+                      fields.AddFor(m => m.JobTaskNo)
+                      .Area(PivotGridArea.Filter)
+                      .Caption("JobTaskNo");
+
+                      fields.AddFor(m => m.ACCLV4)
+                      .Width(120)
+                      .Area(PivotGridArea.Column)
+                      .Caption("LV4");
+
+                      fields.AddFor(m => m.ACCLV3)
+                      .Width(120)
+                      .Caption("LV3");
+
+                      fields.AddFor(m => m.ACCLV2)
+                      .Width(120)
+                      .Caption("LV2");
+
+
+                      fields.AddFor(m => m.ACCLV1)
+                      .Width(300)
+                      .Area(PivotGridArea.Column)
+                      .SortBySummaryField("LV1")
+                      .FilterValues(termsList)
+                      .Caption("LV1");
+
+
+                      fields.AddFor(m => m.JobGL)
+                   
+                      .FilterValues(termsListGL)
+                          .Area(PivotGridArea.Row)
+                      .Caption("JobGL");
+
+
+                      fields.AddFor(m => m.JobGLName)
+                      .Width(300)
+                         .Area(PivotGridArea.Filter)
+                  
+                      .Caption("JobGLName");
+
+
+                      fields.AddFor(m => m.Amount)
+                      .SummaryType(SummaryType.Sum)
+                       .Format(f => f
+                            .Type(Format.FixedPoint)
+                            .Precision(2)
+
+                        )
+                      .Area(PivotGridArea.Data)
+                      .Caption("Amount");
+
+
+
+
+
+
+                  })
+                  )
+                    .OnInitialized("bind_chart")
+                    .OnContentReady("getChartInstance")
+
+                )
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+
+
+
+
+
+
+    <script>
+
+
+
+
+        function getPivotGridInstance() {
+
+
+            let elementPivotGrid = document.getElementById("pivotgrid");
+            let instancePivotGrid = DevExpress.ui.dxPivotGrid.getInstance(elementPivotGrid);
+
+
+            return instancePivotGrid;
+        }
+
+
+        function getFilterPivotGridInstance() {
+
+            let instance1 = getPivotGridInstance();
+            console.log(instance1.getDataSource());
+
+            let filterdata = "";
+            let filterhead = "";
+            let filtervalue = "";
+
+            let filter = "";
+            let bigHead = "<b>Filter Header : </b>";
+
+            var checkBigHead = 0;
+            for (i = 0; i < instance1.getDataSource()._descriptions.filters.length; i++) {
+                //check = 0;
+                filterhead = instance1.getDataSource()._descriptions.filters[i].dataField + " : ";
+                try {
+
+                    for (j = 0; j < instance1.getDataSource()._descriptions.filters[i].filterValues.length; j++) {
+                        if (j == 0) {
+                            filtervalue = filtervalue + " ";
+                        }
+
+                        if (j == instance1.getDataSource()._descriptions.filters[i].filterValues.length - 1) {
+                            filtervalue = filtervalue + instance1.getDataSource()._descriptions.filters[i].filterValues[j] + " ";
+                        } else {
+                            filtervalue = filtervalue + instance1.getDataSource()._descriptions.filters[i].filterValues[j] + ",";
+                        }
+
+                        check = 0;
+                    }
+                }
+                catch
+                {
+                    check = 1;
+                }
+
+
+                if (check == 0) {
+                    checkBigHead = 1;
+                    filterdata = filterdata + filterhead + filtervalue;
+                }
+
+                filterhead = "";
+                filtervalue = "";
+            }
+
+            if (checkBigHead == 1) {
+                filter = filter + bigHead + filterdata;
+            }
+            checkBigHead = 0;
+
+            filterdata = "";
+            filterhead = "";
+            filtervalue = "";
+
+            bigHead = "<br><b>Filter Row : </b>";
+
+            for (i = 0; i < instance1.getDataSource()._descriptions.rows.length; i++) {
+                check = 0;
+                filterhead = instance1.getDataSource()._descriptions.rows[i].dataField + " : ";
+                try {
+
+                    for (j = 0; j < instance1.getDataSource()._descriptions.rows[i].filterValues.length; j++) {
+                        if (j == 0) {
+                            filtervalue = filtervalue + " ";
+                        }
+
+
+                        if (j == instance1.getDataSource()._descriptions.rows[i].filterValues.length - 1) {
+                            filtervalue = filtervalue + instance1.getDataSource()._descriptions.rows[i].filterValues[j] + " ";
+                        } else {
+                            filtervalue = filtervalue + instance1.getDataSource()._descriptions.rows[i].filterValues[j] + ",";
+                        }
+                        check = 0;
+                    }
+                } catch{
+                    check = 1;
+                }
+
+
+                if (check == 0) {
+                    checkBigHead = 1;
+                    filterdata = filterdata + filterhead + filtervalue;
+                }
+
+                filterhead = "";
+                filtervalue = "";
+
+            }
+
+
+            if (checkBigHead == 1) {
+                filter = filter + bigHead + filterdata;
+            }
+            checkBigHead = 0;
+            filterdata = "";
+            filterhead = "";
+            filtervalue = "";
+
+
+
+            bigHead = "<br><b>Filter Column : </b>";
+            //หัวข้อ
+
+            for (i = 0; i < instance1.getDataSource()._descriptions.columns.length; i++) {
+                check = 0;
+                filterhead = instance1.getDataSource()._descriptions.columns[i].dataField + " : ";
+
+
+                //รายการ
+                try {
+
+                    for (j = 0; j < instance1.getDataSource()._descriptions.columns[i].filterValues.length; j++) {
+                        if (j == 0) {
+                            filtervalue = filtervalue + " ";
+                        }
+
+
+                        if (j == instance1.getDataSource()._descriptions.columns[i].filterValues.length - 1) {
+                            filtervalue = filtervalue + instance1.getDataSource()._descriptions.columns[i].filterValues[j] + " ";
+                        } else {
+                            filtervalue = filtervalue + instance1.getDataSource()._descriptions.columns[i].filterValues[j] + ",";
+                        }
+                        check = 0;
+                    }
+                } catch{
+                    check = 1;
+                }
+
+                if (check == 0) {
+                    checkBigHead = 1;
+                    filterdata = filterdata + filterhead + filtervalue;
+                }
+
+                filterhead = "";
+                filtervalue = "";
+            }
+
+            if (checkBigHead == 1) {
+                filter = filter + bigHead + filterdata;
+            }
+            checkBigHead = 0;
+
+            filterdata = "";
+            filterhead = "";
+            filtervalue = "";
+
+
+
+
+
+
+
+
+
+
+            //console.log(filter);
+            return filter;
+        }
+    </script>
+
+
+
+
+
+
+    <script>
+        function customize_tooltip(args) {
+            //getPivotGridInstance();
+
+            return {
+                html: args.seriesName + " | Total<div class='currency'>" + args.valueText + "</div>"
+            };
+
+
+        }
+
+        //กรณีมีการสร้าง Chart
+        function bind_chart(e) {
+            e.component.bindChart($("#chart"), {
+                dataFieldsDisplayMode: "splitPanes",
+                alternateDataFields: false
+            });
+
+            e.component.on("contentReady", contentReady);
+            //getChartInstance();
+        }
+
+        //กรณีมีการเปลี่ยน Filter
+        function contentReady(e) {
+            e.component.off("contentReady", contentReady);
+            var dataSource = e.component.getDataSource();
+
+
+
+
+        }
+
+        function getChartInstance() {
+            var element = document.getElementById("chart");
+            var chartInstance = DevExpress.viz.dxChart.getInstance(element);
+
+
+            chartInstance.option('title', {
+                text: 'Account GL'
+                //subtitle: getFilterPivotGridInstance()
+            });
+
+            return chartInstance;
+        }
+
+
+
+
+
+
+        function print() {
+            getChartInstance().print();
+            //getPivotGridInstance().exportToExcel();
+        }
+
+        function exportChart() {
+
+            DevExpress.viz.exportWidgets([getChartInstance()], {
+                fileName: "chart",
+                format: 'PNG'
+            });
+        }
+
+
+    </script>
+
+
+
+
+    <script>
+
+
+        // $("body").addClass('mini-navbar');
+        // SmoothlyMenu();
+
+        $("body").addClass('mini-navbar');
+        SmoothlyMenu();
+        $("body").addClass('fixed-sidebar');
+        $('.sidebar-collapse').slimScroll({
+            height: '100%',
+            railOpacity: 0.9
+        });
+
+
+        function cellPrepared(e) {
+            if (e.rowType === 'data') {
+                if (e.data.OrderDate < new Date(2014, 2, 3)) {
+                    e.cellElement.css({ color: '#AAAAAA' });
+                }
+                if (e.data.SaleAmount > 15000) {
+                    if (e.column.dataField === 'OrderNumber') {
+                        e.cellElement.css({ 'font-weight': 'bold' });
+                    }
+                    if (e.column.dataField === 'SaleAmount') {
+                        e.cellElement.css({ 'background-color': '#FFBB00', color: '#000000' });
+                    }
+                }
+            }
+
+            if (e.rowType === 'group') {
+                if (e.row.groupIndex === 0) {
+                    e.cellElement.css({ 'background-color': '#BEDFE6', 'color': '#000' });
+                }
+                if (e.row.groupIndex === 1) {
+                    e.cellElement.css({ 'background-color': '#C9ECD7', 'color': '#000' });
+                }
+                e.cellElement.children().css({ 'color': '#000' });
+            }
+
+            if (e.rowType === 'groupFooter' && e.column.dataField === 'SaleAmount') {
+                e.cellElement.css({ 'font-style': 'italic' });
+            }
+        }
+
+        function customizeExcelCell(options) {
+            var gridCell = options.gridCell;
+            if (!gridCell) {
+                return;
+            }
+
+            if (gridCell.rowType === 'data') {
+                if (gridCell.data.OrderDate < new Date(2014, 2, 3)) {
+                    options.font.color = '#AAAAAA';
+                }
+                if (gridCell.data.SaleAmount > 15000) {
+                    if (gridCell.column.dataField === 'OrderNumber') {
+                        options.font.bold = true;
+                    }
+                    if (gridCell.column.dataField === 'SaleAmount') {
+                        options.backgroundColor = '#FFBB00';
+                        options.font.color = '#000000';
+                    }
+                }
+            }
+
+            if (gridCell.rowType === 'group') {
+                if (gridCell.groupIndex === 0) {
+                    options.backgroundColor = '#BEDFE6';
+                }
+                if (gridCell.groupIndex === 1) {
+                    options.backgroundColor = '#C9ECD7';
+                }
+                if (gridCell.column.dataField === 'Employee') {
+                    options.value = gridCell.value + " (" + gridCell.groupSummaryItems[0].value + " items)";
+                    options.font.bold = false;
+                }
+                if (gridCell.column.dataField === 'SaleAmount') {
+                    options.value = gridCell.groupSummaryItems[0].value;
+                    options.numberFormat = "&quot;Max: &quot;$0.00";
+                }
+            }
+
+            if (gridCell.rowType === 'groupFooter' && gridCell.column.dataField === 'SaleAmount') {
+                options.value = options.gridCell.value;
+                options.numberFormat = "&quot;Sum: &quot;$0.00";
+                options.font.italic = true;
+            }
+
+            if (gridCell.rowType === 'totalFooter' && gridCell.column.dataField === 'SaleAmount') {
+                options.value = options.gridCell.value;
+                options.numberFormat = "&quot;Total Sum: &quot;$0.00";
+            }
+        }
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+
+        $(document).ready(function () {
+            $("#myInput1").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#mysite1 tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+        });
+
+    </script>
+
+    <script>
+
+        var job = @Html.Raw(Json.Serialize(jobNos));
+        var str = JSON.stringify(job);
+        str = JSON.stringify(job, null, 4); // (Optional) beautiful indented output.
+        //console.log(str); // Logs output to dev tools console.
+        permisiontext = "";
+        selectItem = "";
+         j = 0;
+
+
+       //var data = "1,2,3,4,5,6,7,8,9,10";
+       //var res = data.split(",");
+
+       for (i in job)
+       {
+           if (document.getElementById(job[i].JobNo).checked == true)
+           {
+               permisiontext += job[i].JobNo + ",";
+
+               selectItem += " <img src='/Images/check2.png'><span  style='font-size:14px' id='selectItem'> " + job[i].LocationCode + "</span><br/> ";
+                        j = j + 1;
+           }
+        }
+        permisiontext=permisiontext.substring(0,permisiontext.length-1)
+        //alert(permisiontext);
+
+        //document.getElementById("typepermision").value =permisiontext;
+
+        document.getElementById("selectItem").innerHTML = selectItem;
+
+    </script>
+
+
+    <script>
+        function saveData(animal) {
+            var animalType = animal.getAttribute("data-animal-type");
+            var ReportName = "AccountProfit";
+
+            var ReportDimension ="AccountNo";
+            var ReportValue ="";
+
+            var a = document.getElementById(animalType).checked;
+
+
+
+
+         var job = @Html.Raw(Json.Serialize(jobNos));
+        var str = JSON.stringify(job);
+        str = JSON.stringify(job, null, 4); // (Optional) beautiful indented output.
+        //console.log(str); // Logs output to dev tools console.
+        permisiontext = "";
+        selectItem = "";
+
+         j = 0;
+
+
+              for (i in job) {
+                    if (document.getElementById(job[i].JobNo).checked == true) {
+                        permisiontext += job[i].JobNo + ",";
+
+                        selectItem += " <img src='/Images/check2.png'><span  style='font-size:14px' id='selectItem'> " + job[i].LocationCode + "</span><br/> ";
+                        j = j + 1;
+                    }
+
+                }
+
+            permisiontext=permisiontext.substring(0,permisiontext.length-1)
+            document.getElementById("selectItem").innerHTML = selectItem;
+
+            ReportValue = animalType;
+
+            if (a == true) {
+
+                $.ajax({
+                    type: "POST",
+                    //dataType: 'json',
+                    // contentType: 'application/json; charset=utf-8',
+                    data: { ReportName: ReportName,ReportDimension:ReportDimension,ReportValue:ReportValue },
+                    url: "/AccountReports/Add/",
+                    success: function (response) {
+                        swal({
+                            title: "เลือกสำเร็จ!",
+                            text: "",
+                            icon: "success",
+                            button: "ตกลง",
+                        });
+
+                    },
+                    failure: function (response) {
+                        swal({
+                            title: "เลือกไม่สำเร็จ!",
+                            text: "กรุณาเลือกใหม่อีกครั้ง",
+                            icon: "warning",
+                            button: "ตกลง",
+                        });
+                    }
+                });
+
+            } else {
+
+                $.ajax({
+                    type: "POST",
+                    //dataType: 'json',
+                    // contentType: 'application/json; charset=utf-8',
+                    data: { ReportName: ReportName,ReportDimension:ReportDimension,ReportValue:ReportValue },
+                    url: "/AccountReports/remove/",
+                    success: function (response) {
+                         swal({
+                            title: "ลบสำเร็จ!",
+                            text: "",
+                            icon: "success",
+                            button: "ตกลง",
+                        });
+                    },
+                    failure: function (response) {
+                        swal({
+                            title: "ลบไม่สำเร็จ!",
+                            text: "กรุณาลองใหม่อีกครั้ง",
+                            icon: "warning",
+                            button: "ตกลง",
+                        });
+                    }
+                });
+                //});
+            }
+        }
+    </script>
+
+
+    <script>
+        function SettingData() {
+
+            $('#myModal').modal();
+
+        }
+
+
+    </script>
+
+
+    <script>
+        function SettingDataGL() {
+
+            $('#myModalGL').modal();
+
+        }
+
+
+    </script>
+
+    <script>
+
+        $(document).ready(function () {
+            $("#myInputGL1").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#mysiteGLdata1 tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+        });
+
+    </script>
+
+
+    <script>
+
+        var jobGL = @Html.Raw(Json.Serialize(jobGLs));
+        var strGL = JSON.stringify(jobGL);
+        strGL = JSON.stringify(jobGL, null, 4); // (Optional) beautiful indented output.
+        //console.log(strGL); // Logs output to dev tools console.
+        permisiontextGL = "";
+        selectItemGL = "";
+         j = 0;
+
+
+       //var data = "1,2,3,4,5,6,7,8,9,10";
+       //var res = data.split(",");
+
+       for (i in jobGL)
+       {
+           if (document.getElementById(jobGL[i].JobNo).checked == true)
+           {
+               permisiontextGL += jobGL[i].LocationCode + ",";
+
+               selectItemGL += " <img src='/Images/check2.png'><span  style='font-size:14px' id='selectItemGL'> " + jobGL[i].JobNo+ "</span><br/> ";
+                        j = j + 1;
+           }
+        }
+        permisiontextGL=permisiontextGL.substring(0,permisiontextGL.length-1)
+        //alert(permisiontext);
+
+        //document.getElementById("typepermision").value =permisiontext;
+
+        document.getElementById("selectItemGL").innerHTML = selectItemGL;
+
+    </script>
+
+
+
+    <script>
+        function saveDataGL(animalGL) {
+            var animalTypeGL = animalGL.getAttribute("data-animalGL-type");
+            var ReportNameGL = "AccountProfit";
+
+            var ReportDimensionGL ="GLOpen";
+            var ReportValueGL ="";
+
+            var agl = document.getElementById(animalTypeGL).checked;
+
+
+
+
+         var jobGL = @Html.Raw(Json.Serialize(jobGLs));
+        var strGL = JSON.stringify(jobGL);
+        strGL = JSON.stringify(jobGL, null, 4); // (Optional) beautiful indented output.
+        //console.log(strGL); // Logs output to dev tools console.
+        permisiontextGL = "";
+        selectItemGL = "";
+
+         j = 0;
+
+
+              for (i in jobGL) {
+                    if (document.getElementById(jobGL[i].JobNo).checked == true) {
+                        permisiontextGL += jobGL[i].JobNo + ",";
+
+                        selectItemGL += " <img src='/Images/check2.png'><span  style='font-size:14px' id='selectItemGL'> " + jobGL[i].JobNo + "</span><br/> ";
+                        j = j + 1;
+                    }
+
+                }
+
+            permisiontextGL=permisiontext.substring(0,permisiontextGL.length-1)
+            document.getElementById("selectItemGL").innerHTML = selectItemGL;
+
+            ReportValueGL = animalTypeGL;
+
+            if (agl == true) {
+
+                $.ajax({
+                    type: "POST",
+                    //dataType: 'json',
+                    // contentType: 'application/json; charset=utf-8',
+                    data: { ReportName: ReportNameGL,ReportDimension:ReportDimensionGL,ReportValue:ReportValueGL },
+                    url: "/AccountReports/Add/",
+                    success: function (response) {
+                        swal({
+                            title: "เลือกสำเร็จ!",
+                            text: "",
+                            icon: "success",
+                            button: "ตกลง",
+                        });
+
+                    },
+                    failure: function (response) {
+                        swal({
+                            title: "เลือกไม่สำเร็จ!",
+                            text: "กรุณาเลือกใหม่อีกครั้ง",
+                            icon: "warning",
+                            button: "ตกลง",
+                        });
+                    }
+                });
+
+            } else {
+
+                $.ajax({
+                    type: "POST",
+                    //dataType: 'json',
+                    // contentType: 'application/json; charset=utf-8',
+                    data: { ReportName: ReportNameGL,ReportDimension:ReportDimensionGL,ReportValue:ReportValueGL },
+                    url: "/AccountReports/remove/",
+                    success: function (response) {
+                         swal({
+                            title: "ลบสำเร็จ!",
+                            text: "",
+                            icon: "success",
+                            button: "ตกลง",
+                        });
+                    },
+                    failure: function (response) {
+                        swal({
+                            title: "ลบไม่สำเร็จ!",
+                            text: "กรุณาลองใหม่อีกครั้ง",
+                            icon: "warning",
+                            button: "ตกลง",
+                        });
+                    }
+                });
+                //});
+            }
+        }
+    </script>
+
+
+
+}
+

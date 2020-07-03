@@ -1,0 +1,255 @@
+﻿@using Microsoft.AspNetCore.Http;
+@{
+    ViewData["Title"] = "คู่มือการใช้งาน";
+}
+
+
+@{
+
+
+    //IEnumerable<Manual> Manuals = ViewData["manual"] as IEnumerable<Manual>;
+    IEnumerable<PictureManual> manualPics = ViewData["manualPic"] as IEnumerable<PictureManual>;
+    IEnumerable<ManualCat> manualCats = ViewData["manualcat"] as IEnumerable<ManualCat>;
+    IEnumerable<FileManal> fileManals = ViewData["manualfile"] as IEnumerable<FileManal>;
+    IEnumerable<SourceAutoComplete> sourceAutoCompletes = ViewData["SourceAutoCompletes"] as IEnumerable<SourceAutoComplete>;
+    //IEnumerable<DataXXY> dataXXies = ViewData["test"] as IEnumerable<DataXXY>;
+
+}
+
+<style>
+    .fixscoll {
+        overflow-y: auto;
+        height: 550px;
+    }
+
+    #textover {
+        white-space: nowrap;
+        width: 500px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .fcolor{
+        color:#bdbaba;
+        font-size:12px;
+    }
+    .bg{
+        background-color:none;
+        border-radius:5px 5px;
+    }
+    .bg:hover{
+        background-color:aliceblue;
+        font-weight: bold
+    }
+</style>
+
+
+<div class="col-sm-12 col-lg-12" id="create">
+    <p  >
+        <a asp-controller="Manuals" asp-action="Create" class="btn btn-primary" target="_blank" data-toggle="tooltip" data-placement="top" title="เพิ่มคู่มือ">Create New</a>
+    </p>
+</div>
+
+<div class="col-sm-9 col-lg-9 col-md-9">
+
+    <div class="input-group">
+        <input type="text" autocomplete="off" style="font-family:Arial, FontAwesome" placeholder="&#xF002; ค้นหาคู่มือ" class="typeahead_1 input form-control " id="manualname">
+
+        <span class="input-group-btn">
+            <button type="button" class="btn btn btn-success" onclick="Search()"> <i class="fa fa-search"></i> ค้นหา</button>
+        </span>
+    </div>
+
+    <br />
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5><i class="fa fa-book"></i> คู่มือการใช้งาน</h5>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="fixscoll">
+                        <div class="full-height-scroll">
+                            <div><span id="tableMannual"></span></div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="col-sm-3 col-lg-3 col-md-3">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5><i class="fa fa-bookmark"></i> หมวดหมู่</h5>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-md-8 col-lg-10">
+                    @foreach (ManualCat manualCat in manualCats)
+                    {
+                       
+                             <a id="ManualCatId" data-id-type="@manualCat.ManualCatId" onclick="Showdata(this);" class="bg" style="padding-top:10px;padding-bottom:10px;padding-left:8px;padding-right:100px" >@manualCat.ManualCatName</a>
+                            <p><br /></p>
+                         
+                    }
+                    @*<div class="table-responsive">
+
+            <table class="table table-hover">
+                <tbody>
+                    @foreach (ManualCat manualCat in manualCats)
+                    {
+                        <tr>
+                            <td>
+                                <a id="ManualCatId" data-id-type="@manualCat.ManualCatId" onclick="Showdata(this);" class="btn btn-default">@manualCat.ManualCatName</a>
+                                <br />
+                            </td>
+                        </tr>
+                    }
+
+
+                </tbody>
+            </table>
+
+        </div>*@
+                </div>
+                <div class="col-md-2 col-lg-2">
+                    <span id="count"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+
+
+    var a = @Context.Session.GetString("TypeOfUserId");
+    if (a != "3") {
+   
+         document.getElementById('create').style.display = "none";
+    } else {
+
+         document.getElementById('create').style.display = "block";
+
+    }
+    //alert(a);
+
+    </script>
+
+    <script>
+        $.ajax({
+            type: "GET",
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            //data: { FixAccNo: fixassetno, FixAssetName: itemname1, FixAssetName1: itemname2, SiteName: site, qty: qty,TransectionEtc : etc,TransectionType:selectType} ,
+            url: "/ShowManual/getdata/",
+
+            success: function (response) {
+                //เรียกธรรมดา
+                $("#tableMannual").html(response.ListMannual);
+
+
+                ;
+            },
+
+            failure: function (response) {
+                alert("fail");
+            }
+        });
+    </script>
+
+    <script>
+
+        function Showdata(show) {
+            var id = show.getAttribute("data-id-type");
+            //alert(id);
+
+            $.ajax({
+                type: "GET",
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: { id: id },
+                url: "/ShowManual/showdata/",
+
+                success: function (response) {
+
+                    // alert(response.tableMannual);
+                    $("#tableMannual").html(response.tableMannual);
+
+
+                    ;
+                },
+
+                failure: function () {
+                    alert("fail");
+                }
+            });
+
+        }
+
+    </script>
+
+
+    <script>
+        function Search() {
+            //document.getElementById("tableMannual").style.display = "none";
+            var manualname = document.getElementById('manualname').value;
+            //alert(manualname);
+
+            $.ajax({
+                type: 'GET',
+                contentType: "application/json",
+                dataType: 'JSON',
+                data: {
+                    manualname: manualname
+                },
+                url: '/ShowManual/search/',
+                success: function (response) {
+                    document.getElementById("tableMannual").innerHTML = response.ListMannual;
+
+
+                }
+            });
+
+        }
+
+    </script>
+    <script>
+    var WebModels = @Html.Raw(Json.Serialize(sourceAutoCompletes));
+      //  var str = JSON.stringify(WebModels);
+        //console.log(JSON.stringify(WebModels));
+
+    console.log(WebModels);
+       $('.typeahead_1').typeahead({
+                source: WebModels
+            });
+
+    </script>
+    <script>
+        //
+        $.ajax({
+            type: 'GET',
+            contentType: "application/json",
+            dataType: 'JSON',
+
+            url: '/ShowManual/Cat/',
+            success: function (response) {
+                //alert(response.countCat);
+                //alert(whichIsVisible());
+                document.getElementById("count").innerHTML = response.countCat;
+        //$("count").html(response.countCat);
+
+            }
+        });
+
+
+    </script>
+}

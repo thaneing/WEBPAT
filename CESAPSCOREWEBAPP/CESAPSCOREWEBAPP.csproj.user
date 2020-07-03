@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ActiveDebugProfile>CESAPSCOREWEBAPP</ActiveDebugProfile>
+    <NameOfLastUsedPublishProfile>FolderProfile</NameOfLastUsedPublishProfile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Update="Reports\AccountsReceivable.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Reports\ApplyReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Reports\ApplyStatus.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Reports\FixAssetStraight.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Reports\HouseRental.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Reports\OutStanding.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Reports\RentalReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Reports\ReportAllInLine.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Reports\ReportF03.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Reports\tesdtt.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Reports\XtraReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Reports\XtraReport1.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Reports\XtraReport2.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>

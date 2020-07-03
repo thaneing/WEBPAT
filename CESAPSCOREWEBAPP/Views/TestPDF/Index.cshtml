@@ -1,0 +1,366 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+
+
+}
+<style>
+
+    progress {
+        text-align: center;
+    }
+
+        progress:after {
+            content: attr(value)'%';
+        }
+
+    th {
+        font-size: 12px;
+    }
+
+    td {
+        font-size: 12px;
+    }
+    /* Style the tab */
+    .tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+            /* Change background color of buttons on hover */
+            .tab button:hover {
+            }
+
+            /* Create an active/current tablink class */
+            .tab button.active {
+            }
+
+    /* Style the tab content */
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+
+    #ibox-head {
+        height: 150px;
+        /*box-shadow: 0 12px 34px rgba(0, 0, 0, 0.12)*/
+    }
+
+    #ibox2 {
+        height: 430px;
+    }
+    /* Style Progress abr */
+    #bg-progressGen {
+        background-color: #ffaaaa;
+    }
+
+    #bg-progressAge {
+        background-color: #3be8b0;
+    }
+
+    #bg-progressPC {
+        background-color: #81ceff;
+    }
+
+    #bg-progressMn {
+        background-color: #ffc845;
+    }
+
+    #bg-progressDep {
+        background-color: #98ce1e;
+    }
+
+    #bg-progressDep1 {
+        background-color: #d2de61;
+    }
+
+    .breck {
+        page-break-before: always;
+    }
+
+    .no-break {
+        page-break-inside: avoid;
+    }
+
+</style>
+
+
+<div class="no-break">
+    <table>
+        <tbody>
+            <tr>
+                <td width="200px">
+                    <div class="col-lg-12 col-xs-12 col-md-12">
+                        <div class="ibox float-e-margins">
+                            <div class="widget red-bg" id="ibox-head">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <h3 style="text-align:center">พนักงาน ทั้งหมด</h3>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <br />
+                                        <i class="fa fa-users fa-3x"></i>
+                                    </div>
+                                    <div class="col-xs-8 text-right">
+                                        <br />
+                                        <h3><span>@Html.Raw(ViewData["TotalEmployee"]) คน</span></h3>
+                                    </div>
+                                    <div class="col-xs-12 text-right">
+                                        <span class="pull-right"><a href="#" class="small-box-footer" style="color:white;"> C.E.S Staff</a></span>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </td>
+                <td>
+                    <div class="col -lg-3 col-xs-12 col-md-8">
+                        <div class="ibox float-e-margins">
+                            <div class="widget style1 lazur-bg" id="ibox-head">
+                                <div class="row">
+                                    <div class="col-md-12 col-xs-12">
+                                        <h3 style="text-align:center">Employee gender split</h3><br />
+                                    </div>
+                                    <div class="col-md-6 col-xs-6">
+                                        <span><i class="fa fa-male fa-2x"></i></span> <label class="font-bold"> ชาย</label>
+                                        <h3 class="no-margins">@Html.Raw(ViewData["TotalMale"]) คน</h3>
+                                        <div class="info-box-number">@Html.Raw(ViewData["percenMale"])</div>
+                                    </div>
+                                    <div class="col-md-6 col-xs-6">
+                                        <span><i class="fa fa-female fa-2x"></i></span>  <label class="font-bold"> หญิง</label>
+                                        <h3 class="no-margins">@Html.Raw(ViewData["TotalFemale"]) คน</h3>
+                                        <div class="info-box-number">@Html.Raw(ViewData["percenFemale"])</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="col-lg-3 col-md-12 col-xs-12 col-sm-12">
+                        <div class="ibox float-e-margins">
+
+                            <div class="widget style1 yellow-bg" id="ibox-head">
+                                <div class="row">
+                                    <div class="col-md-12 col-xs-12">
+                                        <h3 style="text-align:center">Employee Status</h3><br />
+                                    </div>
+                                    <div class="col-md-6 col-xs-6">
+                                        <div><i class="glyphicon glyphicon-briefcase"></i> <label class="font-bold">ประจำ</label> </div>
+                                        <h3 class="no-margins">@Html.Raw(ViewData["Monly"]) คน</h3>
+                                        <div class="info-box-number" id="percenMonly">@Html.Raw(ViewData["percenMonly"])</div>
+                                    </div>
+                                    <div class="col-md-6 col-xs-6">
+                                        <div class="font-bold"><i class="glyphicon glyphicon-briefcase"></i> <label>รายวัน</label></div>
+                                        <h3 class="no-margins" id="dayly">@Html.Raw(ViewData["Dayly"]) คน</h3>
+                                        <div class="info-box-number" id="percenDayly">@Html.Raw(ViewData["percenDayly"])</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="col-lg-4 col-md-12 col-xs-12 col-sm-12">
+                        <div class="ibox">
+                            <div class="widget navy-bg " id="ibox-head">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <h3 style="text-align:center">Manpower</h3><br />
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <label><i class="fa fa-building"></i> สำนักงานใหญ่</label>
+                                        <h3>@Html.Raw(ViewData["Ho"]) คน</h3>
+                                        <span>HO</span> <span class="info-box-number">@Html.Raw(ViewData["percenHo"])</span>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <label><i class="fa fa-archive"></i> คลังพัสดุกลาง</label>
+                                        <h3 id="stores">@Html.Raw(ViewData["Store"]) คน</h3>
+                                        <span>STORE</span> <span class="info-box-number">@Html.Raw(ViewData["percenStores"])</span>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <label><i class="fa fa-houzz"></i>  หน่วยงานต่างๆ</label>
+                                        <h3 id="sites">@Html.Raw(ViewData["Sites"]) คน</h3>
+                                        <span>SITE(s)</span> <sapan class="info-box-number">@Html.Raw(ViewData["percenSites"])</sapan>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+           
+        </tbody>
+    </table>
+
+    <table>
+        <tbody>
+            <tr valign="top">
+                <td colspan="2">
+                    <div class="col-lg-4 col-md-12 col-xs-12 col-sm-12">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h3 class="box-title">Age ช่วงอายุ (ปี)</h3>
+                            </div>
+                            <div class="ibox-content " id="ibox2" style="border-bottom:1px solid #d7d7d8">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="col-lg-9 col-lg-offset-1 col-md-12">
+                                                <div>@Html.Raw(ViewData["tableAge"])</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h3 class="box-title">Generation</h3>
+                        </div>
+                        <div class="ibox-content" style="border-bottom:1px solid #d7d7d8">
+                            <div class="box box-primary">
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12">
+                                            <div>@Html.Raw(ViewData["tableGen"])</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h3>Management to staff Ratio</h3>
+                        </div>
+                        <div class="ibox-content" style="border-bottom:1px solid #d7d7d8">
+                            <div class="box box-primary">
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div>@Html.Raw(ViewData["tableManagement"])</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </td>
+                <td>
+                    <div class="col-lg-4 col-md-12 col-xs-12">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h5>Position Classified (PC)</h5>
+                            </div>
+                            <div class="ibox-content"  style="border-bottom:1px solid #d7d7d8;height:438px">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="col-lg-9 col-md-12 col-lg-offset-1">
+                                                <div>@Html.Raw(ViewData["tableLevel"])</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!--end 1-->
+    <div class="wrapper wrapper-content breck">
+        <div class="col-lg-12 col-md-12 col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h3 class="box-title">Headcount จำนวนพนักงาน</h3>
+                </div>
+                <div class="ibox-content" style="height:750px;border-bottom:1px solid #d7d7d8">
+                    <div class="box box-primary">
+                        <div class="box-body">
+                            <div class="row">
+
+                                <div class="col-lg-12 col-md-12">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    แบ่งตามสายงาน
+                                                </th>
+                                                <th style="text-align:center">
+                                                    แบ่งตามฝ่าย
+                                                </th>
+                                                <th style="text-align:center">
+                                                    แบ่งตามแผนก
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td valign="top">
+                                                    <span>@Html.Raw(ViewData["tableCon"])</span>
+                                                </td>
+                                                <td valign="top">
+                                                    <span>@Html.Raw(ViewData["tableDepCon"])</span>
+                                                </td>
+                                                <td valign="top">
+                                                    <span>@Html.Raw(ViewData["tableDep1Cons"])</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td valign="top">
+                                                    <div>@Html.Raw(ViewData["tableAdminFinancail"])</div>
+                                                </td>
+                                                <td valign="top">
+                                                    <span>@Html.Raw(ViewData["tableDepAF"])</span>
+                                                </td>
+                                                <td valign="top">
+                                                    <span>@Html.Raw(ViewData["tableDep1AdminF"])</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div>@Html.Raw(ViewData["tableTechEst"])</div>
+                                                </td>
+                                                <td valign="top">
+                                                    <span>@Html.Raw(ViewData["tableDepTE"])</span>
+                                                </td>
+                                                <td valign="top">
+                                                    <span>@Html.Raw(ViewData["tableDep1TechE"])</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                               </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>

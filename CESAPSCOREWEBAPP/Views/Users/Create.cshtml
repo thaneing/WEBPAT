@@ -1,0 +1,516 @@
+﻿@model CESAPSCOREWEBAPP.Models.User
+@using Microsoft.AspNetCore.Http;
+
+<style>
+    #output_image {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        display: none;
+    }
+</style>
+
+@{
+    ViewData["Title"] = "ลงทะเบียนเข้าใช้ระบบ";
+
+}
+
+@{
+
+    IEnumerable<Organiz>
+    organizs = ViewData["organiz"] as IEnumerable<Organiz>;
+}
+
+
+<style>
+    #new {
+        height: 250px;
+        /*overflow: auto;*/
+    }
+
+    .tableFixHead1 {
+        overflow-y: auto;
+        height: 500px;
+    }
+
+        .tableFixHead1 th {
+            position: sticky;
+            top: 0;
+        }
+
+    .tableFixHead th {
+        position: sticky;
+        top: 0;
+    }
+
+    /* Just common table stuff. Really. */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px 16px;
+    }
+
+    th {
+        background: #eee;
+    }
+
+    .form-control:focus {
+        border-color: #33adff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 102, 255,0.25);
+    }
+</style>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data" onSubmit="JavaScript:return check_null();" >
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <!-- TO DO List -->
+    <div class="col-xs-12 col-sm-12  col-md-12 col-lg-12 ">
+        <div class="ibox ">
+            <div class="ibox-title">
+                <h5>@ViewData["Title"]</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div id="wizard">
+                    <h1>ประวัติส่วนตัว</h1>
+                    <div class="step-content col-lg-12" style="width:100%">
+                        <div class="ibox col-lg-12">
+                            <div class="ibox-title">
+                                <h5>ประวัติส่วนตัว</h5>
+                                <div class="ibox-tools">
+                                    <a class="collapse-link">
+                                        <i class="fa fa-chevron-up"></i>
+                                    </a>
+
+                                    <a class="close-link">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ibox-content">
+                                <div class="form-group row">
+                                    <div class="col-lg-12">
+                                        <center><img id="output_image" /></center>
+                                    </div>
+                                    <div class=" col-lg-12">
+                                        <center><img id="output_image" class="img-circle circle-border m-b-md" /></center>
+                                        <div class="col-lg-5 col-lg-offset-3">
+                                            @Html.Label("fileCoverImg", "รูปภาพ")
+                                            <input name="uploadPic" onchange="preview_image(event)" class="form-control" type="file" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-2 control-label" style="text-align:right">คำนำหน้านาม</label>
+                                    <div class="col-lg-2">
+                                        <select asp-for="TitleOfUserId" class="form-control" asp-items="ViewBag.TitleOfUserId"></select>
+                                    </div>
+                                    <label class="col-lg-2 control-label" style="text-align:right">ชื่อ</label>
+                                    <div class="col-lg-2">
+                                        <input asp-for="Firstname" class="form-control" />
+                                        <span asp-validation-for="Firstname" class="text-danger"></span>
+                                    </div>
+                                    <label class="col-lg-2 control-label" style="text-align:right">นามสกุล</label>
+                                    <div class="col-lg-2">
+                                        <input asp-for="Lastname" class="form-control" />
+                                        <span asp-validation-for="Lastname" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-2 control-label" style="text-align:right">FirstName</label>
+                                    <div class="col-lg-2">
+                                        <input asp-for="EFirstName" class="form-control" />
+                                        <span asp-validation-for="EFirstName" class="text-danger"></span>
+                                    </div>
+                                    <label class="col-lg-2 control-label" style="text-align:right">Lastname</label>
+                                    <div class="col-lg-2">
+                                        <input asp-for="ELastname" class="form-control" />
+                                        <span asp-validation-for="ELastname" class="text-danger"></span>
+                                    </div>
+                                    <label class="col-lg-2 control-label" style="text-align:right">ชื่อเล่น</label>
+                                    <div class="col-lg-2">
+                                        <input asp-for="Nickname" class="form-control" />
+                                        <span asp-validation-for="Nickname" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-lg-2 control-label" style="text-align:right">วันเดือนปีเกิด (ค.ศ.)</label>
+                                    <div class="col-lg-2">
+                                        <div class="input-group date" id="dtp1">
+                                            <input type="text" class="form-control" name="birth" id="txtStart" />
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <label class="col-lg-2 control-label" style="text-align:right">ภูมิลำเนา</label>
+                                    <div class="col-lg-2">
+                                        <select asp-for="PovinceId" class="form-control" asp-items="ViewBag.PovinceData"></select>
+                                        <span asp-validation-for="PovinceId" class="text-danger"></span>
+                                    </div>
+                                    <label class="col-lg-2 control-label" style="text-align:right">หมู่โลหิต</label>
+                                    <div class="col-lg-2">
+                                        <select asp-for="BloodId" class="form-control" asp-items="ViewBag.BloodId"></select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-lg-2 control-label" style="text-align:right">เบอร์โทรศัพท์</label>
+                                    <div class="col-lg-2">
+                                        <input asp-for="MobileTel" class="form-control">
+                                        <span asp-validation-for="MobileTel" class="text-danger"></span>
+                                    </div>
+                                    <label class="col-lg-2 control-label" style="text-align:right">อีเมลล์</label>
+                                    <div class="col-lg-2">
+                                        <input asp-for="EmailContact" class="form-control" placeholder="name@example.com">
+                                        <span asp-validation-for="EmailContact" class="text-danger"></span>
+                                    </div>
+                                    <label class="col-lg-2 control-label" style="text-align:right">สถานะภาพ</label>
+                                    <div class="col-lg-2">
+                                        <select asp-for="Reletion" id="Reletion" class="form-control">
+                                            <option value="ไม่ระบุ">ไม่ระบุ</option>
+                                            <option value="โสด">โสด</option>
+                                            <option value="สมรส">สมรส</option>
+                                            <option value="หม้าย/หย่าร้าง">หม้าย/หย่าร้าง</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-2 control-label" style="text-align:right">ส่วนสูง</label>
+                                    <div class="col-lg-2">
+                                        <input asp-for="Height" class="form-control">
+                                        <span asp-validation-for="Height" class="text-danger"></span>
+                                    </div>
+                                    <label class="col-lg-2 control-label" style="text-align:right">น้ำหนัก</label>
+                                    <div class="col-lg-2">
+                                        <input asp-for="Weight" class="form-control">
+                                        <span asp-validation-for="Weight" class="text-danger"></span>
+                                    </div>
+                                    <label class="col-lg-2 control-label" style="text-align:right">รอบเอว</label>
+                                    <div class="col-lg-2">
+                                        <input asp-for="Waistline" class="form-control">
+                                        <span asp-validation-for="Waistline" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-lg-2 control-label" style="text-align:right">ศาสนา</label>
+                                    <div class="col-lg-2">
+                                        <select asp-for="ReligionId" class="form-control" asp-items="ViewBag.ReligionId"></select>
+                                    </div>
+                                    <label class="col-lg-2 control-label" style="text-align:right">สัญชาติ</label>
+                                    <div class="col-lg-2">
+                                        <select asp-for="NationalityId" class="form-control" asp-items="ViewBag.NationalityId"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <h1>ข้อมูลการศึกษาและการทำงาน</h1>
+                    <div class="step-content col-lg-12" style="width:100%">
+                        <div class="text-center m-t-md">
+                            <div class="row">
+                                <div class="ibox col-lg-12">
+                                    <div class="ibox-title">
+                                        <h5>ประวัติการศึกษาและการทำงาน</h5>
+                                        <div class="ibox-tools">
+                                            <a class="collapse-link">
+                                                <i class="fa fa-chevron-up"></i>
+                                            </a>
+                                            <a class="close-link">
+                                                <i class="fa fa-times"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="ibox-content">
+                                        <div class="form-group row">
+                                            <label class="col-lg-2 control-label" style="text-align:right">รหัสพนักงาน</label>
+                                            <div class="col-lg-2">
+                                                <input asp-for="EmpId" class="form-control" />
+                                                <span asp-validation-for="EmpId" class="text-danger"></span>
+                                            </div>
+                                            <label class="col-lg-2 control-label" style="text-align:right">ระดับ</label>
+                                            <div class="col-lg-2">
+                                                <select asp-for="LevelId" class="form-control" asp-items="ViewBag.LevelId"></select>
+                                            </div>
+                                            <label class="col-lg-2 control-label" style="text-align:right"> Site</label>
+                                            <div class="col-lg-2">
+                                                <select asp-for="BranchId" class="form-control" asp-items="ViewBag.BranchId"></select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-2 control-label" style="text-align:right">ประเภทพนักงาน</label>
+                                            <div class="col-lg-2">
+                                                <select asp-for="TypeOfEmployeeId" class="form-control" asp-items="ViewBag.TypeOfEmployeeId"></select>
+                                            </div>
+                                            <label class="col-lg-2 control-label" style="text-align:right">สถานะ</label>
+                                            <div class="col-lg-2">
+                                                <select asp-for="StatusUserId" class="form-control" asp-items="ViewBag.StatusUserId"></select>
+                                            </div>
+                                            <label class="col-lg-2 control-label" style="text-align:right">วันที่เริ่มงาน</label>
+                                            <div class="col-lg-2">
+                                                <div class="input-group date" id="dtp3">
+                                                    <input type="text" class="form-control" name="startwork" id="txtStartWork" />
+                                                    <span class="input-group-addon">
+                                                        <span class="glyphicon glyphicon-calendar"></span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-2 control-label" style="text-align:right">วันที่ลาออก</label>
+                                            <div class="col-lg-2">
+                                                <div class="input-group date" id="dtp4">
+                                                    <input type="text" class="form-control" name="endwork" id="txtStartWork" />
+                                                    <span class="input-group-addon">
+                                                        <span class="glyphicon glyphicon-calendar"></span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <label class="col-lg-2 control-label" style="text-align:right">ใบประกอบวิชาชีพ</label>
+                                            <div class="col-lg-2">
+                                                <input asp-for="Certificate" class="form-control">
+                                                <span asp-validation-for="Certificate" class="text-danger"></span>
+                                            </div>
+                                            <label class="col-lg-2 control-label" style="text-align:right">การศึกษาสูงสุด</label>
+                                            <div class="col-lg-2">
+                                                <select asp-for="TypeCongrateId" class="form-control" asp-items="ViewBag.TypeCongrateId"></select>
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-2 control-label" style="text-align:right">รายละเอียดการศึกษา</label>
+                                            <div class="col-lg-2">
+                                                <input asp-for="CongrateDetail" class="form-control">
+                                                <span asp-validation-for="CongrateDetail" class="text-danger"></span>
+                                            </div>
+                                            <label class="col-lg-2 control-label" style="text-align:right">บุคคลอ้างอิง</label>
+                                            <div class="col-lg-2">
+                                                <input asp-for="Reference" class="form-control">
+                                                <span asp-validation-for="Reference" class="text-danger"></span>
+                                            </div>
+                                            <label class="col-lg-2 control-label" style="text-align:right">เบอร์โทรบุคคลอ้างอิง</label>
+                                            <div class="col-lg-2">
+                                                <input asp-for="ReferenceTel" class="form-control">
+                                                <span asp-validation-for="ReferenceTel" class="text-danger"></span>
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-2 control-label" style="text-align:right">เบอร์ติดต่อภายใน</label>
+                                            <div class="col-lg-2">
+                                                <input asp-for="ExtTel" class="form-control">
+                                                <span asp-validation-for="ExtTel" class="text-danger"></span>
+                                            </div>
+                                            <div class="col-lg-2 col-lg-offset-2">
+                                                <button type="button" class="btn btn btn-light" data-toggle="modal" data-target="#myModalSave" style="width:100%"> เลือกตำแหน่ง</button>
+                                            </div>
+                                            <div id="external-events" class="col-lg-4">
+                                                <p id="selectItem"></p>
+                                                @*<input class="form-control"  id="selectItem"/>*@
+                                            </div>
+
+                                        </div>
+
+                                        @*<input type="hidden" asp-for="organizId" id="organizId" />*@
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <input type="submit" value="ยืนยัน" class="btn btn-success pull-right" data-toggle="tooltip" data-placement="top" title="Submit" @*onclick="checkoganize()"*@>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!--ตำแหน่ง popup-->
+    <div id="myModalSave" class="modal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">เลือกตำแหน่ง  <input id="myInput1" class="pull-right form-control col-sm-4" placeholder="ค้นหา" /></h4>
+                    <p id="selectItem1"></p>
+        
+                </div>    <!-- Modal content-->
+
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="tableFixHead1">
+                            <table id="mysite">
+                                <thead>
+                                    <tr class="header">
+                                        <th>ตำแหน่ง  </th>
+                                        <th>แผนก </th>
+                                        <th>ฝ่าย</th>
+                                    </tr>
+                                </thead>
+                                <tbody id='mysite1'>
+                                    @foreach (Organiz organiz in organizs)
+                                    {
+                                        <tr>
+                                            <td><input type="radio" @*asp-for="organizId"*@ data-position-type="@organiz.Positions.PositionName" data-department1-type="@organiz.Department1s.Department1Name" data-department-type="@organiz.Departments.DepartmentName" value="@organiz.organizId" onclick="selectorgan(this)" name="organizId" />  @organiz.Positions.PositionName</td>
+                                            <td> @organiz.Department1s.Department1Name </td>
+                                            <td>  @organiz.Departments.DepartmentName </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary " data-dismiss="modal">ตกลง</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts {
+
+    <script>
+        function selectorgan() {
+            var radioValue = $("input[name='organ']:checked").val();
+            document.getElementById('organizId').value = radioValue;
+        }
+    </script>
+
+    <script>
+        function preview_image(event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('output_image');
+                output.src = reader.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+            document.getElementById('output_image').style.display = "block";
+        }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $("#myInput1").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#mysite1 tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+
+    </script>
+
+    <script>
+        $("#wizard").steps();
+    </script>
+
+    <script>
+        $('#dtp1,#dtp3,#dtp4').datetimepicker({
+            format: 'DD/MM/YYYY',
+        });
+    </script>
+
+
+    <!--Scrip Popup-->
+    <script>
+        function selectorgan(organ) {
+            var positionType = organ.getAttribute("data-position-type");
+            var department1Type = organ.getAttribute("data-department1-type");
+            var departmentType = organ.getAttribute("data-department-type");
+
+            selectItem = "";
+            var radioValue = $("input[name='organ']:checked").val();
+            selectItem += "<div class='external-event bg-green' id='selectItem'>ตำแหน่ง : " + positionType + " แผนก : " + department1Type + " ฝ่าย : " + departmentType + "</div>";
+            document.getElementById("selectItem").innerHTML = selectItem;
+
+            document.getElementById("selectItem1").innerHTML = selectItem;
+
+
+        }
+
+    </script>
+
+
+    <script>
+
+        function check_null() {
+            var txtbirthdate = $("#txtStart").val();
+            var txtStartWork = $("#txtStartWork").val();
+            //var organize = $("#selectItem").val();
+            var checkedvalue = document.querySelector("input[name='organ']:checked");
+            var checkorgan = document.querySelector("input[name='organ']:checked");
+
+            //$("input[name='organizId']:checked").val()
+
+            var checkorganize =  $("input[name='organizId']:checked").val()
+
+
+            if (txtbirthdate == '') {
+                //alert("กรุณากรอกข้อมูลวันที่ให้ครบ !");
+
+                swal({
+                    icon: "warning",
+                    text: "กรุณากรอกข้อมูล วันเดือนปีเกิด ให้ครบ!",
+                });
+                $("#txtbirthdate").focus();
+                return false;
+            }
+
+            if (txtStartWork == '') {
+                //alert("กรุณากรอกข้อมูลวันที่ให้ครบ !");
+
+                swal({
+                    icon: "warning",
+                    text: "กรุณากรอกข้อมูล วันที่เริ่มงาน ให้ครบ!",
+                });
+                $("#txtStartWork").focus();
+                return false;
+            }
+
+
+ 
+            if (typeof checkorganize === 'undefined') {
+                swal({
+                    icon: "warning",
+                    text: "กรุณาเลือก ตำแหน่ง ให้ครบ!",
+                });
+
+                return false;
+            }
+
+     
+     
+        }
+
+    </script>
+
+    @*<script>
+        function checkoganize() {
+            var radioValue = $("input[name='organ']:checked", true).val();
+            var organizs = document.getElementById("oganize").checked;
+            if (document.getElementById("oganize").checked == false) {
+                    alert("nooooooo");
+                }
+
+            }
+        </script>*@
+
+}

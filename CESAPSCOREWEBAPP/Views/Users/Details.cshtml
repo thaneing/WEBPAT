@@ -1,0 +1,420 @@
+﻿@{
+ 
+    IEnumerable<User> user = ViewData["users"] as IEnumerable<User>;
+
+
+}
+
+@{
+        ViewData["Title"] = "รายละเอียด User";
+        ViewData["Tab"] = "<ol class='breadcrumb'>"
+                     + "<li>"
+                     + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+                     + "</li>"
+                     + "<li>"
+                     + "<a href='/Users/Index' data-toggle='tooltip' data-placement='top' title='List Members'>รายการสมาชิก</a>"
+                     + "</li>"
+                     + "<li class='active'>"
+                     + "<b><a data-toggle='tooltip' data-placement='top' title='AddUsername'>" + @ViewData["Title"] + "</a></b>"
+                     + "</li>"
+                     + "</ol>";
+    }
+
+
+
+<!-- TO DO List -->
+@foreach (var item in user)
+{
+    <div class="col-sm-6 col-lg-6 col-md-4">
+        <div class="ibox ">
+            <div class="ibox-title">
+                <h5>ข้อมูลผู้ใช้</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <center><img src="/images/Users/256/@item.Pic" class="col-md-3 col-lg-6 col-lg-offset-3" /></center>
+                    </div>  
+                    <ul class="list-group list-group-unbordered">
+                        <li class="list-group-item">
+                            <b>ชื่อ-สกุล</b> <a class="pull-right">@item.TitleOfUsers.TitleOfUserName @item.Firstname @item.Lastname</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>ชื่อเล่น</b> <a class="pull-right">@item.Nickname</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>วันเกิด</b> <a class="pull-right">
+                                @{
+                                    DateTime numbers2 = (DateTime)item.BirthName;
+                                    @numbers2.ToString("dd/MM/yyyy");
+                                }
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>อายุ</b>
+                            <a class="pull-right">
+                                @{
+                                    DateTime? numbers = (DateTime)item.BirthName;
+                                    var a = "";
+                                    try
+                                    {
+                                        DateTime UpdatedTime = (DateTime)numbers;
+                                        DateTime Now = DateTime.Now;
+                                        int Years = new DateTime(DateTime.Now.Subtract(UpdatedTime).Ticks).Year - 1;
+                                        DateTime PastYearDate = UpdatedTime.AddYears(Years);
+                                        int Months = 0;
+                                        for (int i = 1; i <= 12; i++)
+                                        {
+                                            if (PastYearDate.AddMonths(i) == Now)
+                                            {
+                                                Months = i;
+                                                break;
+                                            }
+                                            else if (PastYearDate.AddMonths(i) >= Now)
+                                            {
+                                                Months = i - 1;
+                                                break;
+                                            }
+                                        }
+                                        int Days = Now.Subtract(PastYearDate.AddMonths(Months)).Days;
+                                        int Hours = Now.Subtract(PastYearDate).Hours;
+                                        int Minutes = Now.Subtract(PastYearDate).Minutes;
+                                        int Seconds = Now.Subtract(PastYearDate).Seconds;
+                                        a = String.Format("{0} ปี {1} เดือน {2} วัน",
+                                        Years, Months, Days);
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        a = "ไม่ทราบอายุ";
+                                    }
+
+                                    @a;
+                                }
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Generation</b>
+                            <a class="pull-right">
+                                @{
+                                    int yearthai = 0;
+                                    try
+                                    {
+                                        DateTime DateGen = (DateTime)item.BirthName;
+
+                                        @*@DateGen.ToString("yyyy");*@
+                                        yearthai = Int32.Parse(DateGen.ToString("yyyy")) + 543;
+                                        @*@yearthai*@
+
+                                    }
+                                    catch
+                                    {
+
+                                    }
+
+                                    var g = "";
+                                    try
+                                    {
+
+                                        if (yearthai >= 2426 && yearthai <= 2443)
+                                        {
+                                            g = "Lost Gennerration";
+                                        }
+                                        else if (yearthai >= 2444 && yearthai <= 2467)
+                                        {
+                                            g = "Greatest Gennerration";
+                                        }
+                                        else if (yearthai >= 2468 && yearthai <= 2488)
+                                        {
+                                            g = "Silen Gennerration";
+                                        }
+                                        else if (yearthai >= 2489 && yearthai <= 2507)
+                                        {
+                                            g = "Baby Boomer";
+                                        }
+                                        else if (yearthai >= 2508 && yearthai <= 2522)
+                                        {
+                                            g = "Gennerration X";
+                                        }
+                                        else if (yearthai >= 2523 && yearthai <= 2540)
+                                        {
+                                            g = "Gennerration Y";
+                                        }
+                                        else if (yearthai >= 2540)
+                                        {
+                                            g = "Gennerration Z";
+                                        }
+                                        else if (yearthai >= 2523 && yearthai <= 2540)
+                                        {
+                                            g = "Lost Gennerration";
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        g = "ไม่ทราบ Genneration";
+                                    }
+                                    @g
+                                }
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Email</b> <a class="pull-right">@item.EmailContact</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>น้ำหนัก</b> <a class="pull-right">@item.Weight ก.ก</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>ส่วนสูง</b> <a class="pull-right">@item.Height ซม.</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>สัญชาติ</b> <a class="pull-right">@item.nationality.NationalityName </a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>ศาสนา</b> <a class="pull-right">@item.religions.ReligionName </a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>ภูมิลำเนา</b> <a class="pull-right">@item.povince.PovinceName </a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>หมู่เลือด</b> <a class="pull-right">@item.Bloods.BloodName </a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>สถานะภาพ</b> <a class="pull-right">@item.Reletion </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-6 col-md-4">
+        <div class="ibox ">
+            <div class="ibox-title">
+                <h5>ข้อมูลการทำงาน</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="form-group row">
+                        <div class="col-lg-12">
+                            <ul class="list-group list-group-unbordered">
+                                <li class="list-group-item">
+                                    <b>รหัสพนักงาน</b> <a class="pull-right">@item.EmpId </a>
+                                </li>
+
+
+                                <li class="list-group-item">
+                                    <b>หน่วยงาน</b> <a class="pull-right">@item.Branchs.BranchName </a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>ฝ่าย</b> <a class="pull-right">@item.Organizs.Departments.DepartmentName </a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>แผนก</b> <a class="pull-right">@item.Organizs.Department1s.Department1Name </a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>ตำแหน่ง</b> <a class="pull-right">@item.Organizs.Positions.PositionName </a>
+                                </li>
+
+                                <li class="list-group-item">
+                                    <b>ระดับ</b> <a class="pull-right">@item.Levels.LevelName </a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>ประเภทพนักงาน</b> <a class="pull-right">@item.typeOfEmployee.TypeOfEmployeeName </a>
+                                </li>
+
+                                @*<li class="list-group-item">
+                   <b>Tel</b> <a class="pull-right">@Html.DisplayFor(model => model.MobileTel) หรือ @Html.DisplayFor(model => model.ExtTel) </a>
+                </li>*@
+                                <li class="list-group-item">
+                                    <b>สถานะ</b> <a class="pull-right">@item.StatusUser.StatusUserName </a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>วันที่เริ่มงาน</b> <a class="pull-right">
+                                        @{
+                                            DateTime CreateDate = (DateTime)item.UserCreateDate;
+                                            @CreateDate.ToString("dd/MM/yyyy");
+                                        }
+                                    </a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>วันที่ลาออก</b> <a class="pull-right">
+                                        @{
+
+                                            DateTime? Resignation = null;
+                                            try
+                                            {
+
+                                                Resignation = (DateTime)item.ResignationDate;
+                                                DateTime Res = (DateTime)Resignation;//วันที่ลาออก
+                                                @Res.ToString("dd/MM/yyyy");
+
+                                            }
+                                            catch
+                                            {
+
+                                                Resignation = null;
+
+                                            }
+                                            @*@Resignation;*@
+                                        }
+                                    </a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>อายุงาน</b> <a class="pull-right">
+                                        @{
+                                            var a1 = "";
+                                            if (Resignation == null)
+                                            {
+                                                try
+                                                {
+                                                    DateTime UpdatedTime = (DateTime)CreateDate;//วันที่ลาออก
+                                                    DateTime Now = DateTime.Now;//วันที่ปัจุบัน
+                                                    int Years = new DateTime(DateTime.Now.Subtract(UpdatedTime).Ticks).Year - 1;
+                                                    DateTime PastYearDate = UpdatedTime.AddYears(Years);
+
+                                                    int Months = 0;
+                                                    for (int i = 1; i <= 12; i++)
+                                                    {
+                                                        if (PastYearDate.AddMonths(i) == Now)
+                                                        {
+                                                            Months = i;
+                                                            break;
+                                                        }
+                                                        else if (PastYearDate.AddMonths(i) >= Now)
+                                                        {
+                                                            Months = i - 1;
+                                                            break;
+                                                        }
+                                                    }
+                                                    int Days = Now.Subtract(PastYearDate.AddMonths(Months)).Days;
+                                                    int Hours = Now.Subtract(PastYearDate).Hours;
+                                                    int Minutes = Now.Subtract(PastYearDate).Minutes;
+                                                    int Seconds = Now.Subtract(PastYearDate).Seconds;
+                                                    a1 = String.Format("{0} ปี {1} เดือน {2} วัน",
+                                                    Years, Months, Days);
+
+                                                }
+                                                catch (Exception e)
+                                                {
+
+                                                    a1 = "ไม่ทราบอายุการทำงาน";
+                                                }
+                                            }
+                                            else
+                                            {
+                                                try
+                                                {
+                                                    DateTime UpdatedTime = (DateTime)CreateDate;//วันที่เริ่มงาน
+                                                    DateTime Res = (DateTime)Resignation;//วันที่ลาออก
+                                                    int Years = new DateTime(Res.Subtract(UpdatedTime).Ticks).Year - 1;
+                                                    DateTime PastYearDate = UpdatedTime.AddYears(Years);
+                                                    int Months = 0;
+                                                    for (int i = 1; i <= 12; i++)
+                                                    {
+                                                        if (PastYearDate.AddMonths(i) == Res)
+                                                        {
+                                                            Months = i;
+                                                            break;
+                                                        }
+                                                        else if (PastYearDate.AddMonths(i) >= Res)
+                                                        {
+                                                            Months = i - 1;
+                                                            break;
+                                                        }
+                                                    }
+                                                    int Days = Res.Subtract(PastYearDate.AddMonths(Months)).Days;
+                                                    int Hours = Res.Subtract(PastYearDate).Hours;
+                                                    int Minutes = Res.Subtract(PastYearDate).Minutes;
+                                                    int Seconds = Res.Subtract(PastYearDate).Seconds;
+                                                    a1 = String.Format("{0} ปี {1} เดือน {2} วัน",
+                                                    Years, Months, Days);
+
+                                                }
+                                                catch (Exception e)
+                                                {
+
+                                                    a1 = "ไม่ทราบอายุงาน";
+                                                }
+
+                                            }
+
+                                            @a1;
+                                        }
+                                    </a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>เบอร์ติดต่อภายใน</b> <a class="pull-right">@item.ExtTel </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="ibox">
+            <div class="ibox-title">
+                <h5>ข้อมูลการศึกษา</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+
+                <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                        <b>ใบประกอบวิชาชีพ</b> <a class="pull-right">@item.Certificate </a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>การศึกษาสูงสุด</b> <a class="pull-right">@item.TypeCongrates.TypeCongrateName </a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>รายละเอียดการศึกษา</b> <a class="pull-right">@item.CongrateDetail </a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>บุคคลอ้างอิง</b> <a class="pull-right">@item.Reference </a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>เบอร์โทรบุคคลอ้างอิง</b> <a class="pull-right">@item.ReferenceTel </a>
+                    </li>
+                </ul>
+
+            </div>
+            <div class="pull-right">
+                <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Edit">แก้ไข</a>
+                <a asp-action="Index" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Back to List">กลับรายการ</a>
+            </div>
+
+        </div>
+
+
+    </div>
+   
+
+
+}
+

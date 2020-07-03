@@ -1,0 +1,62 @@
+﻿@model IEnumerable<CESAPSCOREWEBAPP.Models.MapSite>
+@{
+    ViewData["Title"] = "แผนที่หน่วยงาน";
+       ViewData["Tab"] = "<ol class='breadcrumb'>"
+                  + "<li>"
+                  + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+                  + "</li>"
+                  + "<li>"
+                  + "<a href='/MapSites/Index' data-toggle='tooltip' data-placement='top' title='List'>รายการแผนที่</a>"
+                  + "</li>"
+                  + "<li class='active'>"
+                  + "<b><a data-toggle='tooltip' data-placement='top' title='Add Title Of Users'>" + @ViewData["Title"] + "</a></b>"
+                  + "</li>"
+                  + "</ol>";
+}
+
+
+
+@(Html.DevExtreme().Map()
+    .ID("map")
+    .Provider(GeoMapProvider.Bing)
+    .Zoom(11)
+    .Height(640)
+    .Width("100%")
+    .Controls(true)
+    .MarkerIconSrc(new JS("markerUrl"))
+    .Markers(markers =>
+    {
+        foreach (var marker in Model)
+        {
+            markers.Add().Coordinates(marker.Latitude,marker.Longitude).Tooltip(t => t.Text(marker.SiteName));
+            
+        }
+       
+    })
+)
+
+
+<script>
+    //var markerUrl = "https://js.devexpress.com/Demos/RealtorApp/images/map-marker.png";
+    var markerUrl = "../../Images/location.png";
+    
+    //function checkBox_onValueChanged(data) {
+    //    var mapWidget = $("#map").dxMap("instance");
+    //    var markersData = mapWidget.option("markers");
+    //    var newMarkers = $.map(markersData, function (item) {
+    //        return $.extend(true, {}, item, { tooltip: { isShown: false } });
+    //    });
+    //    mapWidget.option("markers", newMarkers);
+    //    mapWidget.option("markerIconSrc", data.value ? markerUrl : null);
+    //}
+
+    //function button_onClick() {
+    //    var mapWidget = $("#map").dxMap("instance");
+    //    var markersData = mapWidget.option("markers");
+    //    var newMarkers = $.map(markersData, function (item) {
+    //        return $.extend(true, {}, item, { tooltip: { isShown: true } });
+    //    });
+    //    mapWidget.option("markers", newMarkers);
+    //}
+
+</script>

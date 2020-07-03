@@ -1,0 +1,402 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<style>
+
+    progress {
+        text-align: center;
+    }
+
+        progress:after {
+            content: attr(value)'%';
+        }
+
+    th {
+        font-size: 12px;
+    }
+
+    td {
+        font-size: 12px;
+    }
+    /* Style the tab */
+    
+    #ibox-head {
+        height: 200px;
+        /*box-shadow: 0 12px 34px rgba(0, 0, 0, 0.12)*/
+    }
+
+    #ibox2 {
+        height: 425px;
+    }
+    /* Style Progress abr */
+    #bg-progressGen {
+        background-color: #ffaaaa;
+    }
+
+    #bg-progressAge {
+        background-color: #3be8b0;
+    }
+
+    #bg-progressPC {
+        background-color: #81ceff;
+    }
+
+    #bg-progressMn {
+        background-color: #ffc845;
+    }
+
+    #bg-progressDep {
+        background-color: #98ce1e;
+    }
+
+    #bg-progressDep1 {
+        background-color: #d2de61;
+    }
+
+    .font-size {
+        font-size: 23px;
+    }
+
+    .slide {
+        width: 1vw;
+    }
+
+    .purple-btn {
+        text-align: center;
+        color: #fff;
+        background-color: #ae63e4;
+        border: none;
+        border-radius: 3px;
+    }
+
+        .purple-btn:hover {
+            background-color: #a361d3
+        }
+</style>
+
+
+<div class="ibox float-e-margins">
+    <div class="col-lg-12" id="DashboardDiv">
+        <div class="col-lg-12">
+            <div class="col-lg-12"><div class="pull-right"><a asp-controller="TestPDF" asp-action="Index" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="PDF" target="_blank" id="DashboardPDF"><i class="fa fa-print"></i> Print PDF</a></div></div>
+            
+        
+        </div>
+        <!--1-->
+        <div class="wrapper wrapper-content">
+            <div class="col-lg-2 col-xs-12 col-md-4">
+                <div class="ibox float-e-margins">
+                    <div class="widget red-bg" id="ibox-head">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h3 style="text-align:center">พนักงาน ทั้งหมด</h3>
+                            </div>
+                            <div class="col-xs-4">
+                                <br />
+                                <i class="fa fa-users fa-3x"></i>
+                            </div>
+                            <div class="col-xs-8 text-right">
+                                <br />
+                                <p class="font-size"><span id="emp"></span></p>
+                            </div>
+                            <div class="col-xs-12 text-right">
+                                <span class="pull-right"><a href="#" class="small-box-footer" style="color:white;"> C.E.S Staff</a></span>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-xs-12 col-md-8">
+                <div class="ibox float-e-margins">
+                    <div class="widget style1 lazur-bg" id="ibox-head">
+                        <div class="row">
+                            <div class="col-md-12 col-xs-12">
+                                <h3 style="text-align:center">Employee gender split</h3><br />
+                            </div>
+                            <div class="col-md-6 col-xs-6">
+                                <span><i class="fa fa-male fa-2x"></i></span> <label class="font-bold"> ชาย</label>
+                                <p class="no-margins font-size" id="male"> </p>
+                                <div class="info-box-number" id="percenMale"></div>
+                            </div>
+                            <div class="col-md-6 col-xs-6">
+                                <span><i class="fa fa-female fa-2x"></i></span>  <label class="font-bold"> หญิง</label>
+                                <p class="no-margins font-size" id="female"></p>
+                                <div class="info-box-number" id="percenFemale"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-12 col-xs-12 col-sm-12">
+                <div class="ibox float-e-margins">
+
+                    <div class="widget style1 yellow-bg" id="ibox-head">
+                        <div class="row">
+                            <div class="col-md-12 col-xs-12">
+                                <h3 style="text-align:center">Employee Status</h3><br />
+                            </div>
+                            <div class="col-md-6 col-xs-6">
+                                <div><i class="glyphicon glyphicon-briefcase"></i> <label class="font-bold">ประจำ</label> </div>
+                                <p class="no-margins font-size" id="monly"></p>
+                                <div class="info-box-number" id="percenMonly"></div>
+                            </div>
+                            <div class="col-md-6 col-xs-6">
+                                <div class="font-bold"><i class="glyphicon glyphicon-briefcase"></i> <label>รายวัน</label></div>
+                                <p class="no-margins font-size" id="dayly"></p>
+                                <div class="info-box-number" id="percenDayly"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12 col-xs-12 col-sm-12">
+                <div class="ibox">
+                    <div class="widget navy-bg " id="ibox-head">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h3 style="text-align:center">Manpower</h3><br />
+                            </div>
+                            <div class="col-xs-4">
+                                <label><i class="fa fa-building"></i> สำนักงานใหญ่</label>
+                                <h2 id="ho" class="font-size"></h2>
+                                <span>HO</span> <span class="info-box-number" id="percenHo"></span>
+                            </div>
+                            <div class="col-xs-4">
+                                <label><i class="fa fa-archive"></i> คลังพัสดุกลาง</label>
+                                <h2 id="stores" class="font-size"></h2>
+                                <span>STORE</span> <span class="info-box-number" id="percenStores"></span>
+                            </div>
+                            <div class="col-xs-4">
+                                <label><i class="fa fa-houzz"></i>  หน่วยงานต่างๆ</label>
+                                <h2 id="sites" class="font-size"></h2>
+                                <span>SITE(s)</span> <sapan class="info-box-number" id="percenSites"></sapan>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!--end 1-->
+        <!--2-->
+        <div class="wrapper wrapper-content">
+            <div class="col-lg-4 col-md-12 col-xs-12 col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h3 class="box-title">Age ช่วงอายุ (ปี)</h3>
+                    </div>
+                    <div class="ibox-content" id="ibox2">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-lg-9 col-lg-offset-1 col-md-12">
+                                        <div id="tableAge"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <div class="col-lg-12 col-md-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h3 class="box-title">Generation</h3>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="box box-primary">
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12">
+                                            <div id="tableGen"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h3>Management to staff Ratio</h3>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="box box-primary">
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div id="tableManagement"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12 col-xs-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Position Classified (PC)</h5>
+                    </div>
+                    <div class="ibox-content" id="ibox2">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-lg-9 col-md-12 col-lg-offset-1">
+                                        <div id="tableLevel"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!--end 1-->
+        <div class="wrapper wrapper-content">
+            <div class="col-lg-12 col-md-12 col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h3 class="box-title">Headcount จำนวนพนักงาน</h3>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+
+                                    <div class="col-lg-12 col-md-12">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        แบ่งตามสายงาน
+                                                    </th>
+                                                    <th style="text-align:center">
+                                                        แบ่งตามฝ่าย
+                                                    </th>
+                                                    <th style="text-align:center">
+                                                        แบ่งตามแผนก
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td valign="top">
+                                                        <span id="tableCon"></span>
+                                                    </td>
+                                                    <td valign="top">
+                                                        <span id="tableDepCon"></span>
+                                                    </td>
+                                                    <td valign="top">
+                                                        <span id="tableDep1Cons"></span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td valign="top">
+                                                        <div id="tableAdminFinancail"></div>
+                                                    </td>
+                                                    <td valign="top">
+                                                        <span id="tableDepAF"></span>
+                                                    </td>
+                                                    <td valign="top">
+                                                        <span id="tableDep1AdminF"></span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div id="tableTechEst"></div>
+                                                    </td>
+                                                    <td valign="top">
+                                                        <span id="tableDepTE"></span>
+                                                    </td>
+                                                    <td valign="top">
+                                                        <span id="tableDep1TechE"></span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div> <!--End DashboardDiv-->
+</div>
+@section Scripts {
+
+    <script>
+        $.ajax({
+            type: "GET",
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            //data: { FixAccNo: fixassetno, FixAssetName: itemname1, FixAssetName1: itemname2, SiteName: site, qty: qty,TransectionEtc : etc,TransectionType:selectType} ,
+            url: "/Users/GetData/",
+
+            success: function (response) {
+                //เรียกธรรมดา
+                document.getElementById("emp").innerHTML = response.TotalEmployee + " คน";
+                document.getElementById("male").innerHTML = response.TotalMale + " คน";
+                document.getElementById("female").innerHTML = response.TotalFemale + " คน";
+                document.getElementById("monly").innerHTML = response.Monly + " คน";
+                document.getElementById("dayly").innerHTML = response.Dayly + " คน";
+                document.getElementById("ho").innerHTML = response.Ho + " คน";
+                document.getElementById("stores").innerHTML = response.Store + " คน";
+                document.getElementById("sites").innerHTML = response.Sites + " คน";
+
+                document.getElementById("percenMale").innerHTML = response.percenMale + "%";
+                document.getElementById("percenFemale").innerHTML = response.percenFemale + "%";
+                document.getElementById("percenMonly").innerHTML = response.percenMonly + "%";
+                document.getElementById("percenDayly").innerHTML = response.percenDayly + "%";
+                document.getElementById("percenHo").innerHTML = response.percenHo + "%";
+                document.getElementById("percenStores").innerHTML = response.percenStores + "%";
+                document.getElementById("percenSites").innerHTML = response.percenSites + "%";
+
+                //เรียกใช้แบบการ query และแทรก table กับการ query
+                $("#tableGen").html(response.tableGen);
+                $("#tableAge").html(response.tableAge);
+                $("#tableLevel").html(response.tableLevel);
+                $("#tableManagement").html(response.tableManagement);
+                $("#tableCon").html(response.tableCon);
+                $("#tableAdminFinancail").html(response.tableAdminFinancail);
+                $("#tableTechEst").html(response.tableTechEst);
+                $("#tableDepCon").html(response.tableDepCon);
+                $("#tableDepAF").html(response.tableDepAF);
+                $("#tableDepTE").html(response.tableDepTE);
+                $("#tableDep1Cons").html(response.tableDep1Cons);
+                $("#tableDep1AdminF").html(response.tableDep1AdminF);
+                $("#tableDep1TechE").html(response.tableDep1TechE);
+
+                ;
+            },
+
+            failure: function (response) {
+                alert("fail");
+            }
+        });
+
+
+
+    </script>
+
+}

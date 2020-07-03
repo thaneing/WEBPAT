@@ -1,0 +1,73 @@
+﻿@model CESAPSCOREWEBAPP.Models.Organiz
+
+@{
+    ViewData["Title"] = "ลบผังองค์กรและอัตรากำลัง";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+                + "<li>"
+                + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+                + "</li>"
+                + "<li>"
+                + "<a href='/Organizs/Index' data-toggle='tooltip' data-placement='top' title='List'>รายการผังองค์กรและอัตรากำลัง</a>"
+                + "</li>"
+                + "<li class='active'>"
+                + "<b><a data-toggle='tooltip' data-placement='top' title='Add Title Of Users'>" + @ViewData["Title"] + "</a></b>"
+                + "</li>"
+                + "</ol>";
+}
+
+<div class="col-sm-6 col-lg-6 col-md-6 col-lg-offset-3">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <dl class="dl-horizontal">
+
+                        <dt>
+                            ฝ่าย
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Departments.DepartmentId)
+                        </dd>
+                        <dt>
+                            แผนก
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Department1s.Department1Id)
+                        </dd>
+                        <dt>
+                            ตำแหน่ง
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Positions.PositionId)
+                        </dd>
+                        <dt>
+                            อัตรากำลัง
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Power)
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="organizId" />
+        <input type="submit" value="ลบ" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"/>
+        <a asp-action="Index" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Cancle">ยกเลิก</a>
+    </form>
+</div>
+

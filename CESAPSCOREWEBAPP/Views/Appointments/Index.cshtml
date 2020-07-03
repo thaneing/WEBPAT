@@ -1,0 +1,101 @@
+﻿@model IEnumerable<CESAPSCOREWEBAPP.Models.Appointment>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.HRRecruiteID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AppTelDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AppDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AppCreateBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AppCreateDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AppUpdateBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AppUpdateDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.appTelTypes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.appStatuses)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.appResults)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.appEtcs)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.appSuccesses)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.HRRecruiteID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppTelDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppCreateBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppCreateDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppUpdateBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppUpdateDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.appTelTypes.AppTelTypeId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.appStatuses.AppStatusId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.appResults.AppResultId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.appEtcs.AppEtcId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.appSuccesses.AppSuccessId)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.AppId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.AppId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.AppId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

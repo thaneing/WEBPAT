@@ -1,0 +1,295 @@
+﻿
+@{
+    IEnumerable<SourceAutoComplete> sourceAutoCompletes = ViewData["SourceAutoCompletes"] as IEnumerable<SourceAutoComplete>;
+     IEnumerable<SourceAutoComplete> sourceAutoCompletes2 = ViewData["SourceAutoCompletesJob"] as IEnumerable<SourceAutoComplete>;
+
+
+    //IEnumerable<DocumentType> types = ViewData["type"] as IEnumerable<DocumentType>;
+
+    ViewData["Title"] = "F03 Reports";
+}
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>Search</h5>
+
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>หน่วยงาน : </label>
+
+                        <input name="site" autocomplete="off" id="site" value="@ViewBag.Site" class="typeahead_2 form-control" />
+                        @*<select class="form-control" asp-items="ViewBag.JobNo" id="joblist" onchange="showListHistory(this)"></select>*@
+
+                    </div>
+                </div>
+
+
+
+                <div class="col-lg-4">
+                    <div class="form-group row">
+                        <div class="container-fluid">
+                            <label>Job Document Type : </label>
+                            <select class="form-control" id="type">
+                                <option value="3">All</option>
+                                <option value="0">PO</option>
+                                <option value="1">JO</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>User ID : </label>
+
+                        <input autocomplete="off" id="user" value="@ViewBag.Site" class="typeahead_1 form-control" />
+                        @*<select class="form-control" asp-items="ViewBag.JobNo" id="joblist" onchange="showListHistory(this)"></select>*@
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <label>จากวันที่ : </label>
+                    <div class="form-group">
+                        <div class="input-group date" id="dtp1">
+                            <input type="text" class="form-control" name="Startdate" id="StartDate1" value="@ViewBag.StartDate" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <label>ถึง : </label>
+                    <div class="form-group">
+                        <div class="input-group date" id="dtp2">
+                            <input type="text" class="form-control" name="Enddate" id="StartDate2" value="@ViewBag.EndDate" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div><button class="btn btn-primary dim btn-dim" type="button" onclick="SearchData();"><i class="fa fa-search"></i> Search</button></div>
+                <button class="btn btn-primary dim btn-dim" type="button" onclick="Printdata();"><i class="fa fa-print"></i> Print All</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>รายละเอียด </h5>
+
+        </div>
+        <div class="ibox-content">
+            <div class="table-responsive">
+                <table id='example' class="table table-striped table-bordered table-hover dataTables-example">
+                    <thead>
+                        <tr>
+                            <th align='center'>ReceiptDate</th>
+                            <th align='center'>Shipment No</th>
+                            <th align='center'>Vendor Name</th>
+                            <th align='center'>Description</th>
+                            <th alignn='center'>Document No.(GR)</th>
+                            <th align='center'>Document No.</th>
+                            <th align='center'>PR Ref. No.</th>
+                            <th align='center'>Quantity</th>
+                            <th align='center'>UOM</th>
+                            <th align='center'>Disc.%</th>
+                            <th align='center'>Unit Cost Excl.VAT</th>
+                            <th align='center'>Disc. Price</th>
+                            <th align='center'>Amount On Order</th>
+
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th colspan='11' style="text-align:right;">
+                                รวม
+                            </th>
+                            <th style="text-align:right;">
+                            </th>
+                            <th style="text-align:right;">
+                            </th>
+                        </tr>
+
+                    </tfoot>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script>
+        $('#dtp1,#dtp2').datetimepicker({
+            format: 'DD/MM/YYYY',
+        });
+
+        function SearchData() {
+            var user = document.getElementById('user').value;
+            var StartDate1 = document.getElementById("StartDate1").value;
+            var StartDate2 = document.getElementById("StartDate2").value;
+            var site = document.getElementById("site").value;
+            var type = $('#type :selected').val();
+
+            var dataType = 'application/json; charset=utf-8';
+            table = $('#example').DataTable({
+
+                destroy: true,
+                columnDefs:
+                    [
+
+                        {
+                            targets: 7,
+                            className: 'dt-body-right'
+                        },
+                         {
+                            targets: 9,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 10,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 11,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 12,
+                            className: 'dt-body-right'
+                        }
+
+                    ],
+
+
+                "language": {
+                    "decimal": ",",
+                    "thousands": "."
+                },
+                //"order": [[4, "desc"]],
+                "pageLength": 25,
+                responsive: true,
+                dom: 'Bfrtip',
+                buttons: [
+
+                    {
+                        extend: 'colvis',
+                        text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                        //messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                        titleAttr: 'Hide',
+                        postfixButtons: ['colvisRestore'],
+
+                    },
+                   
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        titleAttr: 'Excel',
+                        // messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                        autoFilter: true,
+                        footer: true
+                    }
+
+                ],
+                "ajax": {
+                    "url": "/F03Reports/Getdata?date1=" + StartDate1 + "&date2=" + StartDate2 + "&user=" + user + "&site=" + site + "&type=" + type,
+                    "contentType": dataType,
+                    "type": "GET",
+                    "data": function (response) {
+                        return JSON.stringify(response.data);
+                    }
+
+                },
+
+                "columns": [
+
+
+                    { "data": "ReceiptDate" },
+                    { "data": "ShipmentNo" },
+                    { "data": "VendorName" },
+                    { "data": "Des" },
+                    { "data": "NoGR" },
+                    { "data": "DocNo" },
+                    { "data": "Ref" },
+                    { "data": "Qty", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "Uom" },
+                    { "data": "Disc", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "UnitCost", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                          { "data": "DiscPrice", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "Amount", render: $.fn.dataTable.render.number(',', '.', 2, '') }
+              
+
+
+                    //{ "data": "InitialEntryGlobalDim2" },
+                    // { "data": "CountDocument" },
+                ],
+                "footerCallback": function (row, data, start, end, display) {
+                    var api = this.api(), data;
+                    // converting to interger to find total
+                    var intVal = function (i) {
+                        return typeof i === 'string' ?
+                            i.replace(/[\$,]/g, '') * 1 :
+                            typeof i === 'number' ?
+                                i : 0;
+                    };
+                    var ToalAmount = api
+                        .column(12, { filter: 'applied' })
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                      var ToalDiscount = api
+                        .column(11, { filter: 'applied' })
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                     $(api.column(11).footer()).html(ToalDiscount.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
+                    $(api.column(12).footer()).html(ToalAmount.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
+
+                }
+
+            });
+        }
+    </script>
+
+    <script>
+        var WebModels = @Html.Raw(Json.Serialize(sourceAutoCompletes));
+        var WebModels2 = @Html.Raw(Json.Serialize(sourceAutoCompletes2));
+
+      //  var str = JSON.stringify(WebModels);
+        //console.log(JSON.stringify(WebModels));
+
+    //console.log(WebModels);
+       $('.typeahead_1').typeahead({
+                source: WebModels
+       });
+
+          $('.typeahead_2').typeahead({
+                source: WebModels2
+          });
+
+
+    </script>
+
+    <script>
+        function Printdata() {
+            var user = document.getElementById('user').value;
+            var StartDate1 = document.getElementById("StartDate1").value;
+            var StartDate2 = document.getElementById("StartDate2").value;
+            var site = document.getElementById("site").value;
+            var type = $('#type :selected').val();
+            url = "/F03Reports/GetdataReport?date1=" + StartDate1 + "&date2=" + StartDate2 + "&user=" + user + "&site=" + site + "&type=" + type;
+            window.location.href = url;
+        }
+    </script>
+}

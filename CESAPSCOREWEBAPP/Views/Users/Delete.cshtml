@@ -1,0 +1,126 @@
+﻿@model CESAPSCOREWEBAPP.Models.User
+
+@{
+    ViewData["Title"] = "ลบสมาชิก";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+                  + "<li>"
+                  + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+                  + "</li>"
+                  + "<li>"
+                  + "<a href='/Users/Index' data-toggle='tooltip' data-placement='top' title='List Members'>รายการสมาชิก</a>"
+                  + "</li>"
+                  + "<li class='active'>"
+                  + "<b><a data-toggle='tooltip' data-placement='top' title='AddUsername'>" + @ViewData["Title"] + "</a></b>"
+                  + "</li>"
+                  + "</ol>";
+}
+
+<style>
+</style>
+<!-- TO DO List -->
+<div class="col-sm-12 col-lg-12 col-md-12">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>ข้อมูลผู้ใช้</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-6 col-lg-offset-3">
+
+                    <center><img src="/images/Users/256/@Html.DisplayFor(model => model.Pic)" /></center>
+                    @*<br />
+                        <strong>
+                            <i class="fa fa-book margin-r-5"></i>
+                            Username :
+                        </strong>
+                        <p class="text-muted">
+                            @Html.DisplayFor(model => model.Username)
+                        </p>*@
+                    <hr>
+                    <strong>
+                        <i class="fa fa-book margin-r-5"></i>
+                        ชื่อ-สกุล :
+                    </strong>
+                    <p class="text-muted">
+                        @Html.DisplayFor(model => model.TitleOfUsers.TitleOfUserName)@Html.DisplayFor(model => model.Firstname) @Html.DisplayFor(model => model.Lastname)
+                    </p>
+                    <hr>
+                    <strong>
+                        <i class="fa fa-book margin-r-5"></i>
+                        วันเดือนปีเกิด :
+                    </strong>
+                    <p class="text-muted">
+                        @Html.DisplayFor(model => model.BirthName)
+                    </p>
+                    @*<hr>
+                        <strong>
+                            <i class="fa fa-book margin-r-5"></i>
+                            ตำแหน่ง :
+                        </strong>
+                        <p class="text-muted">
+                            @Html.DisplayFor(model => model.Positions.PositionName)  @Html.DisplayFor(model => model.Levels.LevelName)
+                        </p>*@
+                    <hr>
+                    <strong>
+                        <i class="fa fa-book margin-r-5"></i>
+                        วันเดือนปีเกิด :
+                    </strong>
+                    <p class="text-muted">
+                        @Html.DisplayFor(model => model.BirthName)
+                    </p>
+                    @*<hr>
+                        <strong>
+                            <i class="fa fa-book margin-r-5"></i>
+                            Permision :
+                        </strong>
+                        <p class="text-muted">
+                            @Html.DisplayFor(model => model.Permisions.PermisionName)
+                        </p>*@
+
+                    <strong>
+                        <i class="fa fa-book margin-r-5"></i>
+                        Email :
+                    </strong>
+                    <p class="text-muted">
+                        @Html.DisplayFor(model => model.EmailContact)
+                    </p>
+                    <hr>
+                    @*<strong>
+                            <i class="fa fa-book margin-r-5"></i>
+                            สถานะ :
+                        </strong>
+                        <p class="text-muted">
+                            @Html.DisplayFor(model => model.CheckUsers.CheckUserName)
+                        </p>
+                        <hr>*@
+
+
+
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>        <form asp-action="Delete">
+        <center>
+            <input type="hidden" asp-for="UserId" />
+            <input type="submit" value="ลบสมาชิก" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete" />
+            <a asp-action="Index" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Cancle">ยกเลิก</a>
+        </center>
+    </form>
+</div>
+
+
+
+
+

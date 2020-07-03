@@ -1,0 +1,427 @@
+﻿@model CESAPSCOREWEBAPP.Models.HRRecruite
+
+@{
+    ViewData["Title"] = "Edit Recruit Data";
+
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+                   + "<li>"
+                   + "<a href='../../Home/Index'>Home</a>"
+                   + "</li>"
+                   + "<li>"
+                   + "<a href='/HRRecruites/Index'>Recruit Data</a>"
+                   + "</li>"
+                   + "<li class='active'>"
+                   + "<a>" + @ViewData["Title"] + "</a>"
+                   + "</li>"
+                   + "</ol>";
+
+}
+@{
+    IEnumerable<Organiz> organizs = ViewData["organiz"] as IEnumerable<Organiz>;
+}
+
+
+<style>
+    #new {
+        height: 250px;
+        /*overflow: auto;*/
+    }
+
+    .tableFixHead1 {
+        overflow-y: auto;
+        height: 500px;
+    }
+
+        .tableFixHead1 th {
+            position: sticky;
+            top: 0;
+        }
+
+    .tableFixHead th {
+        position: sticky;
+        top: 0;
+    }
+
+    /* Just common table stuff. Really. */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px 16px;
+    }
+
+    th {
+        background: #eee;
+    }
+</style>
+
+<form asp-action="Edit">
+
+
+
+
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>@ViewData["Title"]</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-wrench"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li>
+                            <a href="#">Config option 1</a>
+                        </li>
+                        <li>
+                            <a href="#">Config option 2</a>
+                        </li>
+                    </ul>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div id="wizard">
+                    <h1>ประวัติส่วนตัว</h1>
+                    <div class="step-content">
+                        <div class="text-center m-t-md">
+
+                            <div class="ibox ">
+                                <div class="ibox-title">
+                                    <h5>@ViewData["Title"]</h5>
+                                    <div class="ibox-tools">
+                                        <a class="collapse-link">
+                                            <i class="fa fa-chevron-up"></i>
+                                        </a>
+
+                                        <a class="close-link">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="ibox-content">
+                                    <input asp-for="HRRecruiteID" type="hidden" />
+                                    <input asp-for="HRRecruitDate" type="hidden" />
+
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 control-label" style="text-align:right">รหัสบัตรประจำตัวประชาชน</label>
+                                        <div class="col-lg-3">
+                                            <input asp-for="HRRecruiteCardId" class="form-control" />
+                                            <span asp-validation-for="HRRecruiteCardId" class="text-danger"></span>
+                                        </div>
+                                        <label class="col-lg-3 control-label" style="text-align:right">คำนำหน้านาม</label>
+                                        <div class="col-lg-3">
+                                            <select asp-for="TitleOfUserId" class="form-control" asp-items="ViewBag.TitleId"></select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 control-label" style="text-align:right">ชื่อ</label>
+                                        <div class="col-lg-3">
+                                            <input asp-for="HRRecruiteFName" class="form-control" />
+
+                                            <span asp-validation-for="HRRecruiteFName" class="text-danger"></span>
+                                        </div>
+                                        <label class="col-lg-3 control-label" style="text-align:right">นามสกุล</label>
+                                        <div class="col-lg-3">
+                                            <input asp-for="HRRecruiteLName" class="form-control" />
+                                            <span asp-validation-for="HRRecruiteLName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 control-label" style="text-align:right">ชื่อเล่น</label>
+                                        <div class="col-lg-3">
+                                            <input asp-for="HRRecruiteNickname" class="form-control" />
+                                            <span asp-validation-for="HRRecruiteNickname" class="text-danger"></span>
+                                        </div>
+                                        <label class="col-lg-3 control-label" style="text-align:right">วัน/เดือนปีเกิด</label>
+                                        <div class="col-lg-3">
+                                            <div class="input-group date" id="dtp1">
+                                                <input type="text" id="txtStart" name="birth" class="form-control" value="@ViewBag.Birth" />
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 control-label" style="text-align:right">กรุ๊ปเลือด</label>
+                                        <div class="col-lg-3">
+                                            <select asp-for="BloodId" class="form-control" asp-items="ViewBag.BloodId"></select>
+                                        </div>
+                                        <label class="col-lg-3 control-label" style="text-align:right">เบอร์โทร</label>
+                                        <div class="col-lg-3">
+                                            <input asp-for="HRRecruiteTel" class="form-control" />
+                                            <span asp-validation-for="HRRecruiteTel" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 control-label" style="text-align:right">Email</label>
+                                        <div class="col-lg-3">
+                                            <input asp-for="HRRecruiteEmail" class="form-control" />
+                                            <span asp-validation-for="HRRecruiteEmail" class="text-danger"></span>
+                                        </div>
+                                        <label class="col-lg-3 control-label" style="text-align:right">Line ID</label>
+                                        <div class="col-lg-3">
+                                            <input asp-for="HRRecruiteLineId" class="form-control" />
+                                            <span asp-validation-for="HRRecruiteLineId" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 control-label" style="text-align:right">ประเภทการ Recruite</label>
+                                        <div class="col-lg-3">
+                                            <select asp-for="HRRecruiteGroupId" class="form-control" asp-items="ViewBag.HRRecruiteGroupId"></select>
+                                        </div>
+                                        <label class="col-lg-3 control-label" style="text-align:right">สถานะการ Recruite</label>
+                                        <div class="col-lg-3">
+                                            <select asp-for="HRRecruiteStatusId" class="form-control" asp-items="ViewBag.HRRecruiteStatusId"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <h1>ข้อมูลการศึกษา</h1>
+                    <div class="step-content">
+                        <div class="text-center m-t-md">
+
+                            <div class="ibox ">
+                                <div class="ibox-title">
+                                    <h5>ประวัติการศึกษาและการทำงาน</h5>
+                                    <div class="ibox-tools">
+                                        <a class="collapse-link">
+                                            <i class="fa fa-chevron-up"></i>
+                                        </a>
+
+                                        <a class="close-link">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="ibox-content">
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 control-label" style="text-align:right">สถานศึกษา</label>
+                                        <div class="col-lg-3">
+                                            <select asp-for="UniversityId" class="form-control" asp-items="ViewBag.UniversityId"></select>
+                                        </div>
+                                        <label class="col-lg-3 control-label" style="text-align:right">GPA</label>
+                                        <div class="col-lg-3">
+                                            <input asp-for="GPA" class="form-control" />
+                                            <span asp-validation-for="GPA" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 control-label" style="text-align:right">ปีที่สำเร็จการศึกษา</label>
+                                        <div class="col-lg-3">
+                                            <input asp-for="YearCongrate" class="form-control" />
+                                            <span asp-validation-for="YearCongrate" class="text-danger"></span>
+                                        </div>
+                                        <label class="col-lg-3 control-label" style="text-align:right">คณะ</label>
+                                        <div class="col-lg-3">
+                                            <select asp-for="FacultyId" class="form-control" asp-items="ViewBag.FacultyId"></select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 control-label" style="text-align:right">สาขา</label>
+                                        <div class="col-lg-3">
+                                            <select asp-for="MajorId" class="form-control" asp-items="ViewBag.MajorId"></select>
+                                        </div>
+                                        <label class="col-lg-3 control-label" style="text-align:right">ระดับชั้น</label>
+                                        <div class="col-lg-3">
+                                            <select asp-for="TypeCongrateId" class="form-control" asp-items="ViewBag.TypeCongrateId"></select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 control-label" style="text-align:right">สถานที่ทำงานสุดท้าย</label>
+                                        <div class="col-lg-3">
+                                            <input asp-for="LastWorkYear" class="form-control" />
+                                            <span asp-validation-for="LastWorkYear" class="text-danger"></span>
+                                        </div>
+                                        <label class="col-lg-3 control-label" style="text-align:right">ประสบการทำงาน</label>
+                                        <div class="col-lg-3">
+                                            <input asp-for="ExWorkYear" class="form-control" />
+                                            <span asp-validation-for="ExWorkYear" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 control-label" style="text-align:right">ตำแหน่งงานสุดท้าย</label>
+                                        <div class="col-lg-3">
+                                            <input asp-for="LastPosition" class="form-control" />
+                                            <span asp-validation-for="LastPosition" class="text-danger"></span>
+                                        </div>
+                                        <label class="col-lg-3 control-label" style="text-align:right">สาเหตุที่ออกจากงาน</label>
+                                        <div class="col-lg-3">
+                                            <select asp-for="TypeOfResignId" class="form-control" asp-items="ViewBag.TypeOfResignId"></select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 control-label" style="text-align:right">อัตราเงินเดือนสุดท้าย</label>
+                                        <div class="col-lg-3">
+                                            <select asp-for="TypeOfSalaryId" class="form-control" asp-items="ViewBag.TypeOfSalaryId"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h1>ตำแหน่งที่ต้องการสมัคร</h1>
+                    <div class="step-content">
+                        <div class="text-center m-t-md">
+                            <div class="ibox ">
+                                <div class="ibox-title">
+                                    <h5>ตำแหน่งที่ต้องการสมัคร</h5>
+                                    <div class="ibox-tools">
+                                        <a class="collapse-link">
+                                            <i class="fa fa-chevron-up"></i>
+                                        </a>
+                                        <a class="close-link">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="ibox-content">
+                                    <div class="form-group">
+                                        <label class="control-label">ระดับ</label>
+                                        <select asp-for="LevelId" class="form-control" asp-items="ViewBag.LevelId"></select>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-2 control-label" style="text-align:right">ระดับ</label>
+                                        <div class="col-lg-2">
+                                            <select asp-for="LevelId" class="form-control" asp-items="ViewBag.LevelId"></select>
+                                        </div>
+                                        <div class="col-lg-1">
+                                            <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#myModalSave"> เลือกตำแหน่ง</button>
+                                        </div>
+                                        <div class="col-lg-5">
+                                            <div id="external-events">
+                                                <p id="selectItem"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <input type="submit" value="Create" class="btn btn-info" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="myModalSave" class="modal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">เลือกตำแหน่ง  <input id="myInput1" class="pull-right" placeholder="ค้นหา" /></h4>
+                    <br />
+                    <p id="selectItem1"></p>
+                </div>    <!-- Modal content-->
+
+                <div class="modal-body">
+
+
+
+
+                    <div class="col-lg-12">
+                        <div class="tableFixHead1">
+                            <table id="mysite">
+                                <thead>
+                                    <tr class="header">
+                                        <th>ตำแหน่ง  </th>
+                                        <th>แผนก </th>
+                                        <th>ฝ่าย</th>
+                                    </tr>
+                                </thead>
+                                <tbody id='mysite1'>
+                                    @foreach (Organiz organiz in organizs)
+                                    {
+                                        <tr>
+                                            <td><input type="radio" asp-for="organizId" data-position-type="@organiz.Positions.PositionName" data-department1-type="@organiz.Department1s.Department1Name" data-department-type="@organiz.Departments.DepartmentName" value="@organiz.organizId" onclick="selectorgan(this)" />  @organiz.Positions.PositionName </td>
+                                            <td> @organiz.Department1s.Department1Name </td>
+                                            <td>  @organiz.Departments.DepartmentName </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</form>
+
+@section Scripts {
+    <script>
+        $("#wizard").steps();
+    </script>
+
+    <script>
+        $('#dtp1,#dtp2').datetimepicker({
+            format: 'DD/MM/YYYY'
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $("#myInput1").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#mysite1 tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+
+    <script>
+              var positionType ='@ViewBag.Position'
+            var department1Type = '@ViewBag.Department1';
+            var departmentType ='@ViewBag.Department';
+            selectItem = "";
+            var radioValue = $("input[name='organ']:checked").val();
+            selectItem += "<div class='external-event bg-green' id='selectItem'>ตำแหน่ง : " + positionType + " แผนก : " + department1Type + " ฝ่าย : " + departmentType + "</div>";
+            document.getElementById("selectItem").innerHTML = selectItem;
+
+            document.getElementById("selectItem1").innerHTML = selectItem;
+
+    </script>
+
+    <script>
+
+        function selectorgan(organ) {
+            var positionType = organ.getAttribute("data-position-type");
+            var department1Type = organ.getAttribute("data-department1-type");
+            var departmentType = organ.getAttribute("data-department-type");
+
+            selectItem = "";
+            var radioValue = $("input[name='organ']:checked").val();
+            selectItem += "<div class='external-event bg-green' id='selectItem'>ตำแหน่ง : " + positionType + " แผนก : " + department1Type + " ฝ่าย : " + departmentType + "</div>";
+            document.getElementById("selectItem").innerHTML = selectItem;
+
+            document.getElementById("selectItem1").innerHTML = selectItem;
+            //alert(radioValue);
+        }
+
+
+    </script>
+}

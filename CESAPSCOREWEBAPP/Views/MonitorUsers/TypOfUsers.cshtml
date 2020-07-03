@@ -1,0 +1,166 @@
+﻿@model CESAPSCOREWEBAPP.Models.User
+@{
+    ViewData["Title"] = "แก้ไขประเภทผู้ใช้";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+                  + "<li>"
+                  + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+                  + "</li>"
+                  + "<li>"
+                  + "<a href='/MonitorUsers/ResetPassword' data-toggle='tooltip' data-placement='top' title='List Members'>รายการผู้ใช้</a>"
+                  + "</li>"
+                  + "<li class='active'>"
+                  + "<b><a data-toggle='tooltip' data-placement='top' title='EditType'>" + @ViewData["Title"] + "</a></b>"
+                  + "</li>"
+                  + "</ol>";
+}
+    <style>
+        .circleimg {
+            width:200px;
+           height:200px;
+            border-radius: 50%;
+        }
+    </style>
+<div class="col-sm-7 col-lg-7 col-md-7 col-lg-offset-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>ข้อมูลผู้ใช้</h5>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="col-lg-4">
+                         <img src="/images/Users/256/@Html.DisplayFor(model => model.Pic)" class="circleimg img-thumbnail" />
+                    </div>
+                    <div class="col-lg-8">
+                        <h1><a>@Html.DisplayFor(model => model.TitleOfUsers.TitleOfUserName)@Html.DisplayFor(model => model.Firstname) @Html.DisplayFor(model => model.Lastname)</a> <a>(@Html.DisplayFor(model => model.Nickname))</a></h1>
+                        <div style="font-size:14px">
+                            <b>หน่วยงาน : </b> @Html.DisplayFor(model => model.Branchs.BranchName) <br />
+                            <b>ฝ่าย : </b> @Html.DisplayFor(model => model.Organizs.Departments.DepartmentName)
+                            <b>แผนก : </b> @Html.DisplayFor(model => model.Organizs.Department1s.Department1Name) 
+                            <b>ตำแหน่ง : </b> @Html.DisplayFor(model => model.Organizs.Positions.PositionName) <br />
+                            <b>Email : </b>@Html.DisplayFor(model => model.EmailContact)<br />
+                            <b>Tel : </b> @Html.DisplayFor(model => model.MobileTel) หรือ @Html.DisplayFor(model => model.ExtTel) <br />
+                            <b>สถานะ : </b> @Html.DisplayFor(model => model.StatusUser.StatusUserName) 
+                        </div>
+                            
+
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-7 col-lg-7 col-md-7 col-lg-offset-2">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+
+        </div>
+
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <form asp-action="EditUsername" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="col-lg-8 col-lg-offset-2">
+                            <input name="id" type="hidden" value="@ViewBag.Id" />
+                            <div class="form-group">
+                                <label class="control-label" id="usernameuser">Username : </label>
+                                <input name="Username" id="username" class="form-control" value="@ViewBag.Username" />
+
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label">สิทธิ์การเข้าถึง : </label>
+
+                                <select name="PermisionId" id="PermisionId" class="form-control" asp-items="ViewBag.PermisionId"></select>
+
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">ประเภทของผู้ใช้ : </label>
+                                <select name="TypeOfUserId" id="TypeOfUserId" class="form-control" asp-items="ViewBag.TypeOfUserId" type="hidden"></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">สถานะ : </label>
+
+                                <select name="CheckUserId" id="CheckUserId" class="form-control" asp-items="ViewBag.CheckUserId" type="hidden"></select>
+                            </div>
+
+
+                            <input name="UserId" type="hidden" class="form-control" value="@Html.DisplayFor(model => model.UserId)" />
+                        </div>
+                        
+
+                        <div class="form-group col-lg-offset-5 col-lg-8">
+                            <input type="submit" value="บันทึก" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Save" /> 
+                            <a asp-action="ResetPassword" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Back to List">กลับรายการ</a>
+                            
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div>
+        
+    </div>
+</div>
+
+@*<div class="col-sm-4 col-lg-4 col-md-4">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>ข้อมูลผู้ใช้</h5>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <center><img src="/images/Users/256/@Html.DisplayFor(model => model.Pic)" /></center>
+
+                    <div class="col-lg-12">
+                        <ul class="list-group list-group-unbordered">
+                            <li class="list-group-item">
+                                <b>ชื่อ-สกุล</b> <a class="pull-right">@Html.DisplayFor(model => model.TitleOfUsers.TitleOfUserName)@Html.DisplayFor(model => model.Firstname) @Html.DisplayFor(model => model.Lastname)</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>ชื่อเล่น</b> <a class="pull-right">@Html.DisplayFor(model => model.Nickname)</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>วันเกิด</b> <a class="pull-right">@Html.DisplayFor(model => model.BirthName)</a>
+                            </li>
+
+                            <li class="list-group-item">
+                                <b>หน่วยงาน</b> <a class="pull-right">@Html.DisplayFor(model => model.Branchs.BranchName) </a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>ฝ่าย</b> <a class="pull-right">@Html.DisplayFor(model => model.Organizs.Departments.DepartmentName) </a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>แผนก</b> <a class="pull-right">@Html.DisplayFor(model => model.Organizs.Department1s.Department1Name) </a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>ตำแหน่ง</b> <a class="pull-right">@Html.DisplayFor(model => model.Organizs.Positions.PositionName) </a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Email</b> <a class="pull-right">@Html.DisplayFor(model => model.EmailContact)</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Tel</b> <a class="pull-right">@Html.DisplayFor(model => model.MobileTel) หรือ @Html.DisplayFor(model => model.ExtTel) </a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>สถานะ</b> <a class="pull-right">@Html.DisplayFor(model => model.StatusUser.StatusUserName) </a>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>*@
+

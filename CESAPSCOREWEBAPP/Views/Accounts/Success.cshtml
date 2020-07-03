@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewData["Title"] = "Success";
+}
+@using Microsoft.AspNetCore.Http;
+
+<h3>Success Page</h3>
+    Welcome @Context.Session.GetString("username")
+    <br />
+    @Context.Session.GetString("fname")
+    <br>
+    @Context.Session.GetString("lname")
+
+    <a asp-controller="Accounts" asp-action="logout">Logout</a>
+
+

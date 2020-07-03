@@ -1,0 +1,50 @@
+﻿@model CESAPSCOREWEBAPP.Models.DetailTableERP
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+
+<h4>DetailTableERP</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="TableID" class="control-label"></label>
+                <input asp-for="TableID" class="form-control" />
+                <span asp-validation-for="TableID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TableName" class="control-label"></label>
+                <input asp-for="TableName" class="form-control" />
+                <span asp-validation-for="TableName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FieldID" class="control-label"></label>
+                <input asp-for="FieldID" class="form-control" />
+                <span asp-validation-for="FieldID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FieldName" class="control-label"></label>
+                <input asp-for="FieldName" class="form-control" />
+                <span asp-validation-for="FieldName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Detail" class="control-label"></label>
+                <input asp-for="Detail" class="form-control" />
+                <span asp-validation-for="Detail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

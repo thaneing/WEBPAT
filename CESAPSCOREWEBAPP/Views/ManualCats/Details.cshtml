@@ -1,0 +1,52 @@
+﻿@model CESAPSCOREWEBAPP.Models.ManualCat
+
+@{
+    ViewData["Title"] = "รายละเอียดหมวดหมู่คู่มือ";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+                   + "<li>"
+                   + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+                   + "</li>"
+                   + "<li>"
+                   + "<a href='/ManualCats/Index' data-toggle='tooltip' data-placement='top' title='List'>รายการหมวดหมู่คู่มือ</a>"
+                   + "</li>"
+                   + "<li class='active'>"
+                   + "<b><a data-toggle='tooltip' data-placement='top' title='Add Title Of Users'>" + @ViewData["Title"] + "</a></b>"
+                   + "</li>"
+                   + "</ol>";
+}
+
+    <div class="col-xs-12 col-sm-12  col-md-12 col-lg-6 col-lg-offset-3">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>@ViewData["Title"]</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <!-- TO DO List -->
+            <div class="ibox-content">
+                <dl class="row">
+                    <dt class="col-sm-2">
+                        หมวดหมู่ :
+                    </dt>
+                    <dd class="col-sm-3">
+                        @Html.DisplayFor(model => model.ManualCatName)
+                    </dd>
+
+                </dl>
+            </div>
+
+        </div>
+
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.ManualCatId" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Save">แก้ไข</a>
+            <a asp-action="Index" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Back to List">กลับรายการ</a>
+        </div>
+
+    </div>
+

@@ -1,0 +1,113 @@
+﻿@model IEnumerable<CESAPSCOREWEBAPP.Models.User>
+@using Microsoft.AspNetCore.Http;
+@using CESAPSCOREWEBAPP.Helpers;
+@{
+    ViewData["Title"] = "รายการสมาชิก";
+}
+
+
+
+<div class="col-lg-12">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>เงื่อนไขการค้นหา</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="form-group row">
+
+                <label class="col-lg-1 col-form-label">ค้นหา : </label>
+                <div class="col-lg-5">
+                    <input type="text" class="form-control" style="font-family:Arial, FontAwesome" placeholder="&#xF002; ค้นหาจาก ชื่อ-สกุล" id="KeyValue">
+                </div>
+                <label class="col-lg-1 col-form-label">ฝ่าย : </label>
+                <div class="col-lg-5">
+                    <input type="text" class="form-control" style="font-family:Arial, FontAwesome" placeholder="&#xF002; ค้นหาฝ่าย" id="department">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-lg-1 col-form-label">แผนก : </label>
+                <div class="col-lg-5">
+                    <input type="text" class="form-control" style="font-family:Arial, FontAwesome" placeholder="&#xF002; ค้นหาแผนก" id="department1">
+                </div>
+                <label class="col-lg-1 col-form-label">ตำแหน่ง : </label>
+                <div class="col-lg-5">
+                    <input type="text" class="form-control" style="font-family:Arial, FontAwesome" placeholder="&#xF002; ค้นหาตำแหน่ง" id="position">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-lg-1 col-form-label">หน่วยงาน : </label>
+                <div class="col-lg-5">
+                    <input type="text" class="form-control" style="font-family:Arial, FontAwesome" placeholder="&#xF002; ค้นหาหน่วยงาน" id="locationcode" >
+                </div>
+                <div class="col-lg-6 col-form-label">
+                    <button class="btn btn-primary dim btn-dim" type="button" onclick="showResult()"><i class="fa fa-search"></i></button>
+                </div>
+            </div>
+           
+            <span id="sumdata"></span>
+
+        </div>
+    </div>
+</div>
+<div class="col-lg-12">
+
+    <!-- Main content -->
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+
+            <div id="table3"></div>
+        </div>
+    </div>
+</div>
+    @section Scripts {
+
+
+        <script>
+ 
+    showResult();
+
+
+
+
+
+
+    function showResult() {
+       var str = document.getElementById('KeyValue').value;
+        var department = document.getElementById('department').value;
+        var department1 = document.getElementById('department1').value;
+        var position = document.getElementById('position').value;
+        var locationcode = document.getElementById('locationcode').value;
+                $.ajax({
+                    type: 'GET',
+                    contentType: "application/json",
+                    dataType: 'JSON',
+                    data: {
+                        term: str,
+                        department: department,
+                        department1: department1,
+                        position: position,
+                        locationcode: locationcode
+                    },
+                    url: '/Users/Search/',
+                    success: function (response) {
+                        document.getElementById("table3").innerHTML = response.table3;
+                        document.getElementById("sumdata").innerHTML ="รวมทั้งหมด "+ response.sumdata + " ราย";
+                    }
+                });
+            }
+
+
+        </script>
+
+
+
+    }

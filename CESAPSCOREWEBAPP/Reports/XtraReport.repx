@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XtraReportsLayoutSerializer SerializerVersion="19.2.3.0" Ref="1" ControlType="DevExpress.XtraReports.UI.XtraReport, DevExpress.XtraReports.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Name="XtraReport" SnapGridSize="25" ReportUnit="TenthsOfAMillimeter" Landscape="true" Margins="45, 2, 107, 0" PaperKind="Custom" PageWidth="2969" PageHeight="2101" Version="19.2" DataSource="#Ref-0" Dpi="254" Font="Arial, 15.75pt, charSet=0">
+  <Bands>
+    <Item1 Ref="2" ControlType="DetailBand" Name="Detail" HeightF="893.881958" Dpi="254" Padding="5,5,5,5,254" BorderColor="Transparent">
+      <MultiColumn Ref="3" ColumnCount="2" Mode="UseColumnCount" />
+      <Controls>
+        <Item1 Ref="4" ControlType="XRPanel" Name="panel1" CanGrow="false" SizeF="1342.20886,875.434" LocationFloat="38.22885, 0" Dpi="254" BorderColor="Black" Borders="All">
+          <Controls>
+            <Item1 Ref="5" ControlType="XRLabel" Name="label25" Multiline="true" Text="----------------------------------" TextAlignment="TopCenter" SizeF="376.8786,57.9790039" LocationFloat="763.197754, 739.003967" Dpi="254" Font="TH Sarabun New, 11.999999pt, charSet=0" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <StylePriority Ref="6" UseFont="false" UseBorderColor="false" UseTextAlignment="false" />
+            </Item1>
+            <Item2 Ref="7" ControlType="XRLabel" Name="label24" Multiline="true" Text="ลงชื่อ                               ผู้รับเงิน" SizeF="530.489258,70.9790039" LocationFloat="713.552246, 700.024963" Dpi="254" Font="TH Sarabun New, 14.249999pt, charSet=0" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <StylePriority Ref="8" UseFont="false" UseBorderColor="false" />
+            </Item2>
+            <Item3 Ref="9" ControlType="XRLabel" Name="label23" Multiline="true" Text="CONFIDENTIAL" SizeF="450.2325,80.0274658" LocationFloat="116.208382, 690.976563" Dpi="254" Font="TH Sarabun New, 23.9999981pt, style=Italic, charSet=0" ForeColor="Red" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <StylePriority Ref="10" UseFont="false" UseForeColor="false" UseBorderColor="false" />
+            </Item3>
+            <Item4 Ref="11" ControlType="XRLabel" Name="label22" Multiline="true" Text="------------------------------------------------------------------------------------------------------" TextAlignment="TopLeft" SizeF="980.416748,69.00348" LocationFloat="288.187439, 626.7949" Dpi="254" Font="TH Sarabun New, 11.999999pt, charSet=0" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <StylePriority Ref="12" UseFont="false" UseBorderColor="false" UseTextAlignment="false" />
+            </Item4>
+            <Item5 Ref="13" ControlType="XRLabel" Name="label20" Multiline="true" Text="จำนวน" TextAlignment="TopRight" SizeF="155.2221,69.00339" LocationFloat="218.281311, 496.1699" Dpi="254" Font="TH Sarabun New, 11.999999pt, charSet=0" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <StylePriority Ref="14" UseFont="false" UseBorderColor="false" UseTextAlignment="false" />
+            </Item5>
+            <Item6 Ref="15" ControlType="XRLine" Name="line1" SizeF="47.4757,220.0451" LocationFloat="0, 0" Dpi="254" BackColor="Black">
+              <StylePriority Ref="16" UseBackColor="false" />
+            </Item6>
+            <Item7 Ref="17" ControlType="XRLabel" Name="label19" TextFormatString="{0:dd/MMMM/yyyy}" Multiline="true" Text="label19" SizeF="364.5315,69.00333" LocationFloat="941.1981, 133.479141" Dpi="254" Font="TH Sarabun New, 14.249999pt, charSet=0" BackColor="Gainsboro" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <ExpressionBindings>
+                <Item1 Ref="18" EventName="BeforePrint" PropertyName="Text" Expression="[PaymentDate]" />
+              </ExpressionBindings>
+              <StylePriority Ref="19" UseFont="false" UseBackColor="false" UseBorderColor="false" />
+            </Item7>
+            <Item8 Ref="20" ControlType="XRLabel" Name="label13" TextFormatString="{0:MMMM yyyy}" Multiline="true" Text="label13" SizeF="364.5315,69.00334" LocationFloat="941.1981, 249.895767" Dpi="254" Font="TH Sarabun New, 14.249999pt" BackColor="Gainsboro" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <ExpressionBindings>
+                <Item1 Ref="21" EventName="BeforePrint" PropertyName="Text" Expression="[Period]" />
+              </ExpressionBindings>
+              <StylePriority Ref="22" UseFont="false" UseBackColor="false" UseBorderColor="false" />
+            </Item8>
+            <Item9 Ref="23" ControlType="XRLabel" Name="label18" Multiline="true" Text="label18" SizeF="799.482544,69.00336" LocationFloat="432.354034, 585.7915" Dpi="254" Font="TH Sarabun New, 11.999999pt" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <ExpressionBindings>
+                <Item1 Ref="24" EventName="BeforePrint" PropertyName="Text" Expression="[Etc]" />
+              </ExpressionBindings>
+              <StylePriority Ref="25" UseFont="false" UseBorderColor="false" />
+            </Item9>
+            <Item10 Ref="26" ControlType="XRLabel" Name="label17" Multiline="true" Text="label17" SizeF="145.520844,69.00342" LocationFloat="286.8332, 585.7915" Dpi="254" Font="TH Sarabun New, 11.999999pt" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <ExpressionBindings>
+                <Item1 Ref="27" EventName="BeforePrint" PropertyName="Text" Expression="[Site]" />
+              </ExpressionBindings>
+              <StylePriority Ref="28" UseFont="false" UseBorderColor="false" />
+            </Item10>
+            <Item11 Ref="29" ControlType="XRLabel" Name="label16" Multiline="true" Text="label16" TextAlignment="TopCenter" SizeF="662.7811,69.00339" LocationFloat="388.937469, 509.3992" Dpi="254" Font="TH Sarabun New, 14.249999pt, style=Italic, charSet=0" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <ExpressionBindings>
+                <Item1 Ref="30" EventName="BeforePrint" PropertyName="Text" Expression="[Thaibath]" />
+              </ExpressionBindings>
+              <StylePriority Ref="31" UseFont="false" UseBorderColor="false" UseTextAlignment="false" />
+            </Item11>
+            <Item12 Ref="32" ControlType="XRLabel" Name="label15" TextFormatString="{0:#,##0.00}" Multiline="true" Text="label15" TextAlignment="TopCenter" SizeF="662.7811,69.00339" LocationFloat="388.937469, 427.166534" Dpi="254" Font="TH Sarabun New, 15.749999pt, style=Bold, charSet=0" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <ExpressionBindings>
+                <Item1 Ref="33" EventName="BeforePrint" PropertyName="Text" Expression="[Price]" />
+              </ExpressionBindings>
+              <StylePriority Ref="34" UseFont="false" UseBorderColor="false" UseTextAlignment="false" />
+            </Item12>
+            <Item13 Ref="35" ControlType="XRLabel" Name="label14" Multiline="true" Text="label14" SizeF="403.930573,69.00336" LocationFloat="272.7534, 249.895782" Dpi="254" Font="TH Sarabun New, 14.249999pt" BackColor="Gainsboro" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <ExpressionBindings>
+                <Item1 Ref="36" EventName="BeforePrint" PropertyName="Text" Expression="[EmpId]" />
+              </ExpressionBindings>
+              <StylePriority Ref="37" UseFont="false" UseBackColor="false" UseBorderColor="false" />
+            </Item13>
+            <Item14 Ref="38" ControlType="XRLabel" Name="label12" Multiline="true" Text="label12" SizeF="449.198181,69.00333" LocationFloat="856.531433, 337.208344" Dpi="254" Font="TH Sarabun New, 14.249999pt" BackColor="Gainsboro" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <ExpressionBindings>
+                <Item1 Ref="39" EventName="BeforePrint" PropertyName="Text" Expression="[EmpPosition]" />
+              </ExpressionBindings>
+              <StylePriority Ref="40" UseFont="false" UseBackColor="false" UseBorderColor="false" />
+            </Item14>
+            <Item15 Ref="41" ControlType="XRLabel" Name="label11" Multiline="true" Text="label11" TextAlignment="TopLeft" SizeF="403.930573,69.00333" LocationFloat="272.7534, 337.208344" Dpi="254" Font="TH Sarabun New, 14.249999pt" BackColor="Gainsboro" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <ExpressionBindings>
+                <Item1 Ref="42" EventName="BeforePrint" PropertyName="Text" Expression="[EmpName]" />
+              </ExpressionBindings>
+              <StylePriority Ref="43" UseFont="false" UseBackColor="false" UseBorderColor="false" UseTextAlignment="false" />
+            </Item15>
+            <Item16 Ref="44" ControlType="XRLabel" Name="label10" Multiline="true" Text="หมายเหตุ : " SizeF="144.197845,69.00336" LocationFloat="142.635361, 585.791565" Dpi="254" Font="TH Sarabun New, 11.999999pt, charSet=0" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <StylePriority Ref="45" UseFont="false" UseBorderColor="false" />
+            </Item16>
+            <Item17 Ref="46" ControlType="XRLabel" Name="label9" Multiline="true" Text="บาท" SizeF="124.354248,69.0032959" LocationFloat="1067.15271, 427.166534" Dpi="254" Font="TH Sarabun New, 14.249999pt, style=Bold, charSet=0" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <StylePriority Ref="47" UseFont="false" UseBorderColor="false" />
+            </Item17>
+            <Item18 Ref="48" ControlType="XRLabel" Name="label8" Multiline="true" Text="ค่าที่พัก" TextAlignment="TopRight" SizeF="155.222122,69.00336" LocationFloat="218.281311, 427.166534" Dpi="254" Font="TH Sarabun New, 14.249999pt, style=Bold, charSet=0" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <StylePriority Ref="49" UseFont="false" UseBorderColor="false" UseTextAlignment="false" />
+            </Item18>
+            <Item19 Ref="50" ControlType="XRLabel" Name="label7" Multiline="true" Text="ชื่อ-สกุล :" SizeF="158.749908,69.00333" LocationFloat="58.0000076, 337.2083" Dpi="254" Font="TH Sarabun New, 14.249999pt" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <StylePriority Ref="51" UseFont="false" UseBorderColor="false" />
+            </Item19>
+            <Item20 Ref="52" ControlType="XRLabel" Name="label6" Multiline="true" Text="รหัสพนักงาน :" SizeF="214.753387,69.00336" LocationFloat="57.9999962, 249.895782" Dpi="254" Font="TH Sarabun New, 14.249999pt" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <StylePriority Ref="53" UseFont="false" UseBorderColor="false" />
+            </Item20>
+            <Item21 Ref="54" ControlType="XRLabel" Name="label5" Multiline="true" Text="ตำแหน่ง : " SizeF="168.010437,69.00333" LocationFloat="688.521, 337.208344" Dpi="254" Font="TH Sarabun New, 14.249999pt" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <StylePriority Ref="55" UseFont="false" UseBorderColor="false" />
+            </Item21>
+            <Item22 Ref="56" ControlType="XRLabel" Name="label4" Multiline="true" Text="ประจำงวดเดือน : " SizeF="252.677063,69.00336" LocationFloat="688.521, 249.895782" Dpi="254" Font="TH Sarabun New, 14.249999pt" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <StylePriority Ref="57" UseFont="false" UseBorderColor="false" />
+            </Item22>
+            <Item23 Ref="58" ControlType="XRLabel" Name="label3" Multiline="true" Text="วันที่จ่าย :" SizeF="154.260254,69.00333" LocationFloat="786.937866, 133.479141" Dpi="254" Font="TH Sarabun New, 14.249999pt, style=Bold, charSet=0" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <StylePriority Ref="59" UseFont="false" UseBorderColor="false" />
+            </Item23>
+            <Item24 Ref="60" ControlType="XRLabel" Name="label2" Multiline="true" Text="บริษัท ซี.อี.เอส จำกัด" SizeF="453.1668,69.003334" LocationFloat="852.5628, 43.5208435" Dpi="254" Font="TH Sarabun New, 14.249999pt, style=Bold, charSet=0" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <StylePriority Ref="61" UseFont="false" UseBorderColor="false" />
+            </Item24>
+            <Item25 Ref="62" ControlType="XRLabel" Name="label1" Multiline="true" Text="สลิปค่าที่พักพนักงาน" SizeF="613.8647,114.864456" LocationFloat="62.819294, 43.52084" Dpi="254" Font="TH Sarabun New, 27.7499981pt, style=Bold, charSet=0" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <StylePriority Ref="63" UseFont="false" UseBorderColor="false" />
+            </Item25>
+            <Item26 Ref="64" ControlType="XRLabel" Name="label21" Multiline="true" SizeF="662.7811,151.235931" LocationFloat="388.937469, 427.166656" Dpi="254" BackColor="DarkGray" Padding="5,5,0,0,254" BorderColor="Transparent">
+              <StylePriority Ref="65" UseBackColor="false" UseBorderColor="false" />
+            </Item26>
+          </Controls>
+          <StylePriority Ref="66" UseBorderColor="false" />
+        </Item1>
+      </Controls>
+      <StylePriority Ref="67" UsePadding="false" UseBorderColor="false" />
+    </Item1>
+    <Item2 Ref="68" ControlType="TopMarginBand" Name="TopMargin" HeightF="107" Dpi="254" Padding="0,0,0,0,254">
+      <StylePriority Ref="69" UsePadding="false" />
+    </Item2>
+    <Item3 Ref="70" ControlType="BottomMarginBand" Name="BottomMargin" HeightF="0" Dpi="254" />
+  </Bands>
+  <ReportPrintOptions Ref="71" DetailCountOnEmptyDataSource="3" />
+  <ComponentStorage>
+    <Item1 Ref="0" ObjectType="DevExpress.DataAccess.ObjectBinding.ObjectDataSource,DevExpress.DataAccess.v19.2" Name="objectDataSource1" Base64="PE9iamVjdERhdGFTb3VyY2UgTmFtZT0ib2JqZWN0RGF0YVNvdXJjZTEiPjxEYXRhU291cmNlIFR5cGU9IkNFU0FQU0NPUkVXRUJBUFAuTW9kZWxzLkhvdXNlUmVudGFsLCBDRVNBUFNDT1JFV0VCQVBQLCBWZXJzaW9uPTEuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbCIgLz48L09iamVjdERhdGFTb3VyY2U+" />
+  </ComponentStorage>
+</XtraReportsLayoutSerializer>

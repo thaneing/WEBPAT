@@ -1,0 +1,80 @@
+﻿@model CESAPSCOREWEBAPP.Models.Appointment
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+
+<h4>Appointment</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="HRRecruiteID" class="control-label"></label>
+                <input asp-for="HRRecruiteID" class="form-control" />
+                <span asp-validation-for="HRRecruiteID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AppTelTypeId" class="control-label"></label>
+                <select asp-for="AppTelTypeId" class ="form-control" asp-items="ViewBag.AppTelTypeId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="AppTelDate" class="control-label"></label>
+                <input asp-for="AppTelDate" class="form-control" />
+                <span asp-validation-for="AppTelDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AppStatusId" class="control-label"></label>
+                <select asp-for="AppStatusId" class ="form-control" asp-items="ViewBag.AppStatusId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="AppDate" class="control-label"></label>
+                <input asp-for="AppDate" class="form-control" />
+                <span asp-validation-for="AppDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AppResultId" class="control-label"></label>
+                <select asp-for="AppResultId" class ="form-control" asp-items="ViewBag.AppResultId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="AppEtcId" class="control-label"></label>
+                <select asp-for="AppEtcId" class ="form-control" asp-items="ViewBag.AppEtcId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="AppSuccessId" class="control-label"></label>
+                <select asp-for="AppSuccessId" class ="form-control" asp-items="ViewBag.AppSuccessId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="AppCreateBy" class="control-label"></label>
+                <input asp-for="AppCreateBy" class="form-control" />
+                <span asp-validation-for="AppCreateBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AppCreateDate" class="control-label"></label>
+                <input asp-for="AppCreateDate" class="form-control" />
+                <span asp-validation-for="AppCreateDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AppUpdateBy" class="control-label"></label>
+                <input asp-for="AppUpdateBy" class="form-control" />
+                <span asp-validation-for="AppUpdateBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AppUpdateDate" class="control-label"></label>
+                <input asp-for="AppUpdateDate" class="form-control" />
+                <span asp-validation-for="AppUpdateDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

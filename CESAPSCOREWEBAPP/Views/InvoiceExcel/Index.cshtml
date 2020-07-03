@@ -1,0 +1,367 @@
+﻿@{
+
+
+
+
+
+
+    ViewData["Title"] = "Import Data";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+   + "<li>"
+   + "<a href='../../Home/Index'>Home</a>"
+   + "</li>"
+
+   + "<li class='active'>"
+   + "<a>" + @ViewData["Title"] + "</a>"
+   + "</li>"
+   + "</ol>";
+
+
+}
+
+
+<style>
+    th {
+        font-size: 12px;
+    }
+
+    td {
+        font-size: 11px;
+    }
+</style>
+
+
+<form method="POST" asp-controller="InvoiceExcel" asp-action="Index" enctype="multipart/form-data" id="searchfrom">
+    <div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>@ViewData["Title"]</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label>ไฟล์อัพโหลด : </label>
+
+                            <input id="files" name="formFile" type="file" />
+
+                        </div>
+                    </div>
+
+
+
+                    <input class="btn btn-primary dim btn-dim" type="submit" value="นำเข้า">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+
+
+
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>รายละเอียด </h5>
+
+        </div>
+        <div class="ibox-content">
+            <div class="table-responsive">
+                <table id='example' class="table table-striped ">
+                    <thead>
+                        <tr>
+
+                            <th align='center'>เลขที่ใบแจ้งหนี้</th>
+                            <th align='center'>ออก tax INV. แล้ว</th>
+                            <th align='center'>รหัสลูกค้า</th>
+                            <th align='center'>Site</th>
+                            <th align='center'>ว.ด.ป.ใบแจ้งหนี้</th>
+                            <th align='center'>ชื่อลูกหนี้</th>
+                            <th align='center'>รายการ</th>
+                            <th align='center'>งวดที่</th>
+                            <th align='center'>จำนวนเงินตามใบแจ้งหนี้ ก่อน vat</th>
+                            <th align='center'>ลูกหนี้การค้า</th>
+                            <th align='center'>เงินประกัน</th>
+                            <th align='center'>เงินล่วงหน้า</th>
+                            <th align='center'>รายได้กส.สัญญา</th>
+                            <th align='center'>รายได้กส.เพิ่มเติม</th>
+                            <th align='center'>รายได้ขายวัสดุ-หน่วยงาน</th>
+                            <th align='center'>รายได้อื่นๆหน่วยงาน</th>
+                            <th align='center'>รายได้ค่ากส.รับล่วงหน้า</th>
+                            <th align='center'>VAT 7%</th>
+                            <th align='center'>ลูกหนี้การค้าตามบัญชีรวมภาษีมูลค่าเพิ่ม</th>
+                            <th align='center'>Tax 3%</th>
+                            <th align='center'>รับสุทธิ</th>
+                            <th align='center'>ว.ด.ป.   รับชำระ</th>
+                            <th align='center'>อ้างถึง</th>
+                            <th align='center'>จำนวนเงินเข้า BANK</th>
+                            <th align='center'>ธนาคาร</th>
+                            <th align='center'>เลขที่เช็ค</th>
+                            <th align='center'>ยอดใบเสร็จรับเงิน</th>
+                            <th align='center'>คงเหลือ</th>
+                            <th align='center'>ยอดธนาคารที่ได้รับ</th>
+                           
+                        </tr>
+                    </thead>
+
+    
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script>
+
+
+
+
+            var dataType = 'application/json; charset=utf-8';
+            table = $('#example').DataTable({
+                destroy: true,
+
+                columnDefs:
+                    [
+                        {
+                            targets: 8,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 9,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 10,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 11,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 12,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 13,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 14,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 15,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 16,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 17,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 18,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 19,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 20,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 21,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 22,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 23,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 24,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 25,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 26,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 27,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 28,
+                            className: 'dt-body-right'
+                        }
+                    ],
+
+
+                "language": {
+                    "decimal": ",",
+                    "thousands": "."
+                },
+                "order": [[0, "desc"]],
+                "pageLength": 25,
+
+                //responsive: true,
+
+                dom: 'Bfrtip',
+                buttons: [
+
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                        titleAttr: 'PDF',
+                        pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                        //orientation: 'landscape',
+                        //messageTop: "รายงาน Purchase Vat & AP :  " + StartDate1 + "-" + StartDate2,
+                        customize: function (doc) {
+                            doc.defaultStyle = {
+                                font: 'THSarabun',
+                                fontSize: '12',
+
+                            };
+                            var now = new Date();
+                            var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                            doc['footer'] = (function (page, pages) {
+                                return {
+                                    columns:
+                                        [
+                                            {
+                                                alignment: 'center',
+                                                text: ['Created on: ', { text: jsDate.toString() }]
+                                            },
+                                            {
+                                                alignment: 'right',
+                                                text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                            }
+                                        ],
+                                    margin: 10
+                                }
+                            });
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        titleAttr: 'Excel',
+                        //messageTop: "รายงาน Purchase Vat & AP  :  " + StartDate1 + "-" + StartDate2,
+                        autoFilter: true
+                    },
+                    {
+                        extend: 'copyHtml5',
+                        text: '<i class="fa fa-files-o"></i> Copy',
+                        titleAttr: 'Copy'
+
+                    },
+                    {
+                        text: 'JSON',
+                        action: function (e, dt, button, config) {
+                            var data = dt.buttons.exportData();
+                            $.fn.dataTable.fileSave(
+                                new Blob([JSON.stringify(data)]),
+                                'Export.json'
+                            );
+                        }
+                    }
+                ],
+                "ajax": {
+                    "url": "/InvoiceExcel/GenData",
+                    "contentType": dataType,
+                    "type": "GET",
+                    "data": function (response) {
+                        return JSON.stringify(response.data);
+                    }
+
+                },
+
+                "columns": [
+
+
+                    { "data": "InvoiceId" },
+                    { "data": "EtcTax" },
+                    { "data": "CusNo" },
+                    { "data": "Site" },
+                    { "data": "PostingDate" },
+                    { "data": "CusName" },
+                 
+                    { "data": "Detail" },
+                    { "data": "Period" },
+                    { "data": "TotalExcVat", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "TotalCut" , render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "RetentionTotal", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "AdvanceTotal", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+
+                    { "data": "TotalConstruction", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "IncomeExtra" , render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "IncomeMaterial", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "IncomeEtc", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+
+
+                    { "data": "IncomeAdvanceExtra", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "Vat7" , render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "CustInVat", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "Vat3", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+
+                    { "data": "TotalIncome", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "DueDate" },
+                    { "data": "Ref" },
+                    { "data": "IncomeTotalBank", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+
+                    { "data": "Bankname"},
+                    { "data": "ChqNo"  },
+                    { "data": "InvoiceTotal", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "PayTotal", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+
+                    { "data": "BankTotal", render: $.fn.dataTable.render.number(',', '.', 2, '') }
+                 
+                ],
+               
+            });
+
+
+
+
+
+
+
+
+     
+
+
+    </script>
+
+
+
+
+
+}

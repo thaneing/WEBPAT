@@ -1,0 +1,393 @@
+﻿
+@{
+    ViewData["Title"] = "Purchase Vat & AP Report";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+   + "<li>"
+   + "<a href='../../Home/Index'>Home</a>"
+   + "</li>"
+
+   + "<li class='active'>"
+   + "<a>" + @ViewData["Title"] + "</a>"
+   + "</li>"
+   + "</ol>";
+}
+
+
+<style>
+    th {
+        font-size: 12px;
+    }
+
+    td {
+        font-size: 11px;
+    }
+</style>
+
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"] </h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+
+                <div class="col-lg-2 col-xs-4">
+                    <label>จากวันที่ : </label>
+                    <div class="form-group">
+                        <div class="input-group date" id="dtp1">
+                            <input type="text" class="form-control" name="Startdate" id="StartDate1" value="@ViewBag.StartDate" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-xs-4">
+                    <label>ถึง : </label>
+                    <div class="form-group">
+                        <div class="input-group date" id="dtp2">
+                            <input type="text" class="form-control" name="Enddate" id="StartDate2" value="@ViewBag.EndDate" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-xs-4">
+                    <button class="btn btn-primary dim btn-dim" type="button" onclick="Submit1()"><i class="fa fa-search"></i></button>
+                </div>
+                <div class="col-lg-6 col-xs-6">
+                    <div class="ibox-tools">
+                        <table border="0" cellspacing="5" cellpadding="5" class="pull-right">
+                            <tbody>
+                                <tr>
+                                    <th> Search By Doc.No.</th>
+                                    <th><input type="text" class="form-control" id="column2_search"></th>
+
+                                    <th>&nbsp; Search By Document AP.</th>
+                                    <th><input type="text" class="form-control" id="column4_search"></th>
+                                </tr>
+                                <tr>
+                                    <th> Search By Cus/Ven No.</th>
+                                    <th><input type="text" class="form-control" id="column5_search"></th>
+
+                                    <th>&nbsp; Search By VAT Reg.</th>
+                                    <th><input type="text" class="form-control" id="column7_search"></th>
+
+                                </tr>
+                                <tr>
+
+                                    <th><input type="checkbox" id="column12_search"> Search UseTax</th>
+                                    <th><input type="checkbox" id="column8_search"> Search HeadOffice</th>
+
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>รายละเอียด </h5>
+           
+        </div>
+        <div class="ibox-content">
+            <div class="table-responsive">
+                <table id='example' class="table table-striped table-bordered table-hover dataTables-example">
+                    <thead>
+                        <tr>
+
+                            <th align='center'>PostingDate</th>
+                            <th align='center'>Doc.Date</th>
+                            <th align='center'>Doc.No</th>
+                            <th align='center'>Ext.Doc</th>
+                            <th align='center'>Document AP</th>
+                            <th align='center'>Cus/Ven No</th>
+                            <th align='center'>Cus/Ven Name</th>
+                            <th align='center'>VAT Reg.</th>
+                            <th align='center'>HeadOffice</th>
+                            <th align='center'>Branch</th>
+                            <th align='center'>Base</th>
+                            <th align='center'>Amount</th>
+                            <th align='center'>UseTax</th>
+                        </tr>
+                    </thead>
+
+                    <tfoot align="right">
+                        <tr>
+                            <th style="text-align:right;" colspan="10"></th>
+                            <th style="text-align:right;"></th>
+                            <th style="text-align:right;"></th>
+                        </tr>
+                    </tfoot>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script>
+            $('#dtp1,#dtp2').datetimepicker({
+                format: 'DD/MM/YYYY',
+            });
+            function Submit1() {
+
+                var StartDate1 = document.getElementById("StartDate1").value;
+                var StartDate2 = document.getElementById("StartDate2").value;
+                var dataType = 'application/json; charset=utf-8';
+                table = $('#example').DataTable({
+                    destroy: true,
+                    columnDefs:
+                        [
+                            {
+                                targets: 10,
+                                className: 'dt-body-right'
+                            },
+                             {
+                                targets: 11,
+                                className: 'dt-body-right'
+                            }
+                        ],
+
+
+                    "language": {
+                        "decimal": ",",
+                        "thousands": "."
+                    },
+                    "order": [[0, "desc"]],
+                    "pageLength": 25,
+
+                    //responsive: true,
+
+                    dom: 'Bfrtip',
+                    buttons: [
+
+                        {
+                            extend: 'pdfHtml5',
+                            text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                            titleAttr: 'PDF',
+                            pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                            //orientation: 'landscape',
+                            messageTop: "รายงาน Purchase Vat & AP :  " + StartDate1 + "-" + StartDate2,
+                            customize: function (doc) {
+                                doc.defaultStyle = {
+                                    font: 'THSarabun',
+                                    fontSize: '12',
+
+                                };
+                                var now = new Date();
+                                var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                                doc['footer'] = (function (page, pages) {
+                                    return {
+                                        columns:
+                                            [
+                                                {
+                                                    alignment: 'center',
+                                                    text: ['Created on: ', { text: jsDate.toString() }]
+                                                },
+                                                {
+                                                    alignment: 'right',
+                                                    text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                                }
+                                            ],
+                                        margin: 10
+                                    }
+                                });
+                            }
+                        },
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fa fa-file-excel-o"></i> Excel',
+                            titleAttr: 'Excel',
+                            messageTop: "รายงาน Purchase Vat & AP  :  " + StartDate1 + "-" + StartDate2,
+                            autoFilter: true
+                        },
+                        {
+                            extend: 'copyHtml5',
+                            text: '<i class="fa fa-files-o"></i> Copy',
+                            titleAttr: 'Copy'
+
+                        },
+                        {
+                            text: 'JSON',
+                            action: function (e, dt, button, config) {
+                                var data = dt.buttons.exportData();
+                                $.fn.dataTable.fileSave(
+                                    new Blob([JSON.stringify(data)]),
+                                    'Export.json'
+                                );
+                            }
+                        }
+                    ],
+                    "ajax": {
+                        "url": "/PurchaseVat/GetData/?date1=" + StartDate1 + "&date2=" + StartDate2,
+                        "contentType": dataType,
+                        "type": "GET",
+                        "data": function (response) {
+                            return JSON.stringify(response.data);
+                        }
+
+                    },
+
+                    "columns": [
+
+
+                       
+                        { "data": "PostingDate" },
+                        { "data": "DocumentDate" },
+                        { "data": "DocumentNo" },
+                        { "data": "ExternalDocument" },
+                        { "data": "DocumentAP" },
+                        { "data": "CusVenNo" },
+                        { "data": "CusVenName" },
+                        { "data": "VATRegis" },
+                        { "data": "HeadOffice" },
+                        { "data": "Branch" },
+                        { "data": "Base",render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                        { "data": "Amount",render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                        { "data": "UseTax" , render: function (data, type, row) {
+                            if (data === 0) {
+                                return 'No';
+                            } else {
+                                return 'Yes';
+                            } 
+                        }
+                       }
+                      
+     
+
+
+
+
+                    ],
+                    "footerCallback": function (row, data, start, end, display) {
+                        var api = this.api(), data;
+                        // converting to interger to find total
+                        var intVal = function (i) {
+                            return typeof i === 'string' ?
+                                i.replace(/[\$,]/g, '') * 1 :
+                                typeof i === 'number' ?
+                                    i : 0;
+                        };
+
+
+
+                        // computing column Total the complete result 
+                        var TotalAmountLCY = api
+                            .column(10, { filter: 'applied' })
+                            .data()
+                            .reduce(function (a, b) {
+                                return intVal(a) + intVal(b);
+                            }, 0);
+
+                        var VAT = api
+                            .column(11, { filter: 'applied' })
+                            .data()
+                            .reduce(function (a, b) {
+                                return intVal(a) + intVal(b);
+                            }, 0);
+
+
+                        $(api.column(0).footer()).html('Total');
+                        $(api.column(10).footer()).html(TotalAmountLCY.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
+                        $(api.column(11).footer()).html(VAT.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
+
+                    }
+                });
+
+
+
+
+
+                                
+                 // #column3_search is a <input type="text"> element
+        $('#column2_search').on('keyup', function () {
+            table
+                .columns(2)
+                .search(this.value)
+                .draw();
+        });
+        // #column0_search is a <input type="text"> element
+        $('#column4_search').on('keyup', function () {
+            table
+                .columns(4)
+                .search(this.value)
+                .draw();
+        });
+                        // #column0_search is a <input type="text"> element
+        $('#column5_search').on('keyup', function () {
+            table
+                .columns(5)
+                .search(this.value)
+                .draw();
+        });
+        $('#column7_search').on('keyup', function () {
+            table
+                .columns(7)
+                .search(this.value)
+                .draw();
+        });
+
+         $('#column12_search').change(function () {
+             if (this.checked) {
+                 table
+                     .columns(12)
+                     .search("Yes")
+                     .draw();
+             } else {
+                  table
+                     .columns(12)
+                     .search("")
+                     .draw();
+             }
+    
+         });
+
+         $('#column8_search').change(function () {
+             if (this.checked) {
+                 table
+                     .columns(8)
+                     .search("Yes")
+                     .draw();
+             } else {
+                  table
+                     .columns(8)
+                     .search("")
+                     .draw();
+             }
+    
+        });
+
+
+
+        }
+
+
+    </script>
+
+
+
+
+}
+

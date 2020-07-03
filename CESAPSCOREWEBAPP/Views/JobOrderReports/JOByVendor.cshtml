@@ -1,0 +1,370 @@
+﻿
+@{
+
+
+
+    ViewData["Title"] = "JO By Vendor Report";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+    + "<li>"
+    + "<a href='../../Home/Index'>Home</a>"
+    + "</li>"
+
+    + "<li class='active'>"
+    + "<a>" + @ViewData["Title"] + "</a>"
+    + "</li>"
+    + "</ol>";
+}
+
+
+<style>
+
+
+
+    .options {
+        padding: 20px;
+        margin-top: 20px;
+        background-color: rgba(191, 191, 191, 0.15);
+    }
+
+    .caption {
+        font-size: 18px;
+        font-weight: 500;
+    }
+
+    .option {
+        width: 24%;
+        display: inline-block;
+        margin-top: 10px;
+    }
+
+    input.empty {
+        font-family: FontAwesome;
+        font-style: normal;
+        font-weight: normal;
+        text-decoration: inherit;
+    }
+
+
+
+
+
+    th {
+        font-size: 0.7vw;
+    }
+
+    td {
+        font-size: 0.7vw;
+    }
+</style>
+
+
+
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"]</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+
+
+            <div id="pivotgrid-demo">
+
+                @(Html.DevExtreme().PivotGrid<JobOrderReport>()
+                    .ID("pivotgrid")
+                    .AllowSortingBySummary(true)
+                    .WordWrapEnabled(false)
+                    .AllowFiltering(true)
+                    .FieldPanel(p => p
+                        .ShowColumnFields(true)
+                        .ShowDataFields(true)
+                        .ShowFilterFields(true)
+                        .ShowRowFields(true)
+                        .AllowFieldDragging(true)
+                        .Visible(true)
+
+                    )
+                    .HeaderFilter(h => h
+                        .AllowSearch(true)
+                        //.ShowRelevantValues(true)
+                        .Width(300)
+                        .Height(400)
+                    )
+
+                    .ShowBorders(true)
+                    .ShowColumnGrandTotals(true)
+                    .ShowRowGrandTotals(true)
+                    .ShowRowTotals(true)
+                    .ShowColumnTotals(true)
+                    .FieldChooser(c => c.Enabled(true).Height(400))
+                    .Export(e => e.Enabled(true).FileName("JO_By_Group_Report"))
+                    .Scrolling(fc => fc.Mode(PivotGridScrollingMode.Virtual))
+                      .Height(800)
+                    .DataSource(d => d
+                        .Store(s => s.Mvc().Controller("JobOrderReports").LoadAction("GetDataFilter"))
+                        .Fields(fields =>
+                        {
+
+
+                          fields.AddFor(m => m.Location)
+                               .Width(120)
+                               .Area(PivotGridArea.Filter)
+                               .Caption("หน่วยงาน");
+
+                          fields.AddFor(m => m.VendorName)
+                                .Width(150)
+                                .Area(PivotGridArea.Row)
+                                .Caption("Vendor");
+
+
+                            fields.AddFor(m => m.Location)
+                                .Width(120)
+                                .Area(PivotGridArea.Row)
+                                .Caption("หน่วยงาน");
+
+
+                            fields.AddFor(m => m.ItemNo)
+                                .Caption("รหัสสินค้า");
+
+                            fields.AddFor(m => m.JobDesc)
+                                .Width(150)
+                                .Area(PivotGridArea.Row)
+                                .Caption("รายละเอียดงาน");
+
+
+                            fields.AddFor(m => m.OrderNo)
+                                .Width(150)
+                                .Area(PivotGridArea.Row)
+                                .Caption("รหัสใบสั่งงาน");
+
+
+                            fields.AddFor(m => m.Des)
+                                .Width(300)
+                                .Area(PivotGridArea.Row)
+                                .Caption("คำอธิบาย");
+
+                            fields.AddFor(m => m.OrderDate)
+                                .DataType(PivotGridDataType.Date)
+                                .GroupInterval(PivotGridGroupInterval.Year)
+                                .Area(PivotGridArea.Column)
+                                .Caption("ปี");
+
+
+                            fields.AddFor(m => m.OrderDate)
+                                .DataType(PivotGridDataType.Date)
+                                .GroupInterval(PivotGridGroupInterval.Month)
+                                .Area(PivotGridArea.Column)
+                                .Caption("เดือน");
+
+
+
+                           fields.AddFor(m => m.UnitCost)
+                               .SummaryType(SummaryType.Sum)
+                               .Format(Format.FixedPoint)
+                               .Area(PivotGridArea.Data)
+                               .Caption("ราคาต่อหน่วย");
+
+
+                            fields.AddFor(m => m.Qty)
+                                .SummaryType(SummaryType.Sum)
+                                .Format(Format.FixedPoint)
+                                .Area(PivotGridArea.Data)
+                                .Caption("จำนวนรวม");
+
+
+
+                            fields.AddFor(m => m.Amount)
+                                .SummaryType(SummaryType.Sum)
+                                .Format(Format.FixedPoint)
+                                .Area(PivotGridArea.Data)
+                                .Caption("ราคารวม");
+
+
+                            fields.AddFor(m => m.QtyReceived)
+                               .SummaryType(SummaryType.Sum)
+                               .Format(Format.FixedPoint)
+                               .Area(PivotGridArea.Data)
+                               .Caption("จำนวนรับ");
+                            fields.AddFor(m => m.TotalReceived)
+                                .SummaryType(SummaryType.Sum)
+                                .Format(Format.FixedPoint)
+                                .Area(PivotGridArea.Data)
+                                .Caption("ราคารับทั้งหมด");
+
+
+
+                            fields.AddFor(m => m.Des2)
+                                .Caption("รายละเอียดงาน2");
+
+                            fields.AddFor(m => m.OrderDate)
+                                .Caption("วันที่ออกใบสั่งงาน");
+
+                             fields.AddFor(m => m.UnitOfMeasure)
+                                .Caption("หน่วยนับ");
+
+                            fields.AddFor(m => m.VendorNo)
+                                .Caption("รหัสร้านค้า");
+                             fields.AddFor(m => m.VendorName)
+                                .Caption("ชื่อร้านค้า");
+
+                        })
+                    )
+                    .OnInitialized("bind_chart")
+                )
+            </div>
+
+
+
+
+
+
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+
+    <script>
+        function customize_tooltip(args) {
+            return {
+                html: args.seriesName + " | Total<div class='currency'>" + args.valueText + "</div>"
+            };
+        }
+
+        function bind_chart(e) {
+            e.component.bindChart($("#pivotgrid-chart"), {
+                dataFieldsDisplayMode: "splitPanes",
+                alternateDataFields: false
+            });
+            e.component.on("contentReady", contentReady);
+        }
+        function contentReady(e) {
+            e.component.off("contentReady", contentReady);
+            var dataSource = e.component.getDataSource()
+            dataSource.expandHeaderItem("row", ["North America"]);
+            dataSource.expandHeaderItem("column", [2013]);
+        }
+    </script>
+
+
+    <script>
+        $("body").addClass('mini-navbar');
+        SmoothlyMenu();
+        $("body").addClass('fixed-sidebar');
+        $('.sidebar-collapse').slimScroll({
+            height: '100%',
+            railOpacity: 0.9
+        });
+
+
+
+        //$("body").addClass('mini-navbar');
+        //SmoothlyMenu();
+
+
+
+        function cellPrepared(e) {
+            if (e.rowType === 'data') {
+                if (e.data.OrderDate < new Date(2014, 2, 3)) {
+                    e.cellElement.css({ color: '#AAAAAA' });
+                }
+                if (e.data.SaleAmount > 15000) {
+                    if (e.column.dataField === 'OrderNumber') {
+                        e.cellElement.css({ 'font-weight': 'bold' });
+                    }
+                    if (e.column.dataField === 'SaleAmount') {
+                        e.cellElement.css({ 'background-color': '#FFBB00', color: '#000000' });
+                    }
+                }
+            }
+
+            if (e.rowType === 'group') {
+                if (e.row.groupIndex === 0) {
+                    e.cellElement.css({ 'background-color': '#BEDFE6', 'color': '#000' });
+                }
+                if (e.row.groupIndex === 1) {
+                    e.cellElement.css({ 'background-color': '#C9ECD7', 'color': '#000' });
+                }
+                e.cellElement.children().css({ 'color': '#000' });
+            }
+
+            if (e.rowType === 'groupFooter' && e.column.dataField === 'SaleAmount') {
+                e.cellElement.css({ 'font-style': 'italic' });
+            }
+        }
+
+        function customizeExcelCell(options) {
+            var gridCell = options.gridCell;
+            if (!gridCell) {
+                return;
+            }
+
+            if (gridCell.rowType === 'data') {
+                if (gridCell.data.OrderDate < new Date(2014, 2, 3)) {
+                    options.font.color = '#AAAAAA';
+                }
+                if (gridCell.data.SaleAmount > 15000) {
+                    if (gridCell.column.dataField === 'OrderNumber') {
+                        options.font.bold = true;
+                    }
+                    if (gridCell.column.dataField === 'SaleAmount') {
+                        options.backgroundColor = '#FFBB00';
+                        options.font.color = '#000000';
+                    }
+                }
+            }
+
+            if (gridCell.rowType === 'group') {
+                if (gridCell.groupIndex === 0) {
+                    options.backgroundColor = '#BEDFE6';
+                }
+                if (gridCell.groupIndex === 1) {
+                    options.backgroundColor = '#C9ECD7';
+                }
+                if (gridCell.column.dataField === 'Employee') {
+                    options.value = gridCell.value + " (" + gridCell.groupSummaryItems[0].value + " items)";
+                    options.font.bold = false;
+                }
+                if (gridCell.column.dataField === 'SaleAmount') {
+                    options.value = gridCell.groupSummaryItems[0].value;
+                    options.numberFormat = "&quot;Max: &quot;$0.00";
+                }
+            }
+
+            if (gridCell.rowType === 'groupFooter' && gridCell.column.dataField === 'SaleAmount') {
+                options.value = options.gridCell.value;
+                options.numberFormat = "&quot;Sum: &quot;$0.00";
+                options.font.italic = true;
+            }
+
+            if (gridCell.rowType === 'totalFooter' && gridCell.column.dataField === 'SaleAmount') {
+                options.value = options.gridCell.value;
+                options.numberFormat = "&quot;Total Sum: &quot;$0.00";
+            }
+        }
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+}
+

@@ -1,0 +1,355 @@
+﻿@model IEnumerable<CESAPSCOREWEBAPP.Models.User>
+
+@{
+    ViewData["Title"] = "รายงานพนักงาน";
+}
+
+<div class="col-lg-12">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h5>เงื่อนไขรายงานพนักงาน</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="form-group row">
+                <label class="col-lg-1 col-form-label" style="text-align:right">ประเภท : </label>
+                <div class="col-lg-5 ">
+                    <select id="ddlTypeOfEmp" class="form-control">
+                        <option value="-1">--เลือกประเภท--</option>
+                        @foreach (var typeOfEmp in ViewBag.typeOfEmp)
+                        {
+                            <option value="@typeOfEmp.TypeOfEmployeeId">@typeOfEmp.TypeOfEmployeeName</option>
+                        }
+                    </select>
+
+                </div>
+                <label class="col-lg-1 col-form-label" style="text-align:right">ระดับ : </label>
+                <div class="col-lg-5">
+                    <select id="ddlLevels" class="form-control">
+                        <option value="-1">--เลือกระดับ--</option>
+                        @foreach (var levels in ViewBag.levels)
+                        {
+                            <option value="@levels.LevelId">@levels.LevelName</option>
+                        }
+                    </select>
+
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-lg-1 col-form-label" style="text-align:right">ฝ่าย : </label>
+                <div class="col-lg-5 ">
+                    <select id="ddlDep" class="form-control">
+                        <option value="-1">--เลือกฝ่าย--</option>
+                        @foreach (var departments in ViewBag.Departments)
+                        {
+                            <option value="@departments.DepartmentId">@departments.DepartmentName</option>
+                        }
+                    </select>
+
+                </div>
+                <label class="col-lg-1 col-form-label" style="text-align:right">แผนก : </label>
+                <div class="col-lg-5">
+                    <select id="ddlDep1s" class="form-control" placeholder="&#xF002; ค้นหาแผนก">
+                        <option value="-1">--เลือกแผนก--</option>
+                        @foreach (var dep1s in ViewBag.dep1s)
+                        {
+                            <option value="@dep1s.Department1Id">@dep1s.Department1Name</option>
+                        }
+                    </select>
+
+                </div>
+            </div>
+            <div class="form-group row">
+
+                <label class="col-lg-1 col-form-label" style="text-align:right">ตำแหน่ง : </label>
+                <div class="col-lg-5">
+                    <select id="ddlPosition" class="form-control" placeholder="&#xF002; ค้นหาตำแหน่ง">
+                        <option value="-1">--เลือกตำแหน่ง--</option>
+                        @foreach (var position in ViewBag.Positiones)
+                        {
+                            <option value="@position.PositionId">@position.PositionName</option>
+                        }
+                    </select>
+                </div>
+                <label class="col-lg-1 col-form-label" style="text-align:right">หน่วยงาน : </label>
+                <div class="col-lg-5">
+                    <select id="ddlBranch" class="form-control">
+                        <option value="-1" style="color:aliceblue">--เลือกหน่วยงาน--</option>
+                        @foreach (var branchs in ViewBag.branchs)
+                        {
+                            <option value="@branchs.BranchId">@branchs.BranchName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-lg-1 col-form-label" style="text-align:right">สถานะ : </label>
+                <div class="col-lg-5 ">
+                    <select id="ddlStatus" class="form-control">
+                        <option value="-1">--เลือกสถานะ--</option>
+                        @foreach (var statuaUser in ViewBag.statusUsers)
+                        {
+                            <option value="@statuaUser.StatusUserId">@statuaUser.StatusUserName</option>
+                        }
+                    </select>
+
+                </div>
+                <div class="col-lg-1 col-form-label">
+                    <button class="btn btn-primary dim btn-dim" type="button" onclick="ShowReport()" data-toggle="tooltip" data-placement="top" title="ค้นหา"><i class="fa fa-search"></i></button>
+                </div>
+            </div>
+            <div class="form-group row">
+
+
+            </div>
+
+            <span id="sumdata"></span>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>รายการพนักงาน</h5>
+
+        </div>
+        <!-- /.box-header -->
+        <div class="ibox-content">
+            <div class="tab-content">
+                <div id="tab-1" class="tab-pane active">
+
+
+                    <div class="table-responsive">
+
+                        <span id="tableReport"></span>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script>
+        $("#ddlBranch").select2();
+    </script>
+    <script>
+        $("#ddlStatus").select2();
+    </script>
+    <script>
+        $("#ddlPosition").select2();
+    </script>
+    <script>
+        $("#ddlDep1s").select2();
+    </script>
+    <script>
+        $("#ddlDep").select2();
+    </script>
+    <script>
+        $("#ddlTypeOfEmp").select2();
+    </script>
+    <script>
+        $("#ddlLevels").select2();
+    </script>
+    <script>
+
+        $.ajax({
+            type: 'GET',
+            contentType: "application/json",
+            dataType: 'JSON',
+            url: '/EmployeeReports/ShowEmployee/',
+            success: function (response) {
+                //alert("yeah");
+                document.getElementById("tableReport").innerHTML = response.data;
+                document.getElementById("sumdata").innerHTML = "รวมทั้งหมด " + response.sumdata + " ราย";
+                var table = $('#example').DataTable({
+                    destroy: true,
+
+                    "language": {
+                        "decimal": ",",
+                        "thousands": "."
+                    },
+
+                    "pageLength": 25,
+
+                    dom: 'Bfrtip',
+                    // stateSave: true,
+
+                    buttons: [
+                        {
+                            extend: 'pdfHtml5',
+                            text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                            titleAttr: 'PDF',
+                            pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                            orientation: 'landscape',
+                            //messageTop: item + " " + itemname,
+                            customize: function (doc) {
+                                doc.defaultStyle = {
+                                    font: 'THSarabun',
+                                    fontSize: '14',
+
+                                };
+                                var now = new Date();
+                                var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                                doc['footer'] = (function (page, pages) {
+                                    return {
+                                        columns:
+                                            [
+                                                {
+                                                    alignment: 'center',
+                                                    text: ['Created on: ', { text: jsDate.toString() }]
+                                                },
+                                                {
+                                                    alignment: 'right',
+                                                    text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                                }
+                                            ],
+                                        margin: 10
+                                    }
+                                });
+                            }
+                        },
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fa fa-file-excel-o"></i> Excel',
+                            titleAttr: 'Excel',
+                            //messageTop: item + " " + itemname,
+                            autoFilter: true
+                        },
+                        {
+                            extend: 'copyHtml5',
+                            text: '<i class="fa fa-files-o"></i> Copy',
+                            titleAttr: 'Copy'
+
+                        }
+
+                    ]
+
+                });
+
+
+
+
+            }
+        });
+    </script>
+    <script>
+        function ShowReport() {
+            var ddlTypeOfEmp = $('#ddlTypeOfEmp :selected').val();
+            var ddlLevels = $('#ddlLevels :selected').val();
+            var ddlStatus = $('#ddlStatus :selected').val();
+
+            var ddlDep = $('#ddlDep :selected').val();
+            var ddlDep1s = $('#ddlDep1s :selected').val();
+            var ddlPosition = $('#ddlPosition :selected').val();
+            var ddlBranch = $('#ddlBranch :selected').val();
+
+            $.ajax({
+                type: 'GET',
+                contentType: "application/json",
+                dataType: 'JSON',
+                data: {
+                    ddlTypeOfEmp: ddlTypeOfEmp,
+                    ddlLevels: ddlLevels,
+                    ddlStatus: ddlStatus,
+                    ddlDep: ddlDep,
+                    ddlDep1s: ddlDep1s,
+                    ddlPosition: ddlPosition,
+                    ddlBranch: ddlBranch
+
+
+                },
+                url: '/EmployeeReports/ReportEmployees/',
+                success: function (response) {
+                    //alert("yeah");
+                    document.getElementById("tableReport").innerHTML = response.tableReport;
+                    document.getElementById("sumdata").innerHTML = "รวมทั้งหมด " + response.sumdata + " ราย";
+                    var table = $('#example').DataTable({
+                        destroy: true,
+
+                        "language": {
+                            "decimal": ",",
+                            "thousands": "."
+                        },
+
+                        "pageLength": 25,
+
+                        dom: 'Bfrtip',
+                        // stateSave: true,
+
+                        buttons: [
+                            {
+                                extend: 'pdfHtml5',
+                                text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                                titleAttr: 'PDF',
+                                pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                                orientation: 'landscape',
+                                //messageTop: item + " " + itemname,
+                                customize: function (doc) {
+                                    doc.defaultStyle = {
+                                        font: 'THSarabun',
+                                        fontSize: '14',
+
+                                    };
+                                    var now = new Date();
+                                    var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                                    doc['footer'] = (function (page, pages) {
+                                        return {
+                                            columns:
+                                                [
+                                                    {
+                                                        alignment: 'center',
+                                                        text: ['Created on: ', { text: jsDate.toString() }]
+                                                    },
+                                                    {
+                                                        alignment: 'right',
+                                                        text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                                    }
+                                                ],
+                                            margin: 10
+                                        }
+                                    });
+                                }
+                            },
+                            {
+                                extend: 'excelHtml5',
+                                text: '<i class="fa fa-file-excel-o"></i> Excel',
+                                titleAttr: 'Excel',
+                                //messageTop: item + " " + itemname,
+                                autoFilter: true
+                            },
+                            {
+                                extend: 'copyHtml5',
+                                text: '<i class="fa fa-files-o"></i> Copy',
+                                titleAttr: 'Copy'
+
+                            }
+
+                        ]
+
+                    });
+
+
+
+
+                }
+            });
+        }
+    </script>
+
+
+}

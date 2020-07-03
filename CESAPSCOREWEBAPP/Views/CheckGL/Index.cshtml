@@ -1,0 +1,328 @@
+﻿
+@{
+     IEnumerable<V_CheckCostDiffGL> v_CheckCostDiffGLs = ViewData["JsonRegionList"] as IEnumerable<V_CheckCostDiffGL>;
+
+    ViewData["Title"] = "เปรียบเทียบ GL และ Job Cost";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+           + "<li>"
+           + "<a href='../../Home/Index'>Home</a>"
+           + "</li>"
+
+           + "<li class='active'>"
+           + "<a>" + @ViewData["Title"] + "</a>"
+           + "</li>"
+           + "</ol>";
+
+      
+}
+
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>@ViewData["Title"] </h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+
+                <form method="post" asp-controller="CheckGL" asp-action="Index" id="searchfrom">
+                    <div class="col-lg-2 col-xs-4">
+                        <label>Job : </label>
+                        <div class="form-group">
+                            <select class="form-control" hidden="" name="JobNo" asp-items="ViewBag.JobNo" id="joblist"></select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-4">
+                        <label>จากวันที่ : </label>
+                        <div class="form-group">
+                            <div class="input-group date" id="dtp1">
+                                <input type="text" class="form-control" name="Startdate" id="StartDate1" value="@ViewBag.StartDate" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-4">
+                        <label>ถึง : </label>
+                        <div class="form-group">
+                            <div class="input-group date" id="dtp2">
+                                <input type="text" class="form-control" name="Enddate" id="StartDate2" value="@ViewBag.EndDate" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-2 col-xs-4">
+                        <button class="btn btn-primary dim btn-dim" type="button" onclick="Submit1()"><i class="fa fa-search"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>รายละเอียด </h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+
+            <table id="example" class="table">
+                <thead>
+                    <tr>
+
+                        <th align="center">MainJobId</th>
+
+                        <th align="center">DescriptMainJob</th>
+
+                        <th align="center">SubJobID</th>
+
+                        <th align="center">DescriptionSubJob</th>
+
+                        <th align="center">JobTaskNo</th>
+
+                        <th align="center">DescriptFull</th>
+
+                        <th align="center">CumBalAMT</th>
+
+                        <th align="center">GLAcc</th>
+
+                        <th align="center">Diff</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                <tfoot align="right">
+                    <tr>
+                        <th style="text-align:right;" colspan="6"></th>
+
+                        <th style="text-align:right;"></th>
+                        <th style="text-align:right;"></th>
+                        <th style="text-align:right;"></th>
+                    </tr>
+                </tfoot>
+            </table>
+
+           
+
+
+
+
+</div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        $('#dtp1,#dtp2').datetimepicker({
+            format: 'DD/MM/YYYY',
+        });
+    </script>
+    <script>
+        function Submit1() {
+            document.getElementById('searchfrom').submit();
+        }
+    </script>
+    <script>
+        var dataType = 'application/json; charset=utf-8';
+        var job = document.getElementById("joblist").value;
+        var StartDate1 = document.getElementById("StartDate1").value;
+        var StartDate2 = document.getElementById("StartDate2").value;
+        var WebModels = @Html.Raw(Json.Serialize(v_CheckCostDiffGLs));
+        var str = JSON.stringify(WebModels);
+        //console.log(JSON.stringify(WebModels));
+            table = $('#example').DataTable({
+                destroy: true,
+                //fixedHeader: true,
+                  columnDefs:
+                        [
+                           
+                           {
+                                targets: 6,
+                                className: 'dt-body-right'
+                          },
+                           {
+                                targets: 7,
+                                className: 'dt-body-right'
+                          },
+                           {
+                                targets: 8,
+                                className: 'dt-body-right'
+                          }
+
+                        ],
+
+
+
+                //scrollY: 500,
+                //deferRender: true,
+                //scrollCollapse: true,
+               //scroller: {
+                //    loadingIndicator: true
+                //},
+                responsive: true,
+                //fixedHeader: true,
+                //select: {
+                //    style: 'os',
+                //    blurable: true
+                //},
+                dom: 'Bfrtip',
+                //stateSave: true,
+                buttons: [
+                    {
+                        extend: 'colvis',
+                        text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                        titleAttr: 'Hide',
+                        postfixButtons: ['colvisRestore']
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                        titleAttr: 'PDF',
+                        pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                        orientation: 'landscape',
+                        messageTop: "หน่วยงาน : "+job + " ระหว่างวันที่ : " + StartDate1 +"-"+StartDate2,
+                        customize: function (doc) {
+                            doc.defaultStyle = {
+                                font: 'THSarabun',
+                                fontSize: '12',
+
+                            };
+
+                            //Create a date string that we use in the footer. Format is dd-mm-yyyy
+                            var now = new Date();
+                            var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                            doc['footer'] = (function (page, pages) {
+                                return {
+                                    columns:
+                                        [
+                                            {
+                                                alignment: 'center',
+                                                text: ['Created on: ', { text: jsDate.toString() }]
+                                            },
+                                            {
+                                                alignment: 'right',
+                                                text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                            }
+                                        ],
+                                    margin: 10
+                                }
+                            });
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        titleAttr: 'Excel',
+                        messageTop: "หน่วยงาน : "+job + " ระหว่างวันที่ : " + StartDate1 +"-"+StartDate2,
+                        autoFilter: true
+                    },
+                    {
+                        extend: 'copyHtml5',
+                        text: '<i class="fa fa-files-o"></i> Copy',
+                        titleAttr: 'Copy'
+                    },
+                    {
+                        text: 'JSON',
+                        action: function (e, dt, button, config) {
+                            var data = dt.buttons.exportData();
+                            $.fn.dataTable.fileSave(
+                                new Blob([JSON.stringify(data)]),
+                                'Export.json'
+                            );
+                        }
+                    }
+                    //,
+                    //{
+                    //    extend: 'selectAll'
+                    //},
+                    //{
+                    //    extend: 'selectNone'
+                    //}
+                ],
+                "aaData":  WebModels,
+                "aoColumns": [
+                    { "mDataProp": "MainJobID" },
+                    { "mDataProp": "DescriptionMainJob"},
+                    { "mDataProp": "SubJobID"},
+                    { "mDataProp": "DescriptionSubJob"},
+                    { "mDataProp": "JobTaskNo"},
+                    { "mDataProp": "DescriptionFull"},
+                    { "mDataProp": "CumBalAMT" ,render: $.fn.dataTable.render.number(',', '.', 2, '')},
+                    { "mDataProp": "GLAcc",render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "mDataProp": "Diff",render: $.fn.dataTable.render.number(',', '.', 2, '') }
+       
+
+                ],
+                   "footerCallback": function (row, data, start, end, display) {
+                        var api = this.api(), data;
+                        // converting to interger to find total
+                        var intVal = function (i) {
+                            return typeof i === 'string' ?
+                                i.replace(/[\$,]/g, '') * 1 :
+                                typeof i === 'number' ?
+                                    i : 0;
+                        };
+
+                        // computing column Total the complete result 
+                        var monTotal = api
+                            .column(6, {filter:'applied'})
+                            .data()
+                            .reduce(function (a, b) {
+                                return intVal(a) + intVal(b);
+                            }, 0);
+
+                                  // computing column Total the complete result 
+                        var TotalAmountLCY = api
+                            .column(7, {filter:'applied'})
+                            .data()
+                            .reduce(function (a, b) {
+                                return intVal(a) + intVal(b);
+                            }, 0);
+                                              // computing column Total the complete result 
+                        var Diftotal = api
+                            .column(8, {filter:'applied'})
+                            .data()
+                            .reduce(function (a, b) {
+                                return intVal(a) + intVal(b);
+                            }, 0);
+
+                        $(api.column(0).footer()).html('Total');
+                        $(api.column(6).footer()).html(monTotal.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
+                        $(api.column(7).footer()).html(TotalAmountLCY.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
+                     
+                        $(api.column(8).footer()).html(Diftotal.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
+                    }
+      
+            });
+
+    </script>
+
+
+}

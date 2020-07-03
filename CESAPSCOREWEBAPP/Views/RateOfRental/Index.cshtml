@@ -1,0 +1,227 @@
+﻿
+@{
+    
+
+    ViewData["Title"] = "Rate Of Rental By Store 4";
+}
+
+<style>
+    th {
+        font-size: 14px;
+    }
+
+    td {
+        font-size: 12px;
+    }
+
+    .filter {
+        text-align: right;
+        padding-right: 5px;
+        padding-bottom: 10px;
+    }
+
+    #new {
+        height: 163px;
+        /*overflow: auto;*/
+    }
+</style>
+
+
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>รายละเอียด </h5>
+
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="table-responsive col-lg-8 col-lg-offset-2 col-md-12 col-xs-12">
+                    <table id='example' class="table table-striped table-bordered table-hover dataTables-example">
+                        <thead>
+                            <tr>
+                                <th style="text-align:center">Item No.</th>
+                                <th style="text-align:center">Description</th>
+                                @*<th align='center'>Unit Cost</th>*@
+                            <th style="text-align:center">Rental Price</th>
+                                <th style="text-align:center">Rental Unit</th>
+
+
+
+
+                            </tr>
+                        </thead>
+                        @*<tfoot align="right">
+                    <tr>
+                        <th style="text-align:right;" colspan="9"></th>
+
+                        <th style="text-align:right;"></th>
+                        <th colspan="3"></th>
+                        <th style="text-align:right;"></th>
+                    </tr>
+                </tfoot>*@
+                    </table>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+
+
+
+        
+
+
+            //var site = document.getElementById('site').value;
+            //alert(site);
+
+            //alert(item);
+            var dataType = 'application/json; charset=utf-8';
+            table = $('#example').DataTable({
+
+                destroy: true,
+                columnDefs:
+                    [
+
+                        {
+                            targets: 2,
+                            className: 'dt-body-right'
+                        },
+                        {
+                            targets: 0,
+                            className: 'dt-body-center'
+                        }
+
+                    ],
+
+
+                "language": {
+                    "decimal": ",",
+                    "thousands": "."
+                },
+                "order": [[0, "desc"]],
+                "pageLength": 25,
+                responsive: true,
+                dom: 'Bfrtip',
+                buttons: [
+
+                    {
+                        extend: 'colvis',
+                        text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                        //messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                        titleAttr: 'Hide',
+                        postfixButtons: ['colvisRestore']
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                        titleAttr: 'PDF',
+                        pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                        //orientation: 'landscape',
+                        // messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                        customize: function (doc) {
+                            doc.defaultStyle = {
+                                font: 'THSarabun',
+                                fontSize: '12',
+
+                            };
+                            var now = new Date();
+                            var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                            doc['footer'] = (function (page, pages) {
+                                return {
+                                    columns:
+                                        [
+                                            {
+                                                alignment: 'center',
+                                                text: ['Created on: ', { text: jsDate.toString() }]
+                                            },
+                                            {
+                                                alignment: 'right',
+                                                text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                            }
+                                        ],
+                                    margin: 10
+                                }
+                            });
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        titleAttr: 'Excel',
+                        // messageTop: "รายงาน PV&AP : " + StartDate1 + "-" + StartDate2,
+                        autoFilter: true
+                    },
+                    {
+                        extend: 'copyHtml5',
+                        text: '<i class="fa fa-files-o"></i> Copy',
+                        titleAttr: 'Copy'
+
+                    },
+                    {
+                        text: 'JSON',
+                        action: function (e, dt, button, config) {
+                            var data = dt.buttons.exportData();
+                            $.fn.dataTable.fileSave(
+                                new Blob([JSON.stringify(data)]),
+                                'Export.json'
+                            );
+                        }
+                    },
+                    {
+                        extend: 'selectAll'
+                    },
+                    {
+                        extend: 'selectNone'
+                    }
+                ],
+                "ajax": {
+                    "url": "/RateOfRental/Get",
+                    "contentType": dataType,
+                    "type": "GET",
+                    "data": function (response) {
+                        return JSON.stringify(response.data);
+                    }
+
+                },
+
+                "columns": [
+                    { "data": "ItemNo" },
+                    { "data": "Description" },
+                    //{ "data": "UnitCost", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "RentalPrice", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "RentalUnit" }                  
+                    
+
+                ]
+            });
+
+
+        
+
+
+
+
+    </script>
+
+    @*<script>
+    var WebModels = @Html.Raw(Json.Serialize(sourceAutoCompletes));
+
+      //  var str = JSON.stringify(WebModels);
+        //console.log(JSON.stringify(WebModels));
+
+    //console.log(WebModels);
+       $('.typeahead_1').typeahead({
+                source: WebModels
+            });
+
+    </script>*@
+
+
+}
+

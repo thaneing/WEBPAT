@@ -1,0 +1,540 @@
+﻿
+@{
+    IEnumerable<SourceAutoComplete> sourceAutoCompletesPO = ViewData["PO"] as IEnumerable<SourceAutoComplete>;
+    IEnumerable<SourceAutoComplete> sourceAutoCompletesSite = ViewData["Site"] as IEnumerable<SourceAutoComplete>;
+    ViewData["Title"] = "สรุปเอกสารการวางบิล";
+}
+
+
+
+<div class="col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>จัดการข้อมูล</h5>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-2">
+                    <label>จากวันที่ : </label>
+                    <div class="form-group">
+                        <div class="input-group date" id="dtp1">
+                            <input type="text" class="form-control" name="Startdate" id="StartDate1" value="@ViewBag.StartDate" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label>ถึง : </label>
+                    <div class="form-group">
+                        <div class="input-group date" id="dtp2">
+                            <input type="text" class="form-control" name="Enddate" id="StartDate2" value="@ViewBag.EndDate" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <button class="btn btn-primary dim btn-dim" type="button" onclick="Submit1()"><i class="fa fa-search"></i></button>
+                </div>
+                <div class="pull-right">
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"  type="button" onclick="SaveData();">บันทึกข้อมูล</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>รายละเอียด </h5>
+        </div>
+        <div class="ibox-content">
+
+            <div class="table-responsive">
+                <table id='example' class="table table-striped table-bordered table-hover dataTables-example">
+                    <thead>
+                        <tr>
+                    
+                            <th align='center'>วันที่</th>
+                            <th align='center'>เลขที่ PO.</th>
+                            <th align='center'>หน่วยงาน</th>
+                            <th align='center'>บริษัท</th>
+                            <th align='center'>เลขที่ใบรับสินค้า</th>
+                            <th align='center'>เลขที่ใบกำกับภาษี</th>
+                            <th align='center'>หมายเหตุ</th>
+                            <th>Action</th>
+
+
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">บันทึกข้อมูล</h5>
+            </div>
+            <div class="modal-body">
+
+                    <input id="ID" autocomplete="off" type="hidden" />
+      
+                    <div class="form-group">
+                     
+                            <label>วันที่ : </label>
+                            <div class="input-group date" id="dtp3">
+                                <input type="text" class="form-control" name="datenow" id="datenow" value="@ViewBag.EndDate" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                   
+                    </div>
+
+                    <div class="form-group">
+                    
+                            <label class="control-label">ใบสั่งซื้อ (PO)</label>
+                            <input id="PONo" autocomplete="off" class="typeahead_1 form-control" />
+                     
+                    </div>
+                    <div class="form-group">
+                     
+                            <label class="control-label">บริษัท / ร้านค้า</label>
+                            <input id="Vendor" class="form-control" readonly />
+                      
+                    </div>
+                    <div class="form-group">
+                       
+                            <label class="control-label">หน่วยงาน</label>
+                            <input id="Site" autocomplete="off" class="typeahead_2 form-control" />
+                      
+                    </div>
+                    <div class="form-group">
+                       
+                            <label class="control-label">Invoice</label>
+                            <input id="Invoice" class="form-control" />
+                       
+                    </div>
+                    <div class="form-group">
+                        
+                            <label class="control-label">ใบส่งสินค้า</label>
+                            <input id="Delivery" class="form-control" />
+                     
+                    </div>
+                    <div class="form-group">
+                      
+                            <label class="control-label">หมายเหตุ</label>
+                            <textarea id="etc" class="form-control"></textarea>
+                      
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success " onclick="AddData();" data-dismiss="modal" id="create" data-toggle="tooltip" data-placement="top" title="save">บันทึก</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+    @section Scripts{
+        <script>
+            $('#dtp1,#dtp2,#dtp3').datetimepicker({
+                format: 'DD/MM/YYYY',
+            });
+        </script>
+        <script>
+      var WebModels = @Html.Raw(Json.Serialize(sourceAutoCompletesPO));
+      //  var str = JSON.stringify(WebModels);
+        //console.log(JSON.stringify(WebModels));
+
+
+       $('.typeahead_1').typeahead({
+           source: WebModels
+       });
+
+        $('.typeahead_1').change(function() {
+             var po=this.value;
+             $.ajax({
+                type: 'GET',
+                contentType: "application/json",
+                dataType: 'JSON',
+                url: "/DocumentBillings/GetDataPO?PO="+po,
+                complete: function () {
+
+                },
+                success: function (response) {
+                    //console.log(response);
+                    document.getElementById('Vendor').value = response.data[0].name;
+                    document.getElementById('Site').value = response.data[0].code;
+                    //document.getElementById('selectTypeold').value = response.TransectionType;
+                    //document.getElementById('logid').value = resizeBy.TranSectionFixAssetId;
+                    //document.getElementById('qtyold').value = '';
+                    //document.getElementById('qty').focus();
+                    //document.getElementById('etcold').value = '';
+
+
+                    //table.ajax.reload();
+                },
+                failure: function (response) {
+                    swal({
+                        title: "ไม่สำเร็จ!",
+                        text: "กรุณาทำรายการใหม่อีกครั้ง",
+                        icon: "warning",
+                        button: "ตกลง",
+                    });
+                }
+            });
+        });
+
+        </script>
+
+
+        <script>
+      var WebModels1 = @Html.Raw(Json.Serialize(sourceAutoCompletesSite));
+      //  var str = JSON.stringify(WebModels);
+        //console.log(JSON.stringify(WebModels));
+
+
+       $('.typeahead_2').typeahead({
+           source: WebModels1
+       });
+
+        </script>
+        <script>
+            //$('.modaal-inline-content').modaal({
+            //    type: 'inline',
+            //    accessible_title: 'Modal title',
+            //    before_open: function () {
+            //        //console.log('log before open');
+
+            //    },
+            //    before_close: function () {
+            //        //console.log('log before close');
+            //    },
+            //    after_open: function () {
+            //        //console.log('log after open');
+            //    },
+            //    after_close: function () {
+            //        //console.log('log after close');
+            //    },
+            //    should_open: function () {
+            //        //console.log('just checking to see if we should open');
+
+            //        return true;
+            //    }
+            //});
+
+
+            //$('.fullscreen').modaal({
+            //    fullscreen: true,
+            //    content_source: '#inline-content'
+
+
+            //});
+            function AddData() {
+                var ID = document.getElementById("ID").value;
+                var date1 = document.getElementById("datenow").value;
+                var PO = document.getElementById('PONo').value;
+                var vendor = document.getElementById('Vendor').value;
+                var site = document.getElementById('Site').value;
+                var invoice = document.getElementById('Invoice').value;
+                var Delivery = document.getElementById('Delivery').value;
+                var Etc = document.getElementById('etc').value;
+                $.ajax({
+                    type: 'GET',
+                    contentType: "application/json",
+                    dataType: 'JSON',
+                    data: { ID: ID, date1: date1, PO: PO, vendor: vendor, site: site, invoice: invoice, Delivery: Delivery, Etc: Etc },
+                    url: "/DocumentBillings/AddData",
+                    complete: function () {
+
+                    },
+                    success: function (response) {
+                        //console.log(response);
+                        swal({
+                            title: "สำเร็จ!",
+                            text: response.datatype + " รายการสำเร็จ",
+                            icon: "success",
+                            button: "ตกลง",
+                        });
+                        //$('#exampleModal').modal('hide').on('hidden.bs.modal', functionThatEndsUpDestroyingTheDOM);
+       
+                        
+                        table.ajax.reload();
+                    },
+                    failure: function (response) {
+                        swal({
+                            title: "ไม่สำเร็จ!",
+                            text: "กรุณาทำรายการใหม่อีกครั้ง",
+                            icon: "warning",
+                            button: "ตกลง",
+                        });
+                    }
+                });
+            }
+
+
+
+            function SaveData() {
+                document.getElementById("ID").value = '';
+                document.getElementById('PONo').value = '';
+                document.getElementById('Vendor').value = '';
+                document.getElementById('Site').value = '';
+                document.getElementById('Invoice').value = '';
+                document.getElementById('Delivery').value = '';
+                document.getElementById('etc').value = '';
+            }
+
+            function Submit1() {
+
+                var StartDate1 = document.getElementById("StartDate1").value;
+                var StartDate2 = document.getElementById("StartDate2").value;
+
+                var dataType = 'application/json; charset=utf-8';
+                table = $('#example').DataTable({
+                    destroy: true,
+            
+
+                    "language": {
+                        "decimal": ",",
+                        "thousands": "."
+                    },
+                    "order": [[0, "asc"]],
+                    "pageLength": 25,
+
+                    responsive: true,
+
+                    dom: 'Bfrtip',
+
+                    buttons: [
+
+                        {
+                            extend: 'colvis',
+                            text: '<i class="fa fa-eye"></i> ซ่อน/แสดง',
+                            messageTop: "ข้อมูลระหว่าง : " + StartDate1 + "-" + StartDate2,
+                            titleAttr: 'Hide',
+                            postfixButtons: ['colvisRestore']
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                            titleAttr: 'PDF',
+                            pageSize: 'A4',   // ขนาดหน้ากระดาษเป็น A4
+                            //orientation: 'landscape',
+                            messageTop: "ข้อมูลระหว่าง : " + StartDate1 + "-" + StartDate2,
+                            exportOptions: {
+                                columns: [0, 1, 2, 3, 4, 5, 6]
+                            },
+
+                            customize: function (doc) {
+                                doc.defaultStyle = {
+                                    font: 'THSarabun',
+                                    fontSize: '12',
+
+                                };
+
+                                doc.content[1].alignment = 'center';
+                                doc.content[2].table.widths = [45, 80, 40, 100, 60, 60, 100];
+
+                                
+                                doc.content[3] = { text: '\n\n\n\nลงชื่อ ......................................................ผู้จัดทำ\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tลงชื่อ......................................................ผู้รับเอกสาร ' }
+
+                                 doc.content[4] = { text: '\t(..................................................................)\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t(..................................................................)' };
+                                doc.content[5] = { text: '\tตำแหน่ง......................................................\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tตำแหน่ง......................................................' };
+
+                                //doc.content[4].margin = [80, 2];
+
+
+                                var now = new Date();
+                                var jsDate = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear();
+                                 doc['footer'] = (function (page, pages) {
+                                    return {
+                                        columns:
+                                            [
+                                             
+                                                {
+                                                    alignment: 'right',
+                                                    text: ['Created on: ',{ text: jsDate.toString() },'          page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                                }
+                                            ],
+                                        margin: 10
+                                    }
+                                });
+                            }
+                        },
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fa fa-file-excel-o"></i> Excel',
+                            titleAttr: 'Excel',
+                            messageTop: "ข้อมูลระหว่าง  : " + StartDate1 + "-" + StartDate2,
+                            autoFilter: true
+                        },
+                        {
+                            extend: 'copyHtml5',
+                            text: '<i class="fa fa-files-o"></i> Copy',
+                            titleAttr: 'Copy'
+
+                        },
+                        {
+                            text: 'JSON',
+                            action: function (e, dt, button, config) {
+                                var data = dt.buttons.exportData();
+                                $.fn.dataTable.fileSave(
+                                    new Blob([JSON.stringify(data)]),
+                                    'Export.json'
+                                );
+                            }
+                        },
+                        {
+                            extend: 'selectAll'
+                        },
+                        {
+                            extend: 'selectNone'
+                        }
+                    ],
+                    "ajax": {
+                        "url": "/DocumentBillings/GetData?StartDate=" + StartDate1 + "&EndDate=" + StartDate2,
+                        "contentType": dataType,
+                        "type": "GET",
+                        "data": function (response) {
+                            return JSON.stringify(response.data);
+                        }
+
+                    },
+
+                    "columns": [
+
+
+                        {
+                            "data": "PostingDate",
+                            type: 'date',
+                            render: function (data, type, row) { return data ? moment(data).format('DD/MM/YYYY') : ''; }
+                        },
+                        { "data": "PONo" },
+                        { "data": "Site" },
+                        { "data": "VendorName" },
+                       { "data": "DeliveryOrder" },
+                        { "data": "InvoiceNo" },
+                 
+                        { "data": "Etc" },
+                        {
+                            "data": "ID", render: function (data, type, row) {
+                                //console.log(data);
+                                return " <button class='btn btn-info fullscreen' data-toggle='tooltip' data-placement='top' title='แก้ไข' data-id-type='" + data + "'  onclick = 'editdata(this);' > <i class='fa fa-edit'></i></button > <a class='btn btn-danger' data-toggle='tooltip' data-placement='top' title='ลบ' data-id-type='" + data + "'  onclick = 'deleteItem(this);' > <i class='fa fa-trash'></i></a > ";
+
+                            }
+                        }
+
+                    ]
+                });
+
+            }
+
+
+
+
+            function editdata(act) {
+                var IDData = act.getAttribute("data-id-type");
+                $.ajax({
+                    type: 'GET',
+                    contentType: "application/json",
+                    dataType: 'JSON',
+                    data: { ID: IDData },
+                    url: "/DocumentBillings/GetByID",
+                    complete: function () {
+
+                    },
+                    success: function (response) {
+                        console.log(response);
+                        document.getElementById("ID").value = response.data.ID;
+                        document.getElementById('datenow').value = moment(response.data.PostingDate).format("DD/MM/YYYY");
+                        document.getElementById('PONo').value = response.data.PONo;
+                        document.getElementById('Vendor').value = response.data.VendorName;
+                        document.getElementById('Site').value = response.data.Site;
+                        document.getElementById('Invoice').value = response.data.InvoiceNo;
+                        document.getElementById('Delivery').value = response.data.DeliveryOrder;
+                        document.getElementById('etc').value = response.data.Etc;
+                         $('#exampleModal').modal();
+                    },
+                    failure: function (response) {
+                        swal({
+                            title: "ไม่สำเร็จ!",
+                            text: "กรุณาทำรายการใหม่อีกครั้ง",
+                            icon: "warning",
+                            button: "ตกลง",
+                        });
+                    }
+                });
+
+            }
+            function deleteItem(act) {
+                var IDData = act.getAttribute("data-id-type");
+               
+
+                swal({
+                    title: "คุณต้องการลบข้อมูลนี้หรือไม่?",
+                    text: " ",
+                    //html: true,
+                    icon: "warning",
+                    buttons: [
+                        'No',
+                        'yes'
+                    ],
+
+                    dangerMode: true,
+                }).then(function (isConfirm) {
+                    if (isConfirm) {
+
+                        $.ajax({
+                            type: 'GET',
+                            contentType: "application/json",
+                            dataType: 'JSON',
+                            data: { ID: IDData },
+                            url: "/DocumentBillings/DeleteByID",
+                            complete: function () {
+
+                            },
+                            success: function (response) {
+                                  swal({
+                                    title: "สำเร็จ!",
+                                    text: "ลบข้อมูลสำเร็จ",
+                                    icon: "success",
+                                    button: "ตกลง",
+                                  });
+                                table.ajax.reload();
+                            },
+                            failure: function (response) {
+                                swal({
+                                    title: "ไม่สำเร็จ!",
+                                    text: "กรุณาทำรายการใหม่อีกครั้ง",
+                                    icon: "warning",
+                                    button: "ตกลง",
+                                });
+                            }
+                        });
+
+                    }
+                    else {
+                        swal("ยกเลิกการลบ " + name, " ", "success");
+
+
+                    }
+                });
+            }
+
+
+        </script>
+
+    }

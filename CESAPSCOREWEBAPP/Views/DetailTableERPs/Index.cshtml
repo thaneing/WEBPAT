@@ -1,0 +1,147 @@
+﻿
+<style>
+    #events {
+    background-color: rgba(191, 191, 191, 0.15);
+    padding: 20px;
+    margin-top: 20px;
+}
+
+#events > div {
+    padding-bottom: 5px;
+}
+
+#events > div:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+#events #clear {
+    float: right;
+}
+
+#events .caption {
+    float: left;
+    font-weight: bold;
+    font-size: 115%;
+    line-height: 115%;
+    padding-top: 7px;
+}
+
+#events ul {
+    list-style: none;
+    max-height: 100px;
+    overflow: auto;
+    margin: 0;    
+}
+
+#events ul li {
+    padding: 7px 0;
+    border-bottom: 1px solid #dddddd;
+}
+
+#events ul li:last-child {
+    border-bottom: none;
+}
+
+</style>
+
+@{
+    ViewData["Title"] = "รายละเอียดตาราง ERP";
+}
+<div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>รายการหมวดหมู่คู่มือ</h5>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    @(Html.DevExtreme().DataGrid<CESAPSCOREWEBAPP.Models.DetailTableERP>()
+                          .ID("gridContainer")
+                          .ShowBorders(true)
+                          //.Paging(p => p.PageSize(100))
+                          .Height(600)
+                          //.Paging(paging => paging.Enabled(true))
+                          .HeaderFilter(headerFilter => headerFilter.Visible(true))
+                          .FilterRow(filterRow => filterRow
+                              .Visible(true)
+                              .ApplyFilter(GridApplyFilterMode.Auto)
+                          )
+                           .Scrolling(s => s
+                                .Mode(GridScrollingMode.Virtual)
+                                .RowRenderingMode(GridRowRenderingMode.Virtual)
+                            )
+ 
+                          .SearchPanel(searchPanel => searchPanel
+                                .Visible(true)
+                                .Width(240)
+                                .Placeholder("Search...")
+                            )
+                          .Editing(editing =>
+                          {
+                              editing.Mode(GridEditMode.Row);
+                              editing.AllowAdding(true);
+                              editing.AllowDeleting(true);
+                              editing.AllowUpdating(true);
+                          })
+                          .Columns(columns =>
+                          {
+                              //columns.AddFor(m => m.ID);
+                              columns.AddFor(m => m.TableID)
+                               .Width(100);
+                              columns.AddFor(m => m.TableName);
+                              columns.AddFor(m => m.FieldID)
+                               .Width(100);
+                              columns.AddFor(m => m.FieldName);
+                              columns.AddFor(m => m.Detail);
+                          })
+                          .DataSource(d => d.Mvc()
+                              .Controller("DetailTableERPs")
+                              .LoadAction("Get")
+                              .UpdateAction("Put")
+                              .InsertAction("Post")
+                              .DeleteAction("Delete")
+                              .Key("ID")
+                          )
+                        @*.OnEditingStart(@<text> function(e) { logEvent("EditingStart"); } </text>)
+                        .OnInitNewRow(@<text> function(e) { logEvent("InitNewRow"); } </text>)
+                        .OnRowInserting(@<text> function(e) { logEvent("RowInserting"); } </text>)
+                        .OnRowInserted(@<text> function(e) { logEvent("RowInserted"); } </text>)
+                        .OnRowUpdating(@<text> function(e) { logEvent("RowUpdating"); } </text>)
+                        .OnRowUpdated(@<text> function(e) { logEvent("RowUpdated"); } </text>)
+                        .OnRowRemoving(@<text> function(e) { logEvent("RowRemoving"); } </text>)
+                        .OnRowRemoved(@<text> function(e) { logEvent("RowRemoved"); } </text>)*@
+                    )
+
+                    @*<div id="events">
+                        <div>
+                            <div class="caption">
+                                Fired events
+                            </div>
+                            @(Html.DevExtreme().Button()
+                                .ID("clear")
+                                .Text("Clear")
+                                .OnClick(@<text> function() { $("#events ul").empty(); } </text>)
+                            )
+                        </div>
+                        <ul></ul>
+                    </div>*@
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        //function logEvent(eventName) {
+        //    var logList = $("#events ul"),
+        //        newItem = $("<li>", { text: eventName });
+
+        //    logList.prepend(newItem);
+        //}
+    </script>
+}

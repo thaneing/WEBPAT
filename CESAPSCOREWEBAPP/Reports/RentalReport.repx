@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XtraReportsLayoutSerializer SerializerVersion="18.2.7.0" Ref="1" ControlType="DevExpress.XtraReports.UI.XtraReport, DevExpress.XtraReports.v18.2, Version=18.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Name="RentalReport" Margins="47, 53, 36, 100" PaperKind="A4" PageWidth="827" PageHeight="1169" Version="18.2" DataSource="#Ref-0" Font="Arial, 9.75pt">
+  <Parameters>
+    <Item1 Ref="3" Description="Date1" Name="Date1" />
+    <Item2 Ref="4" Description="Date2" ValueInfo="0" Name="Date2" />
+  </Parameters>
+  <Bands>
+    <Item1 Ref="5" ControlType="TopMarginBand" Name="TopMargin" HeightF="36.4583321" />
+    <Item2 Ref="6" ControlType="BottomMarginBand" Name="BottomMargin">
+      <Controls>
+        <Item1 Ref="7" ControlType="XRPageInfo" Name="pageInfo1" PageInfo="DateTime" SizeF="301,23" LocationFloat="6, 6" StyleName="PageInfo" />
+        <Item2 Ref="8" ControlType="XRPageInfo" Name="pageInfo2" TextFormatString="Page {0} of {1}" TextAlignment="TopRight" SizeF="301,23" LocationFloat="319, 6" StyleName="PageInfo" />
+      </Controls>
+    </Item2>
+    <Item3 Ref="9" ControlType="ReportHeaderBand" Name="ReportHeader" HeightF="103.749977">
+      <Controls>
+        <Item1 Ref="10" ControlType="XRLabel" Name="label4" Text="ประจำเดือน  ถึง ปี  ตั้งแต่วันที่  ถึง" TextAlignment="TopCenter" SizeF="721,24.8418179" LocationFloat="0, 74.84182" StyleName="Title" Font="Sukhumvit, 14.25pt">
+          <StylePriority Ref="11" UseFont="false" UseTextAlignment="false" />
+        </Item1>
+        <Item2 Ref="12" ControlType="XRLabel" Name="label3" Text="ประจำเดือน  ถึง ปี  ตั้งแต่วันที่  ถึง" TextAlignment="TopCenter" SizeF="721,24.8418179" LocationFloat="5.99997854, 50" StyleName="Title" Font="Sukhumvit, 14.25pt">
+          <StylePriority Ref="13" UseFont="false" UseTextAlignment="false" />
+        </Item2>
+        <Item3 Ref="14" ControlType="XRLabel" Name="label2" Text="บริษัท ซี.อี.เอส จำกัด" TextAlignment="TopCenter" SizeF="721,24.8418179" LocationFloat="5.999986, 0" StyleName="Title" Font="Sukhumvit, 14.25pt">
+          <StylePriority Ref="15" UseFont="false" UseTextAlignment="false" />
+        </Item3>
+        <Item4 Ref="16" ControlType="XRLabel" Name="label1" Text="ใบสรุปค่าเช่าอุปกรณ์ก่อสร้างและเครื่องใช้สำนักงาน" TextAlignment="TopCenter" SizeF="721,24.8418179" LocationFloat="5.999986, 25.1581821" StyleName="Title" Font="Sukhumvit, 14.25pt">
+          <StylePriority Ref="17" UseFont="false" UseTextAlignment="false" />
+        </Item4>
+      </Controls>
+    </Item3>
+    <Item4 Ref="18" ControlType="GroupHeaderBand" Name="GroupHeader1" GroupUnion="WithFirstDetail" HeightF="28">
+      <Controls>
+        <Item1 Ref="19" ControlType="XRTable" Name="table1" SizeF="727,28" LocationFloat="0, 0" ForeColor="Transparent" BorderColor="Transparent">
+          <Rows>
+            <Item1 Ref="20" ControlType="XRTableRow" Name="tableRow1" Weight="1">
+              <Cells>
+                <Item1 Ref="21" ControlType="XRTableCell" Name="tableCell1" Weight="0.08253095046289409" Text="ลำดับ" TextAlignment="MiddleRight" StyleName="DetailCaption1" Font="TH Sarabun New, 15.749999pt, style=Bold, charSet=0" Borders="None">
+                  <StylePriority Ref="22" UseFont="false" UseBorders="false" UseTextAlignment="false" />
+                </Item1>
+                <Item2 Ref="23" ControlType="XRTableCell" Name="tableCell2" Weight="0.28981150076619938" Text="รายการ" StyleName="DetailCaption1" Font="TH Sarabun New, 15.749999pt, style=Bold, charSet=0">
+                  <StylePriority Ref="24" UseFont="false" />
+                </Item2>
+                <Item3 Ref="25" ControlType="XRTableCell" Name="tableCell3" Weight="0.20632738234353562" Text="ค่าเช่าเดือนนี้" TextAlignment="MiddleRight" StyleName="DetailCaption1" Font="TH Sarabun New, 15.749999pt, style=Bold, charSet=0">
+                  <StylePriority Ref="26" UseFont="false" UseTextAlignment="false" />
+                </Item3>
+                <Item4 Ref="27" ControlType="XRTableCell" Name="tableCell4" Weight="0.20632737848256183" Text="สะสมยกมา" TextAlignment="MiddleRight" StyleName="DetailCaption1" Font="TH Sarabun New, 15.749999pt, style=Bold, charSet=0">
+                  <StylePriority Ref="28" UseFont="false" UseTextAlignment="false" />
+                </Item4>
+                <Item5 Ref="29" ControlType="XRTableCell" Name="tableCell5" Weight="0.21500283053313579" Text="สะสมยกไป" TextAlignment="MiddleRight" StyleName="DetailCaption1" Font="TH Sarabun New, 15.749999pt, style=Bold, charSet=0">
+                  <StylePriority Ref="30" UseFont="false" UseTextAlignment="false" />
+                </Item5>
+              </Cells>
+            </Item1>
+          </Rows>
+          <StylePriority Ref="31" UseForeColor="false" UseBorderColor="false" />
+        </Item1>
+      </Controls>
+    </Item4>
+    <Item5 Ref="32" ControlType="DetailBand" Name="Detail" HeightF="25">
+      <Controls>
+        <Item1 Ref="33" ControlType="XRTable" Name="table2" SizeF="727,25" LocationFloat="0, 0" ForeColor="Transparent">
+          <Rows>
+            <Item1 Ref="34" ControlType="XRTableRow" Name="tableRow2" Weight="11.5">
+              <Cells>
+                <Item1 Ref="35" ControlType="XRTableCell" Name="tableCell6" Weight="0.095693773903941418" TextAlignment="MiddleRight" StyleName="DetailData1" Font="Sukhumvit, 8.25pt" Borders="None">
+                  <ExpressionBindings>
+                    <Item1 Ref="36" Expression="[ID]" PropertyName="Text" EventName="BeforePrint" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="37" UseFont="false" UseBorders="false" UseTextAlignment="false" />
+                </Item1>
+                <Item2 Ref="38" ControlType="XRTableCell" Name="tableCell7" Weight="0.33602869498534793" StyleName="DetailData1" Font="Sukhumvit, 8.25pt">
+                  <ExpressionBindings>
+                    <Item1 Ref="39" Expression="[Des]" PropertyName="Text" EventName="BeforePrint" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="40" UseFont="false" />
+                </Item2>
+                <Item3 Ref="41" ControlType="XRTableCell" Name="tableCell8" Weight="0.23923443882628442" TextFormatString="{0:#,###.00}" TextAlignment="MiddleRight" StyleName="DetailData1" Font="Sukhumvit, 8.25pt">
+                  <ExpressionBindings>
+                    <Item1 Ref="42" Expression="[NowTotal]" PropertyName="Text" EventName="BeforePrint" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="43" UseFont="false" UseTextAlignment="false" />
+                </Item3>
+                <Item4 Ref="44" ControlType="XRTableCell" Name="tableCell9" Weight="0.23923443777676942" TextFormatString="{0:#,###.00}" TextAlignment="MiddleRight" StyleName="DetailData1" Font="Sukhumvit, 8.25pt">
+                  <ExpressionBindings>
+                    <Item1 Ref="45" Expression="[OldTotal]" PropertyName="Text" EventName="BeforePrint" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="46" UseFont="false" UseTextAlignment="false" />
+                </Item4>
+                <Item5 Ref="47" ControlType="XRTableCell" Name="tableCell10" Weight="0.24929822490034947" TextFormatString="{0:#,###.00}" TextAlignment="MiddleRight" StyleName="DetailData1" Font="Sukhumvit, 8.25pt">
+                  <ExpressionBindings>
+                    <Item1 Ref="48" Expression="[SumTotal]" PropertyName="Text" EventName="BeforePrint" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="49" UseFont="false" UseTextAlignment="false" />
+                </Item5>
+              </Cells>
+            </Item1>
+          </Rows>
+          <StylePriority Ref="50" UseForeColor="false" />
+        </Item1>
+      </Controls>
+    </Item5>
+  </Bands>
+  <StyleSheet>
+    <Item1 Ref="51" Name="Title" BorderStyle="Inset" Font="Arial, 14.25pt" ForeColor="255,75,75,75" BackColor="Transparent" BorderColor="Black" Sides="None" StringFormat="Near;Near;0;None;Character;Default" BorderWidthSerializable="1" />
+    <Item2 Ref="52" Name="DetailCaption1" BorderStyle="Inset" Padding="6,6,0,0,100" Font="TH Sarabun New, 15.749999pt, style=Bold, charSet=0" ForeColor="White" BackColor="255,75,75,75" BorderColor="White" Sides="Left" StringFormat="Near;Center;0;None;Character;Default" TextAlignment="MiddleLeft" BorderWidthSerializable="2" />
+    <Item3 Ref="53" Name="DetailData1" BorderStyle="Inset" Padding="6,6,0,0,100" Font="TH Sarabun New, 15.749999pt, charSet=0" ForeColor="Black" BorderColor="Transparent" Sides="Left" StringFormat="Near;Center;0;None;Character;Default" TextAlignment="MiddleLeft" BorderWidthSerializable="2" />
+    <Item4 Ref="54" Name="DetailData3_Odd" BorderStyle="Inset" Padding="6,6,0,0,100" Font="TH Sarabun New, 15.749999pt, charSet=0" ForeColor="Black" BackColor="255,231,231,231" BorderColor="Transparent" Sides="None" StringFormat="Near;Center;0;None;Character;Default" TextAlignment="MiddleLeft" BorderWidthSerializable="1" />
+    <Item5 Ref="55" Name="PageInfo" BorderStyle="Inset" Padding="2,2,0,0,100" Font="Arial, 8.25pt, style=Bold" ForeColor="255,75,75,75" StringFormat="Near;Near;0;None;Character;Default" />
+  </StyleSheet>
+  <ComponentStorage>
+    <Item1 Ref="0" ObjectType="DevExpress.DataAccess.ObjectBinding.ObjectDataSource,DevExpress.DataAccess.v18.2" Name="objectDataSource1" Base64="PE9iamVjdERhdGFTb3VyY2UgTmFtZT0ib2JqZWN0RGF0YVNvdXJjZTEiPjxEYXRhU291cmNlIFR5cGU9IkNFU0FQU0NPUkVXRUJBUFAuTW9kZWxzLlJlcG9ydFJlbnRhbCwgQ0VTQVBTQ09SRVdFQkFQUCwgVmVyc2lvbj0xLjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPW51bGwiIC8+PENvbnN0cnVjdG9yIC8+PC9PYmplY3REYXRhU291cmNlPg==" />
+  </ComponentStorage>
+</XtraReportsLayoutSerializer>

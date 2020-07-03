@@ -1,0 +1,134 @@
+﻿
+@model CESAPSCOREWEBAPP.Models.Permision
+
+@{
+
+    IEnumerable<WebModul> webModuls = ViewData["WebModuls"] as IEnumerable<WebModul>;
+
+}
+
+@{
+    ViewData["Title"] = "ลบสิทธิ์การเข้าถึง";
+    ViewData["Tab"] = "<ol class='breadcrumb'>"
+         + "<li>"
+         + "<a href='../../Home/Index' data-toggle='tooltip' data-placement='top' title='Home'>หน้าหลัก</a>"
+         + "</li>"
+         + "<li>"
+         + "<a href='/Permisions/Index' data-toggle='tooltip' data-placement='top' title='List'>รายการข้อมูลสิทธิ์การเข้าถึง</a>"
+         + "</li>"
+         + "<li class='active'>"
+         + "<b><a data-toggle='tooltip' data-placement='top' title='Add Permisions'>" + @ViewData["Title"] + "</a></b>"
+         + "</li>"
+         + "</ol>";
+}
+    <div class="col-sm-6 col-lg-6 col-md-6 col-lg-offset-3">
+        <div class="ibox ">
+            <div class="ibox-title">
+                <h5>@ViewData["Title"]</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-lg-12">
+
+
+
+                        <strong>
+                            <i class="fa fa-book margin-r-5"></i>
+                            ชื่อ :
+                        </strong>
+                        <p class="text-muted">
+                            @Html.DisplayFor(model => model.PermisionName)
+                        </p>
+                        <hr>
+                        <strong>
+                            <i class="fa fa-book margin-r-5"></i>
+                            สิิทธ์การเข้าถึง:
+                        </strong>
+                        <div class="col-lg-12">
+
+                            @{
+                                var data = @ViewBag.Permision;
+                                string[] words = data.Split(',');
+                                foreach (WebModul webModul in webModuls)
+                                {
+                                    <div class="col-lg-12">
+                                        @{
+                                            var a = "";
+                                            foreach (string word in words)
+                                            {
+                                                if (Int32.Parse(word) == webModul.WebModulId)
+                                                {
+                                                    a = "checked";
+                                                }
+                                            }
+                                        }
+                                        <input type="checkbox" value="@webModul.WebModulId" @a data-animal-type="@webModul.WebModulId" id="@webModul.WebModulId" onclick="Permision();" disabled>@webModul.WebModulName<br />
+                                    </div>
+                                }
+                            }
+                        </div>
+                        <hr>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="PermisionId" />
+                <input type="submit" value="ลบ" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete" /> |
+                <a asp-action="Index" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Cancle">ยกเลิก</a>
+            </form>
+
+
+        </div>
+</div>
+        @section Scripts {
+            @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+            <script>
+        $(document).ready(function () {
+            var str= "@Html.DisplayFor(model => model.PermisionAction)";
+            var res = str.split(",");
+            //alert(str);
+            if (res[0] == "1") {
+               document.getElementById("puser").checked = true;
+            } else {
+               document.getElementById("puser").checked = false;
+            }
+            if (res[1] == "1") {
+                document.getElementById("psetting").checked = true;
+            } else {
+                document.getElementById("psetting").checked = false;
+            }
+            if (res[2] == "1") {
+                document.getElementById("pnew").checked = true;
+            } else {
+                document.getElementById("pnew").checked = false;
+            }
+            if (res[3] == "1") {
+                document.getElementById("psmember").checked = true;
+            } else {
+                document.getElementById("psmember").checked = false;
+            }
+            if (res[3] == "1") {
+                document.getElementById("pruser").checked = true;
+            } else {
+                document.getElementById("pruser").checked = false;
+            }
+        });
+
+            </script>
+
+        }
