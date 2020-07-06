@@ -12,10 +12,16 @@ namespace CESAPSCOREWEBAPP.Helpers
         {
             // Java timestamp is milliseconds past epoch
             System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
-            dtDateTime = dtDateTime.AddMilliseconds(javaTimeStamp).ToLocalTime();
+            dtDateTime = dtDateTime.AddSeconds(javaTimeStamp);
             return dtDateTime;
         }
 
+        public static double JavaDatetimeToDouble(DateTime DatetimeData)
+        {
+            // Java timestamp is milliseconds past epoch
+            var timeSpan = (DatetimeData - new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc));
+            return timeSpan.TotalSeconds;
+        }
 
 
         public static int GetIso8601WeekOfYear(DateTime time)

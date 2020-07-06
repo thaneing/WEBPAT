@@ -148,14 +148,15 @@ namespace CESAPSCOREWEBAPP.Middlewares
                 // {
                 //     return "Licen Expired";
                 // }
+                var a = JavaTimeStamp.JavaTimeStampToDateTime(Convert.ToDouble(Encryption.Decrypt(datalists[3], KeyOne)));
 
-                if (JavaTimeStamp.JavaTimeStampToDateTime(Convert.ToDouble(Encryption.Decrypt(datalists[3], KeyOne))) < DateTime.Now)
+                if (DateTime.Now>JavaTimeStamp.JavaTimeStampToDateTime(Convert.ToDouble(Encryption.Decrypt(datalists[3], KeyOne))))
                 {
-
+                    return "Licen Expired";
                 }
                 else
                 {
-                    return "Licen Expired";
+                   
                 }
 
 
