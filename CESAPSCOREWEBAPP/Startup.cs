@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CESAPSCOREWEBAPP.Hubs;
+using CESAPSCOREWEBAPP.Middlewares;
 using CESAPSCOREWEBAPP.Models;
 using DevExpress.AspNetCore;
 using DevExpress.AspNetCore.Reporting;
@@ -251,6 +252,7 @@ namespace CESAPSCOREWEBAPP
 
 
 
+
             //app.UseFileServer(new FileServerOptions
             //{
             //    FileProvider = new PhysicalFileProvider(
@@ -283,6 +285,15 @@ namespace CESAPSCOREWEBAPP
             app.UseHttpsRedirection();
             app.UseCookiePolicy();
             app.UseSession();
+
+
+            if (HardwareInfoMiddleware.CheckRegitry() != "true")
+            {
+                app.UseMiddleware<SerialMiddleware>();
+
+            }
+
+
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
