@@ -22,6 +22,7 @@ using CESAPSCOREWEBAPP.Helpers;
 using Tesseract;
 using OpenCvSharp;
 using System.Net;
+using CESAPSCOREWEBAPP.Middlewares;
 
 namespace CESAPSCOREWEBAPP.Models
 {
@@ -42,8 +43,15 @@ namespace CESAPSCOREWEBAPP.Models
         }
 
 
-     
 
+
+        public IActionResult Serial()
+        {
+            var data = HardwareInfoMiddleware.CheckRegitry();
+
+            ViewBag.message = data;
+            return View();
+        }
 
 
 
