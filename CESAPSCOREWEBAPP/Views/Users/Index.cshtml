@@ -42,29 +42,11 @@
 
                     </div>
                     <label class="col-lg-1 col-form-label" style="text-align:right">ระดับ : </label>
-                    <div class="col-lg-5">
-                        <select id="ddlLevels" class="form-control" name="ddlLevels">
-                            <option value="-1">--เลือกระดับ--</option>
-                            @foreach (var levels in ViewBag.levels)
-                            {
-                                <option value="@levels.LevelId">@levels.LevelName</option>
-                            }
-                        </select>
-
-                    </div>
+                  
                 </div>
                 <div class="form-group row">
                     <label class="col-lg-1 col-form-label" style="text-align:right">ฝ่าย : </label>
-                    <div class="col-lg-5 ">
-                        <select id="ddlDep" class="form-control" name="ddlDep">
-                            <option value="-1">--เลือกฝ่าย--</option>
-                            @foreach (var departments in ViewBag.Departments)
-                            {
-                                <option value="@departments.DepartmentId">@departments.DepartmentName</option>
-                            }
-                        </select>
-
-                    </div>
+                    
                     <label class="col-lg-1 col-form-label" style="text-align:right">แผนก : </label>
                     <div class="col-lg-5">
                         <select id="ddlDep1s" class="form-control" placeholder="&#xF002; ค้นหาแผนก" name="ddlDep1s">
@@ -209,15 +191,7 @@
                                                 <td>
                                                     @Html.DisplayFor(modelItem => item.Branchs.BranchName)
                                                 </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.Organizs.Positions.PositionName)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.Organizs.Departments.DepartmentName)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.Organizs.Department1s.Department1Name)
-                                                </td>
+                                          
                                                 @*<td>
                                                         @Html.DisplayFor(modelItem => item.Permisions.PermisionName)
                                                     </td>

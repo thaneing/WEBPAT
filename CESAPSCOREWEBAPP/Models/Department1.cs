@@ -12,6 +12,6 @@ namespace CESAPSCOREWEBAPP.Models
         public int Department1Id {get;set;}
         public string Department1Name { get; set; }
 
-        public ICollection<Organiz> Organizs { get; set; }
+        
     }
 }

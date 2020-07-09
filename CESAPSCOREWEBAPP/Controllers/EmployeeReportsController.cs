@@ -48,13 +48,8 @@ namespace CESAPSCOREWEBAPP.Controllers
 
             ViewBag.Departments = _context.Departments.ToList();
             ViewBag.branchs = _context.Branchs.ToList();
-            ViewBag.dep1s = _context.Department1s.ToList();
-            ViewBag.Positiones = _context.Positions.ToList();
-
             ViewBag.statusUsers = _context.statusUsers.ToList();
             ViewBag.typeOfEmp = _context.typeOfEmployee.ToList();
-            ViewBag.levels = _context.Levels.ToList();
-
          
 
             return View();
@@ -87,9 +82,6 @@ namespace CESAPSCOREWEBAPP.Controllers
             IActionResult response = Unauthorized();
 
           var  users = _context.Users
-                      .Include(p => p.Organizs.Positions)
-                      .Include(p => p.Organizs.Department1s)
-                      .Include(p => p.Organizs.Departments)
                       .Include(p => p.TitleOfUsers)
                       .Include(p => p.StatusUser)
                       .Include(p => p.Branchs)
@@ -99,7 +91,7 @@ namespace CESAPSCOREWEBAPP.Controllers
                       .Include(p => p.TypeCongrates)
                       .Include(p => p.religions)
                       .Include(p => p.typeOfEmployee)
-                      .Include(p => p.Levels)
+         
                      .ToList();
 
 
@@ -112,10 +104,6 @@ namespace CESAPSCOREWEBAPP.Controllers
                             "<th>อีเมลล์</th> " +
                             "<th>เบอร์ติดต่อ</th> " +
                             "<th>วันที่เริ่มงาน</th> " +
-                            "<th>ระดับ</th> " +
-                            "<th>ฝ่าย</th> " +
-                            "<th>แผนก</th> " +
-                            "<th>ตำแหน่ง</th> " +
                             "<th>หน่วยงาน</th> " +
                             "<th>ประเภท</th> " +
                             "<th>สถานะ</th> " +
@@ -136,10 +124,6 @@ namespace CESAPSCOREWEBAPP.Controllers
                 body += "<td>" + user.EmailContact + "</td>";
                 body += "<td>" + user.ExtTel + "</td>";
                 body += "<td>" + user.UserCreateDate.ToString("dd/MM/yyyy") + "</td>";
-                body += "<td>" + user.Levels.LevelName + "</td>";
-                body += "<td>" + user.Organizs.Departments.DepartmentName + "</td>";
-                body += "<td>" + user.Organizs.Department1s.Department1Name + "</td>";
-                body += "<td>" + user.Organizs.Positions.PositionName + "</td>";
                 body += "<td>" + user.Branchs.BranchName + "</td>";
                 body += "<td>" + user.typeOfEmployee.TypeOfEmployeeName + "</td>";
                 body += "<td>" + user.StatusUser.StatusUserName + "</td>";
@@ -185,9 +169,6 @@ namespace CESAPSCOREWEBAPP.Controllers
             {
                 IActionResult response = Unauthorized();
                 users = _context.Users
-                      .Include(p => p.Organizs.Positions)
-                      .Include(p => p.Organizs.Department1s)
-                      .Include(p => p.Organizs.Departments)
                       .Include(p => p.TitleOfUsers)
                       .Include(p => p.StatusUser)
                       .Include(p => p.Branchs)
@@ -197,7 +178,7 @@ namespace CESAPSCOREWEBAPP.Controllers
                       .Include(p => p.TypeCongrates)
                       .Include(p => p.religions)
                       .Include(p => p.typeOfEmployee)
-                      .Include(p => p.Levels)
+                
                      .ToList();
 
                 int i = 0;
@@ -214,30 +195,7 @@ namespace CESAPSCOREWEBAPP.Controllers
                     users = users.Where(p =>
                         p.Branchs.BranchId == ddlBranch).ToList();
                 }
-                if (ddlDep != -1)
-                {
-                    users = users.Where(p =>
-                         p.Organizs.Departments.DepartmentId == ddlDep).ToList();
-
-                }
-                if (ddlDep1s != -1)
-                {
-                    users = users.Where(p =>
-                         p.Organizs.Department1s.Department1Id == ddlDep1s).ToList();
-
-                }
-                if (ddlPosition != -1)
-                {
-                    users = users.Where(p =>
-                         p.Organizs.Positions.PositionId == ddlPosition).ToList();
-
-                }
-                if (ddlLevels != -1)
-                {
-                    users = users.Where(p =>
-                         p.Levels.LevelId == ddlLevels).ToList();
-
-                }
+     
                 if (ddlStatus != -1)
                 {
                     users = users.Where(p =>
@@ -254,10 +212,6 @@ namespace CESAPSCOREWEBAPP.Controllers
                             "<th>อีเมลล์</th> " +
                             "<th>เบอร์ติดต่อ</th> " +
                             "<th>วันที่เริ่มงาน</th> " +
-                            "<th>ระดับ</th> " +
-                            "<th>ฝ่าย</th> " +
-                            "<th>แผนก</th> " +
-                            "<th>ตำแหน่ง</th> " +
                             "<th>หน่วยงาน</th> " +
                             "<th>ประเภท</th> " +
                             "<th>สถานะ</th> " +
@@ -277,11 +231,7 @@ namespace CESAPSCOREWEBAPP.Controllers
                     body += "<td>" + user.EmailContact + "</td>";
                     body += "<td>" + user.ExtTel + "</td>";
                     body += "<td>" + user.UserCreateDate.ToString("dd/MM/yyyy") + "</td>";
-                    body += "<td>" + user.Levels.LevelName + "</td>";
-                    body += "<td>" + user.Organizs.Departments.DepartmentName + "</td>";
-                    body += "<td>" + user.Organizs.Department1s.Department1Name + "</td>";
-                    body += "<td>" + user.Organizs.Positions.PositionName + "</td>";
-                    body += "<td>" + user.Branchs.BranchName + "</td>";
+                        body += "<td>" + user.Branchs.BranchName + "</td>";
                     body += "<td>" + user.typeOfEmployee.TypeOfEmployeeName + "</td>";
                     body += "<td>" + user.StatusUser.StatusUserName + "</td>";
 

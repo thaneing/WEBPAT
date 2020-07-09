@@ -57,12 +57,9 @@ namespace CESAPSCOREWEBAPP.Models
         public DbSet<TypeOfUser> TypeOfUsers { get; set; }
         public DbSet<Position> Positions { get; set; }
         public DbSet<Permision> Permisions { get; set; }
-        public DbSet<Level> Levels { get; set; }
         public DbSet<CheckUser> CheckUsers {get;set;}
 
         public DbSet<Login> Logins { get; set; }
-
-        public DbSet<Organiz> Organizs { get; set; }
         public DbSet<Branch> Branchs { get; set; }
         public DbSet<StatusUser> statusUsers { get; set; }
         public virtual DbSet<DataXY> dataXY { get; set; }

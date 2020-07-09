@@ -1300,8 +1300,6 @@ namespace CESAPSCOREWEBAPP.Migrations
 
                     b.HasIndex("HRRecruiteStatusId");
 
-                    b.HasIndex("LevelId");
-
                     b.HasIndex("MajorId");
 
                     b.HasIndex("TitleOfUserId");
@@ -1313,8 +1311,6 @@ namespace CESAPSCOREWEBAPP.Migrations
                     b.HasIndex("TypeOfSalaryId");
 
                     b.HasIndex("UniversityId");
-
-                    b.HasIndex("organizId");
 
                     b.ToTable("HRRecruites");
                 });
@@ -1742,21 +1738,6 @@ namespace CESAPSCOREWEBAPP.Migrations
                     b.ToTable("InvoiceExcelTMPs");
                 });
 
-            modelBuilder.Entity("CESAPSCOREWEBAPP.Models.Level", b =>
-                {
-                    b.Property<int>("LevelId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("LevelName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("LevelId");
-
-                    b.ToTable("Levels");
-                });
-
             modelBuilder.Entity("CESAPSCOREWEBAPP.Models.LineAPI", b =>
                 {
                     b.Property<int>("Id")
@@ -1998,36 +1979,6 @@ namespace CESAPSCOREWEBAPP.Migrations
                     b.HasKey("NationalityId");
 
                     b.ToTable("nationalities");
-                });
-
-            modelBuilder.Entity("CESAPSCOREWEBAPP.Models.Organiz", b =>
-                {
-                    b.Property<int>("organizId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Department1Id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PositionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Power")
-                        .HasColumnType("int");
-
-                    b.HasKey("organizId");
-
-                    b.HasIndex("Department1Id");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.HasIndex("PositionId");
-
-                    b.ToTable("Organizs");
                 });
 
             modelBuilder.Entity("CESAPSCOREWEBAPP.Models.Permision", b =>
@@ -2536,9 +2487,6 @@ namespace CESAPSCOREWEBAPP.Migrations
                     b.Property<int>("BranchId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Certificate")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CongrateDetail")
                         .HasColumnType("nvarchar(max)");
 
@@ -2560,14 +2508,8 @@ namespace CESAPSCOREWEBAPP.Migrations
                     b.Property<string>("Firstname")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Height")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Lastname")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("LevelId")
-                        .HasColumnType("int");
 
                     b.Property<string>("MobileTel")
                         .HasColumnType("nvarchar(max)");
@@ -2583,12 +2525,6 @@ namespace CESAPSCOREWEBAPP.Migrations
 
                     b.Property<int>("PovinceId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Reference")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReferenceTel")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Reletion")
                         .HasColumnType("nvarchar(max)");
@@ -2614,22 +2550,11 @@ namespace CESAPSCOREWEBAPP.Migrations
                     b.Property<DateTime>("UserCreateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Waistline")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Weight")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("organizId")
-                        .HasColumnType("int");
-
                     b.HasKey("UserId");
 
                     b.HasIndex("BloodId");
 
                     b.HasIndex("BranchId");
-
-                    b.HasIndex("LevelId");
 
                     b.HasIndex("NationalityId");
 
@@ -2644,8 +2569,6 @@ namespace CESAPSCOREWEBAPP.Migrations
                     b.HasIndex("TypeCongrateId");
 
                     b.HasIndex("TypeOfEmployeeId");
-
-                    b.HasIndex("organizId");
 
                     b.ToTable("Users");
                 });
@@ -2853,12 +2776,6 @@ namespace CESAPSCOREWEBAPP.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CESAPSCOREWEBAPP.Models.Level", "Levels")
-                        .WithMany("HRRecruites")
-                        .HasForeignKey("LevelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("CESAPSCOREWEBAPP.Models.Major", "Majors")
                         .WithMany("HRRecruites")
                         .HasForeignKey("MajorId")
@@ -2892,12 +2809,6 @@ namespace CESAPSCOREWEBAPP.Migrations
                     b.HasOne("CESAPSCOREWEBAPP.Models.University", "Universities")
                         .WithMany("HRRecruites")
                         .HasForeignKey("UniversityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CESAPSCOREWEBAPP.Models.Organiz", "Organizs")
-                        .WithMany("hRRecruites")
-                        .HasForeignKey("organizId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -2938,27 +2849,6 @@ namespace CESAPSCOREWEBAPP.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CESAPSCOREWEBAPP.Models.Organiz", b =>
-                {
-                    b.HasOne("CESAPSCOREWEBAPP.Models.Department1", "Department1s")
-                        .WithMany("Organizs")
-                        .HasForeignKey("Department1Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CESAPSCOREWEBAPP.Models.Department", "Departments")
-                        .WithMany("Organizs")
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CESAPSCOREWEBAPP.Models.Position", "Positions")
-                        .WithMany("Organizs")
-                        .HasForeignKey("PositionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("CESAPSCOREWEBAPP.Models.User", b =>
                 {
                     b.HasOne("CESAPSCOREWEBAPP.Models.Blood", "Bloods")
@@ -2970,12 +2860,6 @@ namespace CESAPSCOREWEBAPP.Migrations
                     b.HasOne("CESAPSCOREWEBAPP.Models.Branch", "Branchs")
                         .WithMany("Users")
                         .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CESAPSCOREWEBAPP.Models.Level", "Levels")
-                        .WithMany("Users")
-                        .HasForeignKey("LevelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -3018,12 +2902,6 @@ namespace CESAPSCOREWEBAPP.Migrations
                     b.HasOne("CESAPSCOREWEBAPP.Models.TypeOfEmployee", "typeOfEmployee")
                         .WithMany("Users")
                         .HasForeignKey("TypeOfEmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CESAPSCOREWEBAPP.Models.Organiz", "Organizs")
-                        .WithMany("Users")
-                        .HasForeignKey("organizId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

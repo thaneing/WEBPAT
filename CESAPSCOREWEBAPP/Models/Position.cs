@@ -13,6 +13,6 @@ namespace CESAPSCOREWEBAPP.Models
         public string PositionName { get; set; }
         public int? PositionPower { get; set; }
 
-        public ICollection<Organiz> Organizs { get; set; }
+      
     }
 }

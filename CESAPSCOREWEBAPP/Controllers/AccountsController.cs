@@ -121,12 +121,9 @@ namespace CESAPSCOREWEBAPP.Models
                 //IQueryable<User> query = _context.Users;
                 var login = _context.Logins
                     .Include(p=>p.Users)
-                    .Include(p => p.Users.Organizs.Positions)
-                    .Include(p => p.Users.Organizs.Department1s)
-                    .Include(p => p.Users.Organizs.Departments)
+     
                     .Include(p => p.Users.TitleOfUsers)
                     .Include(p=>p.TypeOfUsers)
-                    .Include(p => p.Users.Levels)
                     .Include(p=>p.Permisions)
                     .Include(p=>p.CheckUsers)
                     .FirstOrDefault( p => p.Username.Equals(username) && p.Password.Equals(hash));
@@ -158,11 +155,9 @@ namespace CESAPSCOREWEBAPP.Models
                         HttpContext.Session.SetString("Firstname", login.Users.Firstname);
                         HttpContext.Session.SetString("Lastname", login.Users.Lastname);
                         HttpContext.Session.SetString("Pic", login.Users.Pic);
-                        HttpContext.Session.SetString("PositionName", login.Users.Organizs.Positions.PositionName);
                         HttpContext.Session.SetString("TypeOfUserId", login.TypeOfUserId.ToString());
                         HttpContext.Session.SetString("TitleOfUserName", login.Users.TitleOfUsers.TitleOfUserName);
                         HttpContext.Session.SetString("TypeOfUserName", login.TypeOfUsers.TypeOfUserName);
-                        HttpContext.Session.SetString("LevelName", login.Users.Levels.LevelName);
                         HttpContext.Session.SetString("CheckUserName", login.CheckUsers.CheckUserName);
                         HttpContext.Session.SetString("PermisionName", login.Permisions.PermisionName);
                         HttpContext.Session.SetString("PermisionAction", login.Permisions.PermisionAction);

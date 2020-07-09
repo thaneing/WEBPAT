@@ -22,9 +22,6 @@ namespace CESAPSCOREWEBAPP.Models
         public string Nickname { get; set; }
         [DataType(DataType.Date)]
         public DateTime? BirthName { get; set; }
-        public int LevelId { get; set; }
-        public int organizId { get; set; }
-
 
         public string Pic { get; set; }
         public string EmailContact { get; set; }
@@ -46,12 +43,6 @@ namespace CESAPSCOREWEBAPP.Models
         public int NationalityId { get; set; } //สัญชาติ
         public int ReligionId { get; set; } //ศาสนา
         public int PovinceId { get; set; } //ภูมิลำเนา
-        public string Weight { get; set; } //น้ำหนัก
-        public string Height { get; set; } //ส่วนสูง
-        public string Waistline { get; set; } //รอบเอว
-        public string Certificate { get; set; } //ใบประกอบวิชาชีพ
-        public string Reference { get; set; } //บุคคลอ้างอิง
-        public string ReferenceTel { get; set; } //เบอร์โทรบุคคลอ้างอิง
          
         public DateTime? ResignationDate { get; set; } //วันที่ลาออก
 
@@ -65,8 +56,6 @@ namespace CESAPSCOREWEBAPP.Models
         public Blood Bloods { get; set; }
         public TypeCongrate TypeCongrates { get; set; }
         public TitleOfUser TitleOfUsers { get; set; }
-        public Level Levels { get; set; }
-        public Organiz Organizs { get; set; }
         public Branch Branchs { get; set; }
         public StatusUser StatusUser { get; set; }
        

@@ -35,9 +35,7 @@
                         <h1><a>@Html.DisplayFor(model => model.TitleOfUsers.TitleOfUserName)@Html.DisplayFor(model => model.Firstname) @Html.DisplayFor(model => model.Lastname)</a> <a>(@Html.DisplayFor(model => model.Nickname))</a></h1>
                         <div style="font-size:14px">
                             <b>หน่วยงาน : </b> @Html.DisplayFor(model => model.Branchs.BranchName) <br />
-                            <b>ฝ่าย : </b> @Html.DisplayFor(model => model.Organizs.Departments.DepartmentName)
-                            <b>แผนก : </b> @Html.DisplayFor(model => model.Organizs.Department1s.Department1Name) 
-                            <b>ตำแหน่ง : </b> @Html.DisplayFor(model => model.Organizs.Positions.PositionName) <br />
+                          
                             <b>Email : </b>@Html.DisplayFor(model => model.EmailContact)<br />
                             <b>Tel : </b> @Html.DisplayFor(model => model.MobileTel) หรือ @Html.DisplayFor(model => model.ExtTel) <br />
                             <b>สถานะ : </b> @Html.DisplayFor(model => model.StatusUser.StatusUserName) 

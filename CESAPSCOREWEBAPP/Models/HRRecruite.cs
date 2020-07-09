@@ -80,9 +80,6 @@ namespace CESAPSCOREWEBAPP.Models
         public HRRecruiteGroup HRRecruiteGroups { get; set; }
         public University Universities { get; set; }
 
-        public Level Levels { get; set; }
-
-        public Organiz Organizs { get; set; }
 
         public ICollection<Appointment> Appointments { get; set; }
     }

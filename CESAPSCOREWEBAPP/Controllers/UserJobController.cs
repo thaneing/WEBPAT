@@ -62,13 +62,11 @@ namespace CESAPSCOREWEBAPP.Controllers
             }
 
             var users = await _context.Users
-                        .Include(p => p.Organizs.Positions)
-                        .Include(p => p.Organizs.Department1s)
-                        .Include(p => p.Organizs.Departments)
+       
                         .Include(p => p.TitleOfUsers)
                         .Include(p => p.StatusUser)
                         .Include(p => p.Branchs)
-                        .Include(p => p.Levels)
+     
                         .FirstOrDefaultAsync(m => m.UserId == id);
             if (users == null)
             {

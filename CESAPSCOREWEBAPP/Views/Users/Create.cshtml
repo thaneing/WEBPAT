@@ -15,11 +15,6 @@
 
 }
 
-@{
-
-    IEnumerable<Organiz>
-    organizs = ViewData["organiz"] as IEnumerable<Organiz>;
-}
 
 
 <style>
@@ -63,7 +58,7 @@
     }
 </style>
 
-<form asp-action="Create" method="post" enctype="multipart/form-data" onSubmit="JavaScript:return check_null();" >
+<form asp-action="Create" method="post" enctype="multipart/form-data" onSubmit="JavaScript:return check_null();">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <!-- TO DO List -->
     <div class="col-xs-12 col-sm-12  col-md-12 col-lg-12 ">
@@ -186,23 +181,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-lg-2 control-label" style="text-align:right">ส่วนสูง</label>
-                                    <div class="col-lg-2">
-                                        <input asp-for="Height" class="form-control">
-                                        <span asp-validation-for="Height" class="text-danger"></span>
-                                    </div>
-                                    <label class="col-lg-2 control-label" style="text-align:right">น้ำหนัก</label>
-                                    <div class="col-lg-2">
-                                        <input asp-for="Weight" class="form-control">
-                                        <span asp-validation-for="Weight" class="text-danger"></span>
-                                    </div>
-                                    <label class="col-lg-2 control-label" style="text-align:right">รอบเอว</label>
-                                    <div class="col-lg-2">
-                                        <input asp-for="Waistline" class="form-control">
-                                        <span asp-validation-for="Waistline" class="text-danger"></span>
-                                    </div>
-                                </div>
+
 
                                 <div class="form-group row">
                                     <label class="col-lg-2 control-label" style="text-align:right">ศาสนา</label>
@@ -242,10 +221,6 @@
                                                 <input asp-for="EmpId" class="form-control" />
                                                 <span asp-validation-for="EmpId" class="text-danger"></span>
                                             </div>
-                                            <label class="col-lg-2 control-label" style="text-align:right">ระดับ</label>
-                                            <div class="col-lg-2">
-                                                <select asp-for="LevelId" class="form-control" asp-items="ViewBag.LevelId"></select>
-                                            </div>
                                             <label class="col-lg-2 control-label" style="text-align:right"> Site</label>
                                             <div class="col-lg-2">
                                                 <select asp-for="BranchId" class="form-control" asp-items="ViewBag.BranchId"></select>
@@ -280,11 +255,6 @@
                                                     </span>
                                                 </div>
                                             </div>
-                                            <label class="col-lg-2 control-label" style="text-align:right">ใบประกอบวิชาชีพ</label>
-                                            <div class="col-lg-2">
-                                                <input asp-for="Certificate" class="form-control">
-                                                <span asp-validation-for="Certificate" class="text-danger"></span>
-                                            </div>
                                             <label class="col-lg-2 control-label" style="text-align:right">การศึกษาสูงสุด</label>
                                             <div class="col-lg-2">
                                                 <select asp-for="TypeCongrateId" class="form-control" asp-items="ViewBag.TypeCongrateId"></select>
@@ -297,16 +267,8 @@
                                                 <input asp-for="CongrateDetail" class="form-control">
                                                 <span asp-validation-for="CongrateDetail" class="text-danger"></span>
                                             </div>
-                                            <label class="col-lg-2 control-label" style="text-align:right">บุคคลอ้างอิง</label>
-                                            <div class="col-lg-2">
-                                                <input asp-for="Reference" class="form-control">
-                                                <span asp-validation-for="Reference" class="text-danger"></span>
-                                            </div>
-                                            <label class="col-lg-2 control-label" style="text-align:right">เบอร์โทรบุคคลอ้างอิง</label>
-                                            <div class="col-lg-2">
-                                                <input asp-for="ReferenceTel" class="form-control">
-                                                <span asp-validation-for="ReferenceTel" class="text-danger"></span>
-                                            </div>
+                                         
+
 
                                         </div>
                                         <div class="form-group row">
@@ -315,13 +277,7 @@
                                                 <input asp-for="ExtTel" class="form-control">
                                                 <span asp-validation-for="ExtTel" class="text-danger"></span>
                                             </div>
-                                            <div class="col-lg-2 col-lg-offset-2">
-                                                <button type="button" class="btn btn btn-light" data-toggle="modal" data-target="#myModalSave" style="width:100%"> เลือกตำแหน่ง</button>
-                                            </div>
-                                            <div id="external-events" class="col-lg-4">
-                                                <p id="selectItem"></p>
-                                                @*<input class="form-control"  id="selectItem"/>*@
-                                            </div>
+                                         
 
                                         </div>
 
@@ -342,48 +298,7 @@
         </div>
     </div>
 
-    <!--ตำแหน่ง popup-->
-    <div id="myModalSave" class="modal" role="dialog">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">เลือกตำแหน่ง  <input id="myInput1" class="pull-right form-control col-sm-4" placeholder="ค้นหา" /></h4>
-                    <p id="selectItem1"></p>
-        
-                </div>    <!-- Modal content-->
-
-                <div class="modal-body">
-                    <div class="col-lg-12">
-                        <div class="tableFixHead1">
-                            <table id="mysite">
-                                <thead>
-                                    <tr class="header">
-                                        <th>ตำแหน่ง  </th>
-                                        <th>แผนก </th>
-                                        <th>ฝ่าย</th>
-                                    </tr>
-                                </thead>
-                                <tbody id='mysite1'>
-                                    @foreach (Organiz organiz in organizs)
-                                    {
-                                        <tr>
-                                            <td><input type="radio" @*asp-for="organizId"*@ data-position-type="@organiz.Positions.PositionName" data-department1-type="@organiz.Department1s.Department1Name" data-department-type="@organiz.Departments.DepartmentName" value="@organiz.organizId" onclick="selectorgan(this)" name="organizId" />  @organiz.Positions.PositionName</td>
-                                            <td> @organiz.Department1s.Department1Name </td>
-                                            <td>  @organiz.Departments.DepartmentName </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-primary " data-dismiss="modal">ตกลง</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </form>
-
 
 @section Scripts {
 
@@ -460,7 +375,7 @@
 
             //$("input[name='organizId']:checked").val()
 
-            var checkorganize =  $("input[name='organizId']:checked").val()
+            var checkorganize = $("input[name='organizId']:checked").val()
 
 
             if (txtbirthdate == '') {
@@ -486,18 +401,11 @@
             }
 
 
- 
-            if (typeof checkorganize === 'undefined') {
-                swal({
-                    icon: "warning",
-                    text: "กรุณาเลือก ตำแหน่ง ให้ครบ!",
-                });
 
-                return false;
-            }
+         
 
-     
-     
+
+
         }
 
     </script>

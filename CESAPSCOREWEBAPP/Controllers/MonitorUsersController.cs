@@ -30,10 +30,6 @@ namespace CESAPSCOREWEBAPP.Controllers
             var login = await _context.Logins
                             .Include(p => p.Users)
                             .Include(p => p.Permisions)
-                            .Include(p => p.Users.Organizs)
-                            .Include(p => p.Users.Organizs.Department1s)
-                            .Include(p => p.Users.Organizs.Departments)
-                            .Include(p => p.Users.Organizs.Positions)
                             .Include(p => p.Users.Branchs)
                             .Include(p => p.TypeOfUsers)
                             .ToListAsync();
@@ -166,9 +162,6 @@ namespace CESAPSCOREWEBAPP.Controllers
             }
 
             var user = await _context.Users
-                    .Include(p => p.Organizs.Positions)
-                    .Include(p => p.Organizs.Department1s)
-                    .Include(p => p.Organizs.Departments)
                     .Include(p => p.TitleOfUsers)
                     .Include(p => p.StatusUser)
                     .Include(p => p.Branchs)
@@ -178,7 +171,6 @@ namespace CESAPSCOREWEBAPP.Controllers
                     .Include(p => p.TypeCongrates)
                     .Include(p => p.religions)
                     .Include(p => p.typeOfEmployee)
-                    .Include(p => p.Levels)
                 .FirstOrDefaultAsync(m => m.UserId == id);
             if (user == null)
             {
@@ -251,9 +243,6 @@ namespace CESAPSCOREWEBAPP.Controllers
             var checkregis = await _context.Logins.FirstOrDefaultAsync(m => m.ID == id);
 
             var user = await _context.Users
-                        .Include(p => p.Organizs.Positions)
-                        .Include(p => p.Organizs.Department1s)
-                        .Include(p => p.Organizs.Departments)
                         .Include(p => p.TitleOfUsers)
                         .Include(p => p.StatusUser)
                         .Include(p => p.Branchs)
@@ -263,7 +252,7 @@ namespace CESAPSCOREWEBAPP.Controllers
                         .Include(p => p.TypeCongrates)
                         .Include(p => p.religions)
                         .Include(p => p.typeOfEmployee)
-                        .Include(p => p.Levels)
+                        
                 .FirstOrDefaultAsync(m => m.UserId == UserId);
 
             if (user == null)
