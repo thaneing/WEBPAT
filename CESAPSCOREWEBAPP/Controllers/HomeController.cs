@@ -19,8 +19,8 @@ using DevExpress.XtraReports.UI;
 using System.IO;
 using DevExpress.XtraReports.Parameters;
 using CESAPSCOREWEBAPP.Helpers;
-using Tesseract;
-using OpenCvSharp;
+
+
 using System.Net;
 using CESAPSCOREWEBAPP.Middlewares;
 using Microsoft.AspNetCore.Authorization;
@@ -91,57 +91,7 @@ namespace CESAPSCOREWEBAPP.Models
 
 
         }
-        [Authorize]
-        public IActionResult testExport()
-        {
-            string pathImage = "/Images/";
-            string pathSave = $"wwwroot{pathImage}";
-            var FilePath=Path.Combine(Directory.GetCurrentDirectory(), pathSave, "123456789.PNG");
-
-            var Textdata = "";
-            //var Ocr = new AutoOcr();
-            //var Result = Ocr.Read(FilePath);
-            //string imagePath = FilePath;
-            //string tessDataFolder = OCROpenCV.DownloadAndExtractLanguagePack();
-            //string result = "";
-            //using (var engine = new TesseractEngine(tessDataFolder, "eng", EngineMode.Default))
-            //{
-            //    using (var img = Pix.LoadFromFile(imagePath))
-            //    {
-            //        var page = engine.Process(img);
-            //        result = page.GetText();
-            //        Console.WriteLine(result);
-            //        Textdata = result;
-            //    }
-            //}
-
-
-
-            string imagePath = FilePath;
-            Mat img = Cv2.ImRead(imagePath, ImreadModes.Color);
-            Mat imggray= img.CvtColor(ColorConversionCodes.BGR2GRAY);
-
-
-            string tessDataPath = OCROpenCV.DownloadAndExtractLanguagePack();
-            string result = "";
-            OpenCvSharp.Rect[] textLocations = null;
-            string[] componentTexts = null;
-            float[] confidences = null;
-            using (var engine = OpenCvSharp.Text.OCRTesseract.Create(tessDataPath, "tha"))
-            {
-                engine.Run(imggray, out result, out textLocations, out componentTexts, out confidences, OpenCvSharp.Text.ComponentLevels.TextLine);
-
-            }
-
-            Console.WriteLine(result);
-            Textdata = result;
-
-            IActionResult response = Unauthorized();
-            //var text=PdfTextExtractorData.pdfText("http://intra.ces.co.th/File/Manual/Config%20Docker2019-10-16-09-17-32.pdf");
-            var text =  Textdata;
-            response = Ok(text);
-            return response;
-        }
+    
         [Authorize]
         public IActionResult BlogNew(int? id)
         {
