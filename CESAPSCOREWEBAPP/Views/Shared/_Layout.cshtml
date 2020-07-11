@@ -542,7 +542,7 @@
             </div>
             <div class="footer">
                 <div class="pull-right">
-                    <strong> Your IP :</strong>
+                  @*  <strong> Your IP :</strong>
                     @if (@Context.Session.GetString("Userid") != null)
                     {
                         @Context.Session.GetString("IPAddress");
@@ -578,11 +578,11 @@
                         @Context.Session.GetString("BrowserVersion");
                     }
 
-                    <span id="demo"></span>
+                    <span id="demo"></span>*@
                     Version : <strong>3.0.0</strong>
                 </div>
                 <div>
-                    <strong>Copyright</strong> C.E.S Company &copy; 2019
+                    <strong>Copyright</strong> T.D. CONNEX CO., LTD. &copy; 2020
 
 
 
@@ -1277,14 +1277,14 @@
 
         function getLocation() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition);
+                //navigator.geolocation.getCurrentPosition(showPosition);
             } else {
-                x.innerHTML = "Geolocation is not supported by this browser.";
+                //x.innerHTML = "Geolocation is not supported by this browser.";
             }
         }
 
         function showPosition(position) {
-            x.innerHTML = "<b>Latitude: </b>" + position.coords.latitude + "<b> Longitude: </b>" + position.coords.longitude;
+            //x.innerHTML = "<b>Latitude: </b>" + position.coords.latitude + "<b> Longitude: </b>" + position.coords.longitude;
         }
     </script>
 
