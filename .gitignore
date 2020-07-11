@@ -3,3 +3,5 @@
 /CESAPSCOREWEBAPP/wwwroot
 /CESAPSCOREWEBAPP/obj
 /.vs/
+/CESAPSCOREWEBAPP/appsettings.Development.json
+/CESAPSCOREWEBAPP/appsettings.json
