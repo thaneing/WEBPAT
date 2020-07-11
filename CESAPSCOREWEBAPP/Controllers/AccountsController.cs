@@ -237,6 +237,7 @@ namespace CESAPSCOREWEBAPP.Models
             HttpContext.Session.Remove("CheckUserName");
             HttpContext.Session.Remove("PermisionAction");
             HttpContext.Session.Remove("JWToken");
+            HttpContext.Session.Remove("License");
 
             //Detail Data
             HttpContext.Session.Remove("Macaddress");
