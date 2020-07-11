@@ -219,11 +219,11 @@
                                     <div class="form-group row">
                                         <label class="col-lg-2 control-label" style="text-align:right">รหัสพนักงาน</label>
                                         <div class="col-lg-2">
-                                            <label id="employee">@ViewBag.EmpId</label>
+                                            <label id="employee" style="display:none">@ViewBag.EmpId</label>
                                             <input asp-for="EmpId" id="empid" class="form-control" />
                                             <span asp-validation-for="EmpId"  class="text-danger"></span>
                                         </div>
-                                        <label class="col-lg-2 control-label" style="text-align:right">ระดับ</label>
+                                   
                                       
                                         <label class="col-lg-2 control-label" style="text-align:right"> Site</label>
                                         <div class="col-lg-2">
@@ -235,7 +235,7 @@
                                     <div class="form-group row">
                                         <label class="col-lg-2 control-label" style="text-align:right">ประเภทพนักงาน</label>
                                         <div class="col-lg-2">
-                                            <label id="typeofemployee" style="text-align:left">@ViewBag.typeofemployee</label>
+                                            <label id="typeofemployee" style="text-align:left;display:none">@ViewBag.typeofemployee</label>
 
                                             <select asp-for="TypeOfEmployeeId" id="typeofemployeeId" class="form-control" asp-items="ViewBag.TypeOfEmployeeId"></select>
                                         </div>
@@ -247,7 +247,7 @@
                                         <label class="col-lg-2 control-label" style="text-align:right">วันที่เริ่มงาน</label>
                                         
                                         <div class="col-lg-2">
-                                            <label id="startworkId">@ViewBag.startwork</label>
+                                            <label id="startworkId" style="display:none">@ViewBag.startwork</label>
                                             <div class="input-group date" id="dtp3">
                                                 <input type="text" class="form-control" name="startwork" id="txtStartWork" value="@ViewBag.startwork" />
                                                 <span class="input-group-addon">
@@ -261,7 +261,7 @@
                                         <label class="col-lg-2 control-label" style="text-align:right">วันที่ลาออก</label>
                                       
                                         <div class="col-lg-2">
-                                            <label id="endwork">@ViewBag.endwork</label>
+                                            <label id="endwork" style="display:none">@ViewBag.endwork</label>
                                             <div class="input-group date" id="dtp4">
                                                 <input type="text" class="form-control" name="endwork" id="txtStartWork" value="@ViewBag.endwork" />
                                                 <span class="input-group-addon">
@@ -272,7 +272,7 @@
                                        
                                         <label class="col-lg-2 control-label" style="text-align:right">การศึกษาสูงสุด</label>
                                         <div class="col-lg-2">
-                                            <label id="typeofcongrate">@ViewBag.typeofcongrate</label>
+                                            <label id="typeofcongrate" style="display:none">@ViewBag.typeofcongrate</label>
                                             <select asp-for="TypeCongrateId" id="TypeCongrateId" class="form-control" asp-items="ViewBag.TypeCongrateId"></select>
                                         </div>
                                     </div>
@@ -284,7 +284,7 @@
                                             <input asp-for="CongrateDetail" id="CongrateDetail" class="form-control">
                                             <span asp-validation-for="CongrateDetail" class="text-danger"></span>
                                         </div>
-                                        <label class="col-lg-2 control-label" style="text-align:right">บุคคลอ้างอิง</label>
+                                      
                                        
                                     </div>
                                     <div class="form-group row">
@@ -362,7 +362,7 @@
     var position = '@Context.Session.GetString("PermisionName")';
     var a = '@Context.Session.GetString("TypeOfUserId")';
     //alert(position);
-   if (a == "3" ||  position == "HR")
+   if (a == "3")
     {
 
         document.getElementById('status').style.display = "none";

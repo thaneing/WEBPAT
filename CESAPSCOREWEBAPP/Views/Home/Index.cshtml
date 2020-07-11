@@ -33,51 +33,57 @@
 @{
     IEnumerable<BlogPic> blogPics = ViewData["BlogPic"] as IEnumerable<BlogPic>;
 }
-
-
-
-
+<style>
+    .text{
+        font-size:50px;
+    }
+</style>
 
 
 <div class="row">
-    <div class="col-xs-12 col-sm-12  col-md-12 col-lg-8">
+    <div class="col-xs-12 col-sm-12  col-md-6 col-lg-4">
         <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>ข้อมูลข่าวสาร</h5>
-                <div class="ibox-tools">
-                    <a class="collapse-link">
-                        <i class="fa fa-chevron-up"></i>
-                    </a>
-                    <a class="close-link">
-                        <i class="fa fa-times"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="ibox-content" id="new">
-                <div class="table-responsive">
-                    @foreach (Blog blog in blogs)
-                    {
-                        <a asp-controller="Home" asp-action="BlogNew" asp-route-id="@blog.BlogId">
-                            <h2>@blog.BlogTitle</h2>
-                        </a>
-                        <p>
-                            Posted by :
-                            <b>
-                                @blog.BlogCreateBy
-                            </b>
-                            POST DATE :
-                            <b>
-                                @blog.BlogCreateDate.ToString("dd/MM/yyyy")
-                            </b>
-                        </p>
-                        <hr>
-                    }
-                </div>
+            <div class="widget red-bg">
+              
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h1>Purchase Invoice</h1>
+                        </div>
+                        <div class="col-lg-4 col-md-4">
+                            <h1 class="text"><i class="fa fa-file-o"></i></h1>
+                        </div>
+                        <div class="col-lg-8 col-md-8">
+                            <h1 id="PO" class="text" style="text-align:right"></h1>
+                        </div>
+
+
+                    </div>
+              
+               
+               
             </div>
         </div>
     </div>
 
+    <div class="col-xs-12 col-sm-12  col-md-6 col-lg-4">
+        <div class="ibox float-e-margins">
+            <div class="widget style1 lazur-bg">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1>Sale Invoice</h1>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <h1 class="text"><i class="fa fa-file-o"></i></h1>
+                    </div>
+                    <div class="col-lg-8 col-md-8">
+                         <h1 id="SO" class="text" style="text-align:right"></h1>
+                    </div>
 
+
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="col-xs-12 col-sm-12  col-md-12 col-lg-4">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
@@ -92,128 +98,128 @@
 </div>
 
 <div class="row">
-    <div class="col-xs-12 col-sm-12  col-md-12 col-lg-4 pull-right">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <p id="status"></p>
+    @*<div class="col-xs-12 col-sm-12  col-md-12 col-lg-4 pull-right">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <p id="status"></p>
 
-                <img src="~/Images/RSS.png" width="24" height="24" /><span style="font-size:16px;"><b> Posttoday</b></span>
+                    <img src="~/Images/RSS.png" width="24" height="24" /><span style="font-size:16px;"><b> Posttoday</b></span>
+                </div>
+                <div class="ibox-content" id="new1">
+                    <p id="contentdata"></p>
+                </div>
             </div>
-            <div class="ibox-content" id="new1">
-                <p id="contentdata"></p>
-            </div>
-        </div>
-    </div>
+        </div>*@
 
-    <div class="col-xs-12 col-sm-12  col-md-12 col-lg-8 pull-right">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <p id="status1"></p>
-                <img src="~/Images/RSS.png" width="24" height="24" /><span style="font-size:16px;"><b> Bank of Thailand</b></span>
-            </div>
-            <div class="ibox-content" id="new2">
-                <canvas id="canvas"></canvas>
+    @*<div class="col-xs-12 col-sm-12  col-md-12 col-lg-8 pull-right">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <p id="status1"></p>
+                    <img src="~/Images/RSS.png" width="24" height="24" /><span style="font-size:16px;"><b> Bank of Thailand</b></span>
+                </div>
+                <div class="ibox-content" id="new2">
+                    <canvas id="canvas"></canvas>
 
+                </div>
             </div>
-        </div>
-    </div>
+        </div>*@
 </div>
 
 
 @*<div class="row">
-    <div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>ห้องประชุม</h5>
-                <div class="ibox-tools">
-                    <a class="collapse-link">
-                        <i class="fa fa-chevron-up"></i>
-                    </a>
-                    <a class="close-link">
-                        <i class="fa fa-times"></i>
-                    </a>
+        <div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>ห้องประชุม</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div class="ibox-content">
-              <iframe src="http://192.168.18.6/Web/schedule.php" width="100%" height="800px"></iframe>
+                <div class="ibox-content">
+                  <iframe src="http://192.168.18.6/Web/schedule.php" width="100%" height="800px"></iframe>
+                </div>
             </div>
         </div>
-    </div>
-</div>*@
+    </div>*@
 
 
 
 
-    <div id="myModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title"><span id="eventTitle"></span></h4>
-                </div>
-                <div class="modal-body" id="detail">
-                    <button id="btnDelete" class="btn btn-default btn-sm pull-right">
-                        <span class="glyphicon glyphicon-remove"></span> Remove
-                    </button>
-                    <button id="btnEdit" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">
-                        <span class="glyphicon glyphicon-pencil"></span> Edit
-                    </button>
-                    <p id="pDetails"></p>
-
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-                <div class="modal-body" id="datainput">
-
-                    <input type="hidden" id="hdEventID" value="0" />
-                    <div class="form-group">
-                        <label>Subject</label>
-                        <input type="text" id="txtSubject" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label>Start</label>
-                        <div class="input-group date" id="dtp1">
-                            <input type="text" id="txtStart" class="form-control" />
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar"></span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label><input type="checkbox" id="chkIsFullDay" checked="checked" />  Is Full Day event</label>
-                        </div>
-                    </div>
-                    <div class="form-group" id="divEndDate" style="display:none">
-                        <label>End</label>
-                        <div class="input-group date" id="dtp2">
-                            <input type="text" id="txtEnd" class="form-control" />
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar"></span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Description</label>
-                        <textarea id="txtDescription" rows="3" class="form-control"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Theme Color</label>
-                        <select id="ddThemeColor" class="form-control">
-                            <option value="">Default</option>
-                            <option value="red">Red</option>
-                            <option value="blue">Blue</option>
-                            <option value="black">Black</option>
-                            <option value="green">Green</option>
-                        </select>
-                    </div>
-                    <button type="button" id="btnSave" class="btn btn-success">Save</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><span id="eventTitle"></span></h4>
             </div>
+            <div class="modal-body" id="detail">
+                <button id="btnDelete" class="btn btn-default btn-sm pull-right">
+                    <span class="glyphicon glyphicon-remove"></span> Remove
+                </button>
+                <button id="btnEdit" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">
+                    <span class="glyphicon glyphicon-pencil"></span> Edit
+                </button>
+                <p id="pDetails"></p>
 
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+            <div class="modal-body" id="datainput">
 
+                <input type="hidden" id="hdEventID" value="0" />
+                <div class="form-group">
+                    <label>Subject</label>
+                    <input type="text" id="txtSubject" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Start</label>
+                    <div class="input-group date" id="dtp1">
+                        <input type="text" id="txtStart" class="form-control" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label><input type="checkbox" id="chkIsFullDay" checked="checked" />  Is Full Day event</label>
+                    </div>
+                </div>
+                <div class="form-group" id="divEndDate" style="display:none">
+                    <label>End</label>
+                    <div class="input-group date" id="dtp2">
+                        <input type="text" id="txtEnd" class="form-control" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="txtDescription" rows="3" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Theme Color</label>
+                    <select id="ddThemeColor" class="form-control">
+                        <option value="">Default</option>
+                        <option value="red">Red</option>
+                        <option value="blue">Blue</option>
+                        <option value="black">Black</option>
+                        <option value="green">Green</option>
+                    </select>
+                </div>
+                <button type="button" id="btnSave" class="btn btn-success">Save</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
         </div>
+
+
     </div>
+</div>
 
 
 
@@ -224,307 +230,187 @@
 
 
 
-    @section Scripts {
+@section Scripts {
 
 
 
 
 
 
-        <script>
-            $(document).ready(function () {
-                var dataType = 'application/json; charset=utf-8';
-                var events = [];
-                var selectedEvent = null;
-                FetchEventAndRenderCalendar();
+    <script>
+        $(document).ready(function () {
+            var dataType = 'application/json; charset=utf-8';
+            var events = [];
+            var selectedEvent = null;
+            FetchEventAndRenderCalendar();
 
 
 
 
-                function FetchEventAndRenderCalendar() {
-                    events = [];
-                    $.ajax({
-                        type: "GET",
-                        url: "/api/Events",
-                        success: function (data) {
-                            $.each(data, function (i, v) {
-                                events.push({
-                                    Id: v.Id,
-                                    title: v.Subject,
-                                    description: v.Description,
-                                    start: moment(v.Start),
-                                    end: v.End != null ? moment(v.End) : null,
-                                    color: v.ThemeColor,
-                                    allDay: v.IsFullDay
-                                });
-                            })
-
-                            GenerateCalender(events);
-                        },
-                        error: function (error) {
-                            //alert('failed');
-                        }
-                    })
-
-                    var datacontent = "";
-                    //   events = [];
-                    $.ajax({
-                        type: "GET",
-                        dataType: 'json',
-                        //headers: { 'Access-Control-Allow-Origin': 'http://ces-iterp02.ces.co.th:1150/' },
-                        crossDomain: true,
-                        contentType: 'application/json; charset=utf-8',
-                        //data: { FixAccNo: fixassetno, FixAssetName: itemname1, FixAssetName1: itemname2, SiteName: site, qty: qty, TransectionEtc: etc, TransectionType: selectType },
-                        url: "/Home/Datapr",
-                        //?FixAccNo="+fixassetno+"&FixAssetName="+itemname1+"&FixAssetName1="+itemname2+"&SiteName="+site+"&qty="+qty
-                        success: function (response) {
-                            var jsondata = JSON.parse(response.data1);
-                            //console.log(jsondata.result.data);
-                            var num = 0;
-                            $.each(jsondata.result.data, function (i, v) {
-                                events.push({
-                                    Id: num + 1,
-                                    title: v.HolidayDescriptionThai,
-                                    description: v.HolidayDescriptionThai,
-                                    start: moment(v.Date),
-                                    end: v.End != null ? moment(v.End) : null,
-                                    color: 'pink',
-                                    allDay: true
-                                });
+            function FetchEventAndRenderCalendar() {
+                events = [];
+                $.ajax({
+                    type: "GET",
+                    url: "/api/Events",
+                    success: function (data) {
+                        $.each(data, function (i, v) {
+                            events.push({
+                                Id: v.Id,
+                                title: v.Subject,
+                                description: v.Description,
+                                start: moment(v.Start),
+                                end: v.End != null ? moment(v.End) : null,
+                                color: v.ThemeColor,
+                                allDay: v.IsFullDay
                             });
-                            GenerateCalender(events);
-
-                        },
-                        error: function (response) {
-
-                        }
-
-                    });
-
-
-                }
-
-                function GenerateCalender(events) {
-                    $('#calender').fullCalendar('destroy');
-                    $('#calender').fullCalendar({
-                        contentHeight: 400,
-                        defaultDate: new Date(),
-                        timeFormat: 'h(:mm)a',
-                        header: {
-                            left: 'prev,next today',
-                            center: 'title',
-                            right: 'month,basicWeek,basicDay,agenda'
-                        },
-                        eventLimit: true,
-                        eventColor: '#378006',
-                        events: events,
-                        eventClick: function (calEvent, jsEvent, view) {
-                            selectedEvent = calEvent;
-                            $('#myModal #eventTitle').text(calEvent.title);
-                            var $description = $('<div/>');
-                            $description.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("DD-MMM-YYYY HH:mm a")));
-                            if (calEvent.end != null) {
-                                $description.append($('<p/>').html('<b>End:</b>' + calEvent.end.format("DD-MMM-YYYY HH:mm a")));
-                            }
-                            $description.append($('<p/>').html('<b>Description:</b>' + calEvent.description));
-
-
-
-                            document.getElementById('datainput').style.display = "none";
-                            document.getElementById('detail').style.display = "block";
-                            $('#myModal #pDetails').empty().html($description);
-
-                            $('#myModal').modal();
-
-
-
-                        },
-                        selectable: true,
-                        select: function (start, end) {
-                            selectedEvent = {
-                                Id: 0,
-                                title: '',
-                                description: '',
-                                start: start,
-                                end: end,
-                                allDay: false,
-                                color: ''
-                            };
-                            openAddEditForm();
-                            $('#calendar').fullCalendar('unselect');
-                        },
-                        editable: true,
-                        eventDrop: function (event) {
-
-                            var stringValue = event.start.format('DD/MM/YYYY HH:mm A');
-                            var day = stringValue.substr(0, 2);
-                            var month = stringValue.substr(3, 2);
-                            var year = stringValue.substr(6, 4);
-                            var date1 = year + '-' + month + '-' + day + ' 00:00:00';
-
-
-                            try {
-                                var stringValue1 = event.end.format('DD/MM/YYYY HH:mm A');
-                                var day1 = stringValue1.substr(0, 2);
-                                var month1 = stringValue1.substr(3, 2);
-                                var year1 = stringValue1.substr(6, 4);
-                                var date2 = year1 + '-' + month1 + '-' + day1 + ' 00:00:00';
-                            } catch (err) {
-
-                            }
-
-                            var data = {
-                                Id: event.Id,
-                                Subject: event.title,
-                                Start: date1 /*event.start.format('DD/MM/YYYY HH:mm A')*/,
-                                End: event.end != null ? date2 /*event.end.format('DD/MM/YYYY HH:mm A')*/ : null,
-                                Description: event.description,
-                                ThemeColor: event.color,
-                                IsFullDay: event.allDay
-                            };
-                            SaveEvent(data);
-                        }
-                    })
-                }
-
-                $('#btnEdit').click(function () {
-
-
-                    document.getElementById('datainput').style.display = "block";
-                    document.getElementById('detail').style.display = "none";
-
-                    //Open modal dialog for edit event
-                    openAddEditForm();
-                })
-                $('#btnDelete').click(function () {
-                    if (selectedEvent != null && confirm('Are you sure?')) {
-                        $.ajax({
-                            type: "GET",
-                            url: '/Events1/Delete/' + selectedEvent.Id,
-                            success: function (data) {
-
-                                $('#myModal').modal('hide');
-                                FetchEventAndRenderCalendar();
-                            },
-                            error: function () {
-                                alert('ไม่มีสิทธิ์ใช้งาน');
-                            }
                         })
+
+                        GenerateCalender(events);
+                    },
+                    error: function (error) {
+                        //alert('failed');
                     }
                 })
 
-                $('#dtp1,#dtp2').datetimepicker({
-                    format: 'DD/MM/YYYY HH:mm A'
+                var datacontent = "";
+                //   events = [];
+                $.ajax({
+                    type: "GET",
+                    dataType: 'json',
+                    //headers: { 'Access-Control-Allow-Origin': 'http://ces-iterp02.ces.co.th:1150/' },
+                    crossDomain: true,
+                    contentType: 'application/json; charset=utf-8',
+                    //data: { FixAccNo: fixassetno, FixAssetName: itemname1, FixAssetName1: itemname2, SiteName: site, qty: qty, TransectionEtc: etc, TransectionType: selectType },
+                    url: "/Home/Datapr",
+                    //?FixAccNo="+fixassetno+"&FixAssetName="+itemname1+"&FixAssetName1="+itemname2+"&SiteName="+site+"&qty="+qty
+                    success: function (response) {
+                        var jsondata = JSON.parse(response.data1);
+                        //console.log(jsondata.result.data);
+                        var num = 0;
+                        $.each(jsondata.result.data, function (i, v) {
+                            events.push({
+                                Id: num + 1,
+                                title: v.HolidayDescriptionThai,
+                                description: v.HolidayDescriptionThai,
+                                start: moment(v.Date),
+                                end: v.End != null ? moment(v.End) : null,
+                                color: 'pink',
+                                allDay: true
+                            });
+                        });
+                        GenerateCalender(events);
+
+                    },
+                    error: function (response) {
+
+                    }
+
                 });
 
-                $('#chkIsFullDay').change(function () {
-                    if ($(this).is(':checked')) {
-                        $('#divEndDate').hide();
-                    }
-                    else {
-                        $('#divEndDate').show();
-                    }
-                });
 
-                function openAddEditForm() {
-                    if (selectedEvent != null) {
+            }
 
-                        $('#hdEventID').val(selectedEvent.Id);
-                        $('#txtSubject').val(selectedEvent.title);
-                        $('#txtStart').val(selectedEvent.start.format('DD/MM/YYYY HH:mm A'));
-                        $('#chkIsFullDay').prop("checked", selectedEvent.allDay || false);
-                        $('#chkIsFullDay').change();
-                        $('#txtEnd').val(selectedEvent.end != null ? selectedEvent.end.format('DD/MM/YYYY HH:mm A') : '');
-                        $('#txtDescription').val(selectedEvent.description);
-                        $('#ddThemeColor').val(selectedEvent.color);
+            function GenerateCalender(events) {
+                $('#calender').fullCalendar('destroy');
+                $('#calender').fullCalendar({
+                    contentHeight: 400,
+                    defaultDate: new Date(),
+                    timeFormat: 'h(:mm)a',
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,basicWeek,basicDay,agenda'
+                    },
+                    eventLimit: true,
+                    eventColor: '#378006',
+                    events: events,
+                    eventClick: function (calEvent, jsEvent, view) {
+                        selectedEvent = calEvent;
+                        $('#myModal #eventTitle').text(calEvent.title);
+                        var $description = $('<div/>');
+                        $description.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("DD-MMM-YYYY HH:mm a")));
+                        if (calEvent.end != null) {
+                            $description.append($('<p/>').html('<b>End:</b>' + calEvent.end.format("DD-MMM-YYYY HH:mm a")));
+                        }
+                        $description.append($('<p/>').html('<b>Description:</b>' + calEvent.description));
 
-                        if (selectedEvent.Id == 0) {
 
-                            $('#myModal #eventTitle').text("เพิ่มข้อมูล");
-                            document.getElementById('datainput').style.display = "block";
-                            document.getElementById('detail').style.display = "none";
+
+                        document.getElementById('datainput').style.display = "none";
+                        document.getElementById('detail').style.display = "block";
+                        $('#myModal #pDetails').empty().html($description);
+
+                        $('#myModal').modal();
+
+
+
+                    },
+                    selectable: true,
+                    select: function (start, end) {
+                        selectedEvent = {
+                            Id: 0,
+                            title: '',
+                            description: '',
+                            start: start,
+                            end: end,
+                            allDay: false,
+                            color: ''
+                        };
+                        openAddEditForm();
+                        $('#calendar').fullCalendar('unselect');
+                    },
+                    editable: true,
+                    eventDrop: function (event) {
+
+                        var stringValue = event.start.format('DD/MM/YYYY HH:mm A');
+                        var day = stringValue.substr(0, 2);
+                        var month = stringValue.substr(3, 2);
+                        var year = stringValue.substr(6, 4);
+                        var date1 = year + '-' + month + '-' + day + ' 00:00:00';
+
+
+                        try {
+                            var stringValue1 = event.end.format('DD/MM/YYYY HH:mm A');
+                            var day1 = stringValue1.substr(0, 2);
+                            var month1 = stringValue1.substr(3, 2);
+                            var year1 = stringValue1.substr(6, 4);
+                            var date2 = year1 + '-' + month1 + '-' + day1 + ' 00:00:00';
+                        } catch (err) {
+
                         }
 
-
-
-
-
+                        var data = {
+                            Id: event.Id,
+                            Subject: event.title,
+                            Start: date1 /*event.start.format('DD/MM/YYYY HH:mm A')*/,
+                            End: event.end != null ? date2 /*event.end.format('DD/MM/YYYY HH:mm A')*/ : null,
+                            Description: event.description,
+                            ThemeColor: event.color,
+                            IsFullDay: event.allDay
+                        };
+                        SaveEvent(data);
                     }
-
-                    $('#myModal').modal();
-
-
-                }
-
-                $('#btnSave').click(function () {
-                    if ($('#txtSubject').val().trim() == "") {
-                        alert('Subject required');
-                        return;
-                    }
-                    if ($('#txtStart').val().trim() == "") {
-                        alert('Start date required');
-                        return;
-                    }
-                    if ($('#chkIsFullDay').is(':checked') == false && $('#txtEnd').val().trim() == "") {
-                        alert('End date required');
-                        return;
-                    }
-                    else {
-                        var startDate = moment($('#txtStart').val(), "DD/MM/YYYY HH:mm A").toDate();
-                        var endDate = moment($('#txtEnd').val(), "DD/MM/YYYY HH:mm A").toDate();
-                        if (startDate > endDate) {
-                            alert('Invalid end date');
-                            return;
-                        }
-                    }
-
-
-                    var stringValue = $('#txtStart').val().trim();
-                    var day = stringValue.substr(0, 2);
-                    var month = stringValue.substr(3, 2);
-                    var year = stringValue.substr(6, 4);
-                    var date1 = year + '-' + month + '-' + day + ' 00:00:00';
-
-
-                    try {
-                        var stringValue1 = $('#txtEnd').val().trim();
-                        var day1 = stringValue1.substr(0, 2);
-                        var month1 = stringValue1.substr(3, 2);
-                        var year1 = stringValue1.substr(6, 4);
-                        var date2 = year1 + '-' + month1 + '-' + day1 + ' 00:00:00';
-                    } catch (err) {
-
-                    }
-
-
-                    var data = {
-
-                        Id: $('#hdEventID').val(),
-                        Subject: $('#txtSubject').val().trim(),
-                        Start: date1/* $('#txtStart').val().trim()*/,
-                        End: $('#chkIsFullDay').is(':checked') ? null : date2/*$('#txtEnd').val().trim()*/,
-                        Description: $('#txtDescription').val(),
-                        ThemeColor: $('#ddThemeColor').val(),
-                        IsFullDay: $('#chkIsFullDay').is(':checked')
-                    }
-                    SaveEvent(data);
-                    // call function for submit data to the server
                 })
+            }
+
+            $('#btnEdit').click(function () {
 
 
-                function SaveEvent(data) {
+                document.getElementById('datainput').style.display = "block";
+                document.getElementById('detail').style.display = "none";
+
+                //Open modal dialog for edit event
+                openAddEditForm();
+            })
+            $('#btnDelete').click(function () {
+                if (selectedEvent != null && confirm('Are you sure?')) {
                     $.ajax({
                         type: "GET",
-                        url: '/Events1/Create',
-                        dataType: 'json',
-                        contentType: dataType,
-                        data: data,
+                        url: '/Events1/Delete/' + selectedEvent.Id,
                         success: function (data) {
 
-                            //Refresh the calender
+                            $('#myModal').modal('hide');
                             FetchEventAndRenderCalendar();
-                            $('#myModalSave').modal('hide');
-
                         },
                         error: function () {
                             alert('ไม่มีสิทธิ์ใช้งาน');
@@ -532,9 +418,129 @@
                     })
                 }
             })
-        </script>
 
-        <script>
+            $('#dtp1,#dtp2').datetimepicker({
+                format: 'DD/MM/YYYY HH:mm A'
+            });
+
+            $('#chkIsFullDay').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#divEndDate').hide();
+                }
+                else {
+                    $('#divEndDate').show();
+                }
+            });
+
+            function openAddEditForm() {
+                if (selectedEvent != null) {
+
+                    $('#hdEventID').val(selectedEvent.Id);
+                    $('#txtSubject').val(selectedEvent.title);
+                    $('#txtStart').val(selectedEvent.start.format('DD/MM/YYYY HH:mm A'));
+                    $('#chkIsFullDay').prop("checked", selectedEvent.allDay || false);
+                    $('#chkIsFullDay').change();
+                    $('#txtEnd').val(selectedEvent.end != null ? selectedEvent.end.format('DD/MM/YYYY HH:mm A') : '');
+                    $('#txtDescription').val(selectedEvent.description);
+                    $('#ddThemeColor').val(selectedEvent.color);
+
+                    if (selectedEvent.Id == 0) {
+
+                        $('#myModal #eventTitle').text("เพิ่มข้อมูล");
+                        document.getElementById('datainput').style.display = "block";
+                        document.getElementById('detail').style.display = "none";
+                    }
+
+
+
+
+
+                }
+
+                $('#myModal').modal();
+
+
+            }
+
+            $('#btnSave').click(function () {
+                if ($('#txtSubject').val().trim() == "") {
+                    alert('Subject required');
+                    return;
+                }
+                if ($('#txtStart').val().trim() == "") {
+                    alert('Start date required');
+                    return;
+                }
+                if ($('#chkIsFullDay').is(':checked') == false && $('#txtEnd').val().trim() == "") {
+                    alert('End date required');
+                    return;
+                }
+                else {
+                    var startDate = moment($('#txtStart').val(), "DD/MM/YYYY HH:mm A").toDate();
+                    var endDate = moment($('#txtEnd').val(), "DD/MM/YYYY HH:mm A").toDate();
+                    if (startDate > endDate) {
+                        alert('Invalid end date');
+                        return;
+                    }
+                }
+
+
+                var stringValue = $('#txtStart').val().trim();
+                var day = stringValue.substr(0, 2);
+                var month = stringValue.substr(3, 2);
+                var year = stringValue.substr(6, 4);
+                var date1 = year + '-' + month + '-' + day + ' 00:00:00';
+
+
+                try {
+                    var stringValue1 = $('#txtEnd').val().trim();
+                    var day1 = stringValue1.substr(0, 2);
+                    var month1 = stringValue1.substr(3, 2);
+                    var year1 = stringValue1.substr(6, 4);
+                    var date2 = year1 + '-' + month1 + '-' + day1 + ' 00:00:00';
+                } catch (err) {
+
+                }
+
+
+                var data = {
+
+                    Id: $('#hdEventID').val(),
+                    Subject: $('#txtSubject').val().trim(),
+                    Start: date1/* $('#txtStart').val().trim()*/,
+                    End: $('#chkIsFullDay').is(':checked') ? null : date2/*$('#txtEnd').val().trim()*/,
+                    Description: $('#txtDescription').val(),
+                    ThemeColor: $('#ddThemeColor').val(),
+                    IsFullDay: $('#chkIsFullDay').is(':checked')
+                }
+                SaveEvent(data);
+                // call function for submit data to the server
+            })
+
+
+            function SaveEvent(data) {
+                $.ajax({
+                    type: "GET",
+                    url: '/Events1/Create',
+                    dataType: 'json',
+                    contentType: dataType,
+                    data: data,
+                    success: function (data) {
+
+                        //Refresh the calender
+                        FetchEventAndRenderCalendar();
+                        $('#myModalSave').modal('hide');
+
+                    },
+                    error: function () {
+                        alert('ไม่มีสิทธิ์ใช้งาน');
+                    }
+                })
+            }
+        })
+    </script>
+
+    <script>
                 $(document).ready(function () {
                     setTimeout(function () {
                         toastr.options = {
@@ -548,9 +554,9 @@
                     }, 1300);
                 });
 
-        </script>
+    </script>
 
-        <script>
+    @*<script>
             var datacontent = "";
             $.ajax({
                 type: "GET",
@@ -578,10 +584,10 @@
                 }
 
             });
-        </script>
+        </script>*@
 
 
-        <script>
+    @*<script>
             var data = [];
             var labels = [];
 
@@ -636,11 +642,34 @@
 
                 }
             })
-        </script>
+        </script>*@
+
+
+    <script>
+        $.ajax({
+            type: "GET",
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            //data: { FixAccNo: fixassetno, FixAssetName: itemname1, FixAssetName1: itemname2, SiteName: site, qty: qty,TransectionEtc : etc,TransectionType:selectType} ,
+            url: "/Home/GendataHome/",
+
+            success: function (response) {
+                //เรียกธรรมดา
+           
+                document.getElementById("PO").innerHTML = response.po;
+                document.getElementById("SO").innerHTML = response.so;
+            
+            },
+
+            failure: function (response) {
+                alert("fail");
+            }
+        });
 
 
 
-    }
+    </script>
+}
 
 
 

@@ -632,7 +632,7 @@ namespace CESAPSCOREWEBAPP.Models
             //report.Name =  "ReportRental";
             //report.DataSource = ReportRentals;
             //var cachedReportSource = new CachedReportSourceWeb(report);
-           // return View();
+            // return View();
             //return View(report);
 
 
@@ -642,7 +642,22 @@ namespace CESAPSCOREWEBAPP.Models
 
 
         }
+        ///data Dashboard Home
+       public IActionResult GendataHome()
+        {
+            IActionResult response = Unauthorized();
+            
+            var queryDataPO = "SELECT  'Purchase Invoice' AS Name,COUNT(dbo." + Environment.GetEnvironmentVariable("Company") + "Purchase Header].No_) AS CountData FROM dbo." + Environment.GetEnvironmentVariable("Company") + "Purchase Header]";
+            var POData = _navcontext.DataXXies.FromSqlRaw(queryDataPO).ToList();
+            var queryDataSO = "SELECT 'Sale Invoice' AS Name,COUNT(No_) As CountData FROM dbo." + Environment.GetEnvironmentVariable("Company") + "Sales Header]";
+            var SOData = _navcontext.DataXXies.FromSqlRaw(queryDataSO).ToList();
 
+            var pocount = POData.First();
+            var socount = SOData.First();
+            response = Ok(new { po = pocount.CountData.ToString("#,###"),so = socount.CountData.ToString("#,###") });
+            return response;
+
+        }
 
 
     }

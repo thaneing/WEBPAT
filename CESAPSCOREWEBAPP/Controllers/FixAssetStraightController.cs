@@ -477,13 +477,6 @@ namespace CESAPSCOREWEBAPP.Controllers
             }
             return result;
         }
-
-
-
-
-
-
-
         public async Task<IActionResult> UpdateDataAll()
         {
             var page = "275";

@@ -93,6 +93,8 @@ namespace CESAPSCOREWEBAPP.Models
 
         public virtual DbSet<PostedPurchaseInvoices> PostedPurchaseInvoices { get; set; }
 
+        public virtual DbSet<DataXXY> DataXXies { get; set; }
+
 
 
     }

@@ -128,5 +128,6 @@ namespace CESAPSCOREWEBAPP.Models
         public DbSet<DocumentReceivable> DocumentReceivables { get; set; }
 
         public DbSet<Retention> Retentions { get; set; }
+    
     }
 }
