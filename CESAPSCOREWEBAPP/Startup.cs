@@ -268,14 +268,13 @@ namespace CESAPSCOREWEBAPP
             });
 
 
-
             if (HardwareInfoMiddleware.CheckRegitry() != "true")
             {
                 app.UseMiddleware<SerialMiddleware>();
-
             }
 
 
+            app.UseMiddleware<SetHeaderMidleware>();
 
             //Add JWToken to all incoming HTTP Request Header
             app.Use(async (context, next) =>

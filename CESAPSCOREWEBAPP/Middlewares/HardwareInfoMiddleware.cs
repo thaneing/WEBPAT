@@ -66,11 +66,11 @@ namespace CESAPSCOREWEBAPP.Middlewares
                 }
             }
 
-            string location = @"SOFTWARE\Foglight\";
-            RegistryKey key = Registry.CurrentUser.CreateSubKey(location);
-            key.SetValue("param1", datalists[0]);
-            key.SetValue("param2", datalists[1]);
-            key.SetValue("dir", dir);
+            //string location = @"SOFTWARE\Foglight\";
+            //RegistryKey key = Registry.CurrentUser.CreateSubKey(location);
+            //key.SetValue("param1", datalists[0]);
+            //key.SetValue("param2", datalists[1]);
+            //key.SetValue("dir", dir);
 
             return pathSave + FILE_NAME;
         }
@@ -91,11 +91,11 @@ namespace CESAPSCOREWEBAPP.Middlewares
             var param2 = Encryption.Encrypt(GetMachineGuid(), KeyOne);
             var dir = Encryption.Encrypt(partwwwroot + pathImage, KeyOne);
 
-            string location = @"SOFTWARE\Foglight\";
-            RegistryKey key = Registry.CurrentUser.CreateSubKey(location);
-            key.SetValue("param1", param1);
-            key.SetValue("param2", param2);
-            key.SetValue("dir", dir);
+            //string location = @"SOFTWARE\Foglight\";
+            //RegistryKey key = Registry.CurrentUser.CreateSubKey(location);
+            ///key.SetValue("param1", param1);
+            //key.SetValue("param2", param2);
+            //key.SetValue("dir", dir);
 
 
             if (!Directory.Exists(pathSave))
@@ -118,11 +118,8 @@ namespace CESAPSCOREWEBAPP.Middlewares
                         {
                             datalists.Add(r.ReadString());
                         }
-
-
                     }
                 }
-
 
                 if (Encryption.Decrypt(datalists[0], KeyOne) == getUniqueID("C"))
                 {
@@ -140,14 +137,7 @@ namespace CESAPSCOREWEBAPP.Middlewares
                 {
                     return "Please Regiter License";
                 }
-                //if(JavaTimeStamp.JavaTimeStampToDateTime(Convert.ToDouble(Encryption.Decrypt(datalists[2], KeyOne))) <= DateTime.Now)
-                // {
 
-                // }
-                // else
-                // {
-                //     return "License Expired";
-                // }
                 var a = JavaTimeStamp.JavaTimeStampToDateTime(Convert.ToDouble(Encryption.Decrypt(datalists[3], KeyOne)));
 
                 if (DateTime.Now>JavaTimeStamp.JavaTimeStampToDateTime(Convert.ToDouble(Encryption.Decrypt(datalists[3], KeyOne))))
@@ -158,9 +148,6 @@ namespace CESAPSCOREWEBAPP.Middlewares
                 {
                    
                 }
-
-
-
             }
             catch
             {

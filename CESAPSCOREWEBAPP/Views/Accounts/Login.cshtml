@@ -249,83 +249,83 @@
 
 
 		//let counterp = 0;
-		$.ajax({
-			type: "GET",
-			dataType: 'json',
-			contentType: 'application/json; charset=utf-8',
-			//data: { FixAccNo: fixassetno, FixAssetName: itemname1, FixAssetName1: itemname2, SiteName: site, qty: qty, TransectionEtc: etc, TransectionType: selectType },
-			url: "/CheckJOError/GetCoutJOError/",
-			//?FixAccNo="+fixassetno+"&FixAssetName="+itemname1+"&FixAssetName1="+itemname2+"&SiteName="+site+"&qty="+qty
-			success: function (response) {
-				//document.getElementById('countjoerror').innerHTML = response.countdata;
-				//counterp = counterp + parseInt(response.countdata);
+		//$.ajax({
+		//	type: "GET",
+		//	dataType: 'json',
+		//	contentType: 'application/json; charset=utf-8',
+		//	//data: { FixAccNo: fixassetno, FixAssetName: itemname1, FixAssetName1: itemname2, SiteName: site, qty: qty, TransectionEtc: etc, TransectionType: selectType },
+		//	url: "/CheckJOError/GetCoutJOError/",
+		//	//?FixAccNo="+fixassetno+"&FixAssetName="+itemname1+"&FixAssetName1="+itemname2+"&SiteName="+site+"&qty="+qty
+		//	success: function (response) {
+		//		//document.getElementById('countjoerror').innerHTML = response.countdata;
+		//		//counterp = counterp + parseInt(response.countdata);
 
-				setCookie("countjoerror", response.countdata, 30);
-			},
-			failure: function (response) {
+		//		setCookie("countjoerror", response.countdata, 30);
+		//	},
+		//	failure: function (response) {
 
-			}
-		});
-
-
-
-		$.ajax({
-			type: "GET",
-			dataType: 'json',
-			contentType: 'application/json; charset=utf-8',
-			//data: { FixAccNo: fixassetno, FixAssetName: itemname1, FixAssetName1: itemname2, SiteName: site, qty: qty, TransectionEtc: etc, TransectionType: selectType },
-			url: "/CheckLedgers/GetDataError/",
-			//?FixAccNo="+fixassetno+"&FixAssetName="+itemname1+"&FixAssetName1="+itemname2+"&SiteName="+site+"&qty="+qty
-			success: function (response) {
-				//document.getElementById('countjoerror').innerHTML = response.countdata;
-				//counterp = counterp + parseInt(response.countdata);
-
-				setCookie("countledgererror", response.countdata, 30);
-			},
-			failure: function (response) {
-
-			}
-		});
-
-
-		$.ajax({
-			type: "GET",
-			dataType: 'json',
-			contentType: 'application/json; charset=utf-8',
-			//data: { FixAccNo: fixassetno, FixAssetName: itemname1, FixAssetName1: itemname2, SiteName: site, qty: qty, TransectionEtc: etc, TransectionType: selectType },
-			url: "/Appvs/GetPoError/",
-			//?FixAccNo="+fixassetno+"&FixAssetName="+itemname1+"&FixAssetName1="+itemname2+"&SiteName="+site+"&qty="+qty
-			success: function (response) {
-				//document.getElementById('countjoerror').innerHTML = response.countdata;
-				//counterp = counterp + parseInt(response.countdata);
-
-				setCookie("countpoerror", response.countdata, 30);
-			},
-			failure: function (response) {
-
-			}
-		});
+		//	}
+		//});
 
 
 
+		//$.ajax({
+		//	type: "GET",
+		//	dataType: 'json',
+		//	contentType: 'application/json; charset=utf-8',
+		//	//data: { FixAccNo: fixassetno, FixAssetName: itemname1, FixAssetName1: itemname2, SiteName: site, qty: qty, TransectionEtc: etc, TransectionType: selectType },
+		//	url: "/CheckLedgers/GetDataError/",
+		//	//?FixAccNo="+fixassetno+"&FixAssetName="+itemname1+"&FixAssetName1="+itemname2+"&SiteName="+site+"&qty="+qty
+		//	success: function (response) {
+		//		//document.getElementById('countjoerror').innerHTML = response.countdata;
+		//		//counterp = counterp + parseInt(response.countdata);
 
-		$.ajax({
-			type: "GET",
-			dataType: 'json',
-			contentType: 'application/json; charset=utf-8',
-			//data: { FixAccNo: fixassetno, FixAssetName: itemname1, FixAssetName1: itemname2, SiteName: site, qty: qty, TransectionEtc: etc, TransectionType: selectType },
-			url: "/CheckGRErrors/GetCountGRErrors/",
-			//?FixAccNo="+fixassetno+"&FixAssetName="+itemname1+"&FixAssetName1="+itemname2+"&SiteName="+site+"&qty="+qty
-			success: function (response) {
-				//document.getElementById('countjoerror').innerHTML = response.countdata;
-				//counterp = counterp + parseInt(response.countdata);
+		//		setCookie("countledgererror", response.countdata, 30);
+		//	},
+		//	failure: function (response) {
 
-				setCookie("countGRerror", response.countdata, 30);
-			},
-			failure: function (response) {
+		//	}
+		//});
 
-			}
-		});
+
+		//$.ajax({
+		//	type: "GET",
+		//	dataType: 'json',
+		//	contentType: 'application/json; charset=utf-8',
+		//	//data: { FixAccNo: fixassetno, FixAssetName: itemname1, FixAssetName1: itemname2, SiteName: site, qty: qty, TransectionEtc: etc, TransectionType: selectType },
+		//	url: "/Appvs/GetPoError/",
+		//	//?FixAccNo="+fixassetno+"&FixAssetName="+itemname1+"&FixAssetName1="+itemname2+"&SiteName="+site+"&qty="+qty
+		//	success: function (response) {
+		//		//document.getElementById('countjoerror').innerHTML = response.countdata;
+		//		//counterp = counterp + parseInt(response.countdata);
+
+		//		setCookie("countpoerror", response.countdata, 30);
+		//	},
+		//	failure: function (response) {
+
+		//	}
+		//});
+
+
+
+
+		//$.ajax({
+		//	type: "GET",
+		//	dataType: 'json',
+		//	contentType: 'application/json; charset=utf-8',
+		//	//data: { FixAccNo: fixassetno, FixAssetName: itemname1, FixAssetName1: itemname2, SiteName: site, qty: qty, TransectionEtc: etc, TransectionType: selectType },
+		//	url: "/CheckGRErrors/GetCountGRErrors/",
+		//	//?FixAccNo="+fixassetno+"&FixAssetName="+itemname1+"&FixAssetName1="+itemname2+"&SiteName="+site+"&qty="+qty
+		//	success: function (response) {
+		//		//document.getElementById('countjoerror').innerHTML = response.countdata;
+		//		//counterp = counterp + parseInt(response.countdata);
+
+		//		setCookie("countGRerror", response.countdata, 30);
+		//	},
+		//	failure: function (response) {
+
+		//	}
+		//});
 
 
 
