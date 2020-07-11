@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CESAPSCOREWEBAPP.Helpers;
 using CESAPSCOREWEBAPP.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ using static CESAPSCOREWEBAPP.Models.Enums;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class JobPlanningLineController : BaseController
     {
         private readonly DatabaseContext _context;

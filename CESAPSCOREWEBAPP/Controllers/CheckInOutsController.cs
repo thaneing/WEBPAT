@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CESAPSCOREWEBAPP.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class CheckInOutsController : Controller
     {
         private readonly DatabaseContext _context;

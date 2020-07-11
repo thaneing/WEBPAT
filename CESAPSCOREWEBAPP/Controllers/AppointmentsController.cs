@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CESAPSCOREWEBAPP.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class AppointmentsController : Controller
     {
         private readonly DatabaseContext _context;

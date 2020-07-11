@@ -9,9 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using static CESAPSCOREWEBAPP.Models.Enums;
 using System.Globalization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class CHQDirectController : BaseController
     {
 
@@ -116,15 +118,15 @@ namespace CESAPSCOREWEBAPP.Controllers
                 "ELSE '' END as MonthTH " +
                 "FROM ( " +
                 "SELECT " +
-                "CONVERT(varchar,Year(dbo.[C_E_S_ CO_, LTD_$Check Ledger Entry].[Posting Date])+543) as YearDate, " +
-                "CASE WHEN Month(dbo.[C_E_S_ CO_, LTD_$Check Ledger Entry].[Posting Date])<'10' THEN CONCAT('0',Month(dbo.[C_E_S_ CO_, LTD_$Check Ledger Entry].[Posting Date])) " +
-                "ELSE CONVERT(VARCHAR,Month(dbo.[C_E_S_ CO_, LTD_$Check Ledger Entry].[Posting Date])) END as MonthDate, " +
-                "dbo.[C_E_S_ CO_, LTD_$Check Ledger Entry].[Posting Date] as PostingDate, " +
-                "Count(dbo.[C_E_S_ CO_, LTD_$Check Ledger Entry].[Posting Date]) as CountData, " +
-                "SUM(dbo.[C_E_S_ CO_, LTD_$Check Ledger Entry].Amount) as SumTotal " +
-                "FROM [dbo].[C_E_S_ CO_, LTD_$Check Ledger Entry] " +
+                "CONVERT(varchar,Year(dbo."+ Environment.GetEnvironmentVariable("Company") +"Check Ledger Entry].[Posting Date])+543) as YearDate, " +
+                "CASE WHEN Month(dbo."+ Environment.GetEnvironmentVariable("Company") +"Check Ledger Entry].[Posting Date])<'10' THEN CONCAT('0',Month(dbo."+ Environment.GetEnvironmentVariable("Company") +"Check Ledger Entry].[Posting Date])) " +
+                "ELSE CONVERT(VARCHAR,Month(dbo."+ Environment.GetEnvironmentVariable("Company") +"Check Ledger Entry].[Posting Date])) END as MonthDate, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Check Ledger Entry].[Posting Date] as PostingDate, " +
+                "Count(dbo."+ Environment.GetEnvironmentVariable("Company") +"Check Ledger Entry].[Posting Date]) as CountData, " +
+                "SUM(dbo."+ Environment.GetEnvironmentVariable("Company") +"Check Ledger Entry].Amount) as SumTotal " +
+                "FROM [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Check Ledger Entry] " +
                 "WHERE [Document No_] LIKE 'PVB%' " +
-                "GROUP BY dbo.[C_E_S_ CO_, LTD_$Check Ledger Entry].[Posting Date]  " +
+                "GROUP BY dbo."+ Environment.GetEnvironmentVariable("Company") +"Check Ledger Entry].[Posting Date]  " +
                 ")as a WHERE a.PostingDate >={0} and a.PostingDate<={1}" +
                 " ORDER BY a.PostingDate ";
 

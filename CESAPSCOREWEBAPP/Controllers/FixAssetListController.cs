@@ -4,11 +4,13 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using CESAPSCOREWEBAPP.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class FixAssetListController : Controller
     {
 

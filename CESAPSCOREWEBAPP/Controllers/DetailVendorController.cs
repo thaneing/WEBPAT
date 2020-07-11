@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CESAPSCOREWEBAPP.Helpers;
 using CESAPSCOREWEBAPP.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using static CESAPSCOREWEBAPP.Models.Enums;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class DetailVendorController : BaseController
     {
         private readonly NAVContext _navcontext;
@@ -81,32 +83,32 @@ namespace CESAPSCOREWEBAPP.Controllers
                 "c.GRNo,c.PostingGR,'' as JobType,c.JobGL,c.VendorName,c.VendorNo,'' as Type, " +
                 "CASE WHEN (c.OrderNo='' and c.IV='') THEN c.APD " +
                 "	   ELSE c.OrderNo END as OrderDoc, " +
-                "(SELECT SUM(dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].Quantity*dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Unit Cost (LCY)]) FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_]=c.GRNo) as ReceiveAmountLine " +
+                "(SELECT SUM(dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].Quantity*dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Unit Cost (LCY)]) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_]=c.GRNo) as ReceiveAmountLine " +
                 " FROM ( " +
                 "SELECT * " +
                 ",(CASE WHEN b.OrderNo='' THEN  " +
-                "(SELECT top 1 [dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].[Document No_] FROM [dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line] WHERE [dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].[Posting Date]=b.PosDate  " +
-                "and  [dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].[Direct Unit Cost]=b.TotalPrice and [dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].Description=b.Description and [dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].[Pay-to Vendor No_]=b.PayToVendor and  " +
-                "[dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].[Dimension Set ID]=b.DimensionSetID) " +
+                "(SELECT top 1 [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].[Document No_] FROM [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line] WHERE [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].[Posting Date]=b.PosDate  " +
+                "and  [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].[Direct Unit Cost]=b.TotalPrice and [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].Description=b.Description and [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].[Pay-to Vendor No_]=b.PayToVendor and  " +
+                "[dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].[Dimension Set ID]=b.DimensionSetID) " +
                 " ELSE '' END)  AS APD " +
                 "FROM ( " +
                 "SELECT *, " +
-                "(SELECT Top 1 [Posting Date]  FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_]=a.GRNo)  as PosDate, " +
-                "(SELECT Top 1 dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Pay-to Vendor No_] FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_]=a.GRNo)  as PayToVendor, " +
-                "(SELECT Top 1 dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Direct Unit Cost] FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_]=a.GRNo ORDER BY dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].No_)  as TotalPrice, " +
-                "(SELECT TOP 1 dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].Description FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_]=a.GRNo ORDER BY dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].No_) as Description, " +
-                "(SELECT TOP 1 dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Dimension Set ID] FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_]=a.GRNo ORDER BY dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].No_) as DimensionSetID " +
+                "(SELECT Top 1 [Posting Date]  FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_]=a.GRNo)  as PosDate, " +
+                "(SELECT Top 1 dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Pay-to Vendor No_] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_]=a.GRNo)  as PayToVendor, " +
+                "(SELECT Top 1 dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Direct Unit Cost] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_]=a.GRNo ORDER BY dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].No_)  as TotalPrice, " +
+                "(SELECT TOP 1 dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].Description FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_]=a.GRNo ORDER BY dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].No_) as Description, " +
+                "(SELECT TOP 1 dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Dimension Set ID] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_]=a.GRNo ORDER BY dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].No_) as DimensionSetID " +
                 "FROM( " +
                 "SELECT " +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].No_ as GRNo, " +
-                "CONVERT(VARCHAR,dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Posting Date],23) as PostingGR, " +
-                "CASE WHEN dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Order No_] = '' THEN dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Ref_ Job Order No_]  " +
-                "		ELSE  dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Order No_] END as OrderNo , " +
-                "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Ref_ Job Order No_]  as IV, " +
-                "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Shortcut Dimension 1 Code] as JobGL, " +
-                "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Pay-to Vendor No_] as VendorNo, " +
-                "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Pay-to Name] as VendorName " +
-                "FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header] " +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].No_ as GRNo, " +
+                "CONVERT(VARCHAR,dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Posting Date],23) as PostingGR, " +
+                "CASE WHEN dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Order No_] = '' THEN dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Ref_ Job Order No_]  " +
+                "		ELSE  dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Order No_] END as OrderNo , " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Ref_ Job Order No_]  as IV, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Shortcut Dimension 1 Code] as JobGL, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Pay-to Vendor No_] as VendorNo, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Pay-to Name] as VendorName " +
+                "FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header] " +
                 ") as a " +
                 ") as b " +
                 ") as c  ";
@@ -435,33 +437,33 @@ namespace CESAPSCOREWEBAPP.Controllers
                     "c.Type as Type, " +
                     "CASE WHEN (c.OrderNo='' and c.IV='') THEN c.APD " +
                     "	   ELSE c.OrderNo END as OrderDoc, " +
-                    "(SELECT SUM(dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].Quantity*dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Unit Cost (LCY)]) FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_]=c.GRNo) as ReceiveAmountLine " +
+                    "(SELECT SUM(dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].Quantity*dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Unit Cost (LCY)]) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_]=c.GRNo) as ReceiveAmountLine " +
                     " FROM ( " +
                     "SELECT * " +
                     ",(CASE WHEN b.OrderNo='' THEN  " +
-                    "(SELECT top 1 [dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].[Document No_] FROM [dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line] WHERE [dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].[Posting Date]=b.PosDate  " +
-                    "and  [dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].[Direct Unit Cost]=b.TotalPrice and [dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].Description=b.Description and [dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].[Pay-to Vendor No_]=b.PayToVendor and  " +
-                    "[dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].[Dimension Set ID]=b.DimensionSetID) " +
+                    "(SELECT top 1 [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].[Document No_] FROM [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line] WHERE [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].[Posting Date]=b.PosDate  " +
+                    "and  [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].[Direct Unit Cost]=b.TotalPrice and [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].Description=b.Description and [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].[Pay-to Vendor No_]=b.PayToVendor and  " +
+                    "[dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].[Dimension Set ID]=b.DimensionSetID) " +
                     " ELSE '' END)  AS APD " +
                     "FROM ( " +
                     "SELECT *, " +
-                    "(SELECT Top 1 [Posting Date]  FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_]=a.GRNo)  as PosDate, " +
-                    "(SELECT Top 1 dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Pay-to Vendor No_] FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_]=a.GRNo)  as PayToVendor, " +
-                    "(SELECT Top 1 dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Direct Unit Cost] FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_]=a.GRNo ORDER BY dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].No_)  as TotalPrice, " +
-                    "(SELECT TOP 1 dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].Description FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_]=a.GRNo ORDER BY dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].No_) as Description, " +
-                    "(SELECT TOP 1 dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Dimension Set ID] FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_]=a.GRNo ORDER BY dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].No_) as DimensionSetID " +
+                    "(SELECT Top 1 [Posting Date]  FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_]=a.GRNo)  as PosDate, " +
+                    "(SELECT Top 1 dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Pay-to Vendor No_] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_]=a.GRNo)  as PayToVendor, " +
+                    "(SELECT Top 1 dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Direct Unit Cost] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_]=a.GRNo ORDER BY dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].No_)  as TotalPrice, " +
+                    "(SELECT TOP 1 dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].Description FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_]=a.GRNo ORDER BY dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].No_) as Description, " +
+                    "(SELECT TOP 1 dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Dimension Set ID] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_]=a.GRNo ORDER BY dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].No_) as DimensionSetID " +
                     "FROM( " +
                     "SELECT " +
-                    " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].No_ as GRNo, " +
-                    "CONVERT(VARCHAR,dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Posting Date],23) as PostingGR, " +
+                    " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].No_ as GRNo, " +
+                    "CONVERT(VARCHAR,dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Posting Date],23) as PostingGR, " +
 
-                    "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Order No_]  as OrderNo, "+
-                     "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Ref_ Job Order No_]  as IV, " +
-                    "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Shortcut Dimension 1 Code] as JobGL, " +
-                    "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Pay-to Vendor No_] as VendorNo, " +
-                    "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Pay-to Name] as VendorName," +
-                    "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Vendor Shipment No_] as Type  " +
-                    "FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header] " + typedoc +
+                    "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Order No_]  as OrderNo, "+
+                     "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Ref_ Job Order No_]  as IV, " +
+                    "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Shortcut Dimension 1 Code] as JobGL, " +
+                    "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Pay-to Vendor No_] as VendorNo, " +
+                    "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Pay-to Name] as VendorName," +
+                    "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Vendor Shipment No_] as Type  " +
+                    "FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header] " + typedoc +
                     ") as a " +
                     ") as b " +
                     ") as c " +
@@ -482,32 +484,32 @@ namespace CESAPSCOREWEBAPP.Controllers
                   "c.GRNo,c.PostingGR,'' as JobType,c.JobGL,c.VendorName,c.VendorNo,c.Type as Type, " +
                   "CASE WHEN (c.OrderNo='' and c.IV='') THEN c.APD " +
                   "	   ELSE c.OrderNo END as OrderDoc, " +
-                  "(SELECT SUM(dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].Quantity*dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Unit Cost (LCY)]) FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_]=c.GRNo) as ReceiveAmountLine " +
+                  "(SELECT SUM(dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].Quantity*dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Unit Cost (LCY)]) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_]=c.GRNo) as ReceiveAmountLine " +
                   " FROM ( " +
                   "SELECT * " +
                   ",(CASE WHEN b.OrderNo='' THEN  " +
-                  "(SELECT top 1 [dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].[Document No_] FROM [dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line] WHERE [dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].[Posting Date]=b.PosDate  " +
-                  "and  [dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].[Direct Unit Cost]=b.TotalPrice and [dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].Description=b.Description and [dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].[Pay-to Vendor No_]=b.PayToVendor and  " +
-                  "[dbo].[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].[Dimension Set ID]=b.DimensionSetID) " +
+                  "(SELECT top 1 [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].[Document No_] FROM [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line] WHERE [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].[Posting Date]=b.PosDate  " +
+                  "and  [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].[Direct Unit Cost]=b.TotalPrice and [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].Description=b.Description and [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].[Pay-to Vendor No_]=b.PayToVendor and  " +
+                  "[dbo]."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].[Dimension Set ID]=b.DimensionSetID) " +
                   " ELSE '' END)  AS APD " +
                   "FROM ( " +
                   "SELECT *, " +
-                  "(SELECT Top 1 [Posting Date]  FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_]=a.GRNo)  as PosDate, " +
-                  "(SELECT Top 1 dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Pay-to Vendor No_] FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_]=a.GRNo)  as PayToVendor, " +
-                  "(SELECT Top 1 dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Direct Unit Cost] FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_]=a.GRNo ORDER BY dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].No_)  as TotalPrice, " +
-                  "(SELECT TOP 1 dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].Description FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_]=a.GRNo ORDER BY dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].No_) as Description, " +
-                  "(SELECT TOP 1 dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Dimension Set ID] FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_]=a.GRNo ORDER BY dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].No_) as DimensionSetID " +
+                  "(SELECT Top 1 [Posting Date]  FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_]=a.GRNo)  as PosDate, " +
+                  "(SELECT Top 1 dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Pay-to Vendor No_] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_]=a.GRNo)  as PayToVendor, " +
+                  "(SELECT Top 1 dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Direct Unit Cost] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_]=a.GRNo ORDER BY dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].No_)  as TotalPrice, " +
+                  "(SELECT TOP 1 dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].Description FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_]=a.GRNo ORDER BY dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].No_) as Description, " +
+                  "(SELECT TOP 1 dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Dimension Set ID] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_]=a.GRNo ORDER BY dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].No_) as DimensionSetID " +
                   "FROM( " +
                   "SELECT " +
-                  " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].No_ as GRNo, " +
-                  "CONVERT(VARCHAR,dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Posting Date],23) as PostingGR, " +
-                     "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Order No_]  as OrderNo, " +
-                  "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Ref_ Job Order No_]  as IV, " +
-                  "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Shortcut Dimension 1 Code] as JobGL, " +
-                  "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Pay-to Vendor No_] as VendorNo, " +
-                  "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Pay-to Name] as VendorName, " +
-                  "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Vendor Shipment No_] as Type  " +
-                  "FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header] " + typedoc +
+                  " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].No_ as GRNo, " +
+                  "CONVERT(VARCHAR,dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Posting Date],23) as PostingGR, " +
+                     "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Order No_]  as OrderNo, " +
+                  "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Ref_ Job Order No_]  as IV, " +
+                  "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Shortcut Dimension 1 Code] as JobGL, " +
+                  "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Pay-to Vendor No_] as VendorNo, " +
+                  "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Pay-to Name] as VendorName, " +
+                  "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Vendor Shipment No_] as Type  " +
+                  "FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header] " + typedoc +
                   ") as a " +
                   ") as b " +
                   ") as c " +

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CESAPSCOREWEBAPP.Helpers;
 using CESAPSCOREWEBAPP.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ using static CESAPSCOREWEBAPP.Models.Enums;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class APRVController : BaseController
     {
             private readonly NAVContext _navcontext;
@@ -119,7 +121,7 @@ namespace CESAPSCOREWEBAPP.Controllers
                 " FROM " +
                 " dbo."+ Environment.GetEnvironmentVariable("Company") +"Detailed Cust_ Ledg_ Entry] " +
                 " INNER JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Customer] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Detailed Cust_ Ledg_ Entry].[Customer No_] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Customer].No_ " +
-                " INNER  JOIN dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] ON dbo.[C_E_S_ CO_, LTD_$Detailed Cust_ Ledg_ Entry].[Cust_ Ledger Entry No_] = dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[Entry No_] " +
+                " INNER  JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Detailed Cust_ Ledg_ Entry].[Cust_ Ledger Entry No_] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[Entry No_] " +
                 " WHERE(dbo."+ Environment.GetEnvironmentVariable("Company") +"Detailed Cust_ Ledg_ Entry].[Document Type] = '2' OR dbo."+ Environment.GetEnvironmentVariable("Company") +"Detailed Cust_ Ledg_ Entry].[Document Type] = '3')  " +
                 " and dbo."+ Environment.GetEnvironmentVariable("Company") +"Detailed Cust_ Ledg_ Entry].[Posting Date] >={0} and dbo."+ Environment.GetEnvironmentVariable("Company") +"Detailed Cust_ Ledg_ Entry].[Posting Date]<={1}" +
                 " ) as a ";

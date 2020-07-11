@@ -8,6 +8,7 @@ using CESAPSCOREWEBAPP.Helpers;
 using CESAPSCOREWEBAPP.Models;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,7 @@ using static CESAPSCOREWEBAPP.Models.Enums;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class DocumentBillingsController : BaseController
     {
         private readonly NAVContext _navcontext;
@@ -52,13 +54,13 @@ namespace CESAPSCOREWEBAPP.Controllers
                 }
             }
             /*Check Session */
-            var sql = "SELECT dbo.[C_E_S_ CO_, LTD_$Purchase Header].No_ as code, dbo.[C_E_S_ CO_, LTD_$Purchase Header].No_ as name " +
-            "FROM dbo.[C_E_S_ CO_, LTD_$Purchase Header] WHERE [Job Document Type]=0  order by dbo.[C_E_S_ CO_, LTD_$Purchase Header].No_ ";
+            var sql = "SELECT dbo."+ Environment.GetEnvironmentVariable("Company") +"Purchase Header].No_ as code, dbo."+ Environment.GetEnvironmentVariable("Company") +"Purchase Header].No_ as name " +
+            "FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purchase Header] WHERE [Job Document Type]=0  order by dbo."+ Environment.GetEnvironmentVariable("Company") +"Purchase Header].No_ ";
 
             //SqlParameter parameterEmpId = new SqlParameter("@empid", empid);
             var PO = _navcontext.sourceAutoCompletes.FromSqlRaw(sql).ToList();
 
-            var sqlquery = "SELECT Code as name,Code as code FROM [dbo].[C_E_S_ CO_, LTD_$Dimension Value] WHERE [Dimension Code]='JOB_GL' order by Code";
+            var sqlquery = "SELECT Code as name,Code as code FROM [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Dimension Value] WHERE [Dimension Code]='JOB_GL' order by Code";
 
             //SqlParameter parameterEmpId = new SqlParameter("@empid", empid);
             var site = _navcontext.sourceAutoCompletes.FromSqlRaw(sqlquery).ToList();
@@ -107,8 +109,8 @@ namespace CESAPSCOREWEBAPP.Controllers
             /*Check Session */
 
             IActionResult response = Unauthorized();
-            var sql = "SELECT dbo.[C_E_S_ CO_, LTD_$Purchase Header].[Pay-to Name] AS name,dbo.[C_E_S_ CO_, LTD_$Purchase Header].[Shortcut Dimension 1 Code] as code " +
-                "FROM dbo.[C_E_S_ CO_, LTD_$Purchase Header] WHERE [Job Document Type]=0 and dbo.[C_E_S_ CO_, LTD_$Purchase Header].No_ ={0} order by dbo.[C_E_S_ CO_, LTD_$Purchase Header].No_ ";
+            var sql = "SELECT dbo."+ Environment.GetEnvironmentVariable("Company") +"Purchase Header].[Pay-to Name] AS name,dbo."+ Environment.GetEnvironmentVariable("Company") +"Purchase Header].[Shortcut Dimension 1 Code] as code " +
+                "FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purchase Header] WHERE [Job Document Type]=0 and dbo."+ Environment.GetEnvironmentVariable("Company") +"Purchase Header].No_ ={0} order by dbo."+ Environment.GetEnvironmentVariable("Company") +"Purchase Header].No_ ";
 
             //SqlParameter parameterEmpId = new SqlParameter("@empid", empid);
             var site = _navcontext.sourceAutoCompletes.FromSqlRaw(sql ,PO).ToList();

@@ -7,6 +7,7 @@ using CESAPSCOREWEBAPP.Helpers;
 using CESAPSCOREWEBAPP.Models;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ using static CESAPSCOREWEBAPP.Models.Enums;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class AccountReportsController : BaseController
     {
 
@@ -26,7 +28,6 @@ namespace CESAPSCOREWEBAPP.Controllers
             _context = context;
             _navcontext = navcontext;
         }
-
 
 
         public IActionResult Index()
@@ -55,7 +56,7 @@ namespace CESAPSCOREWEBAPP.Controllers
 
 
             //Account No
-            var query = "SELECT DISTINCT [G_L Account No_] as LocationCode,[G_L Account No_] as JobNo FROM dbo.[C_E_S_ CO_, LTD_$G_L Entry] ORDER BY [G_L Account No_] asc";
+            var query = "SELECT DISTINCT [G_L Account No_] as LocationCode,[G_L Account No_] as JobNo FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry] ORDER BY [G_L Account No_] asc";
             var jobNo = _navcontext.v_Job.FromSqlRaw(query).ToList();
             
             var AccountNo = _context.ConditionReports.Where(p => p.ReportDimension == "AccountNo" && p.ReportName== "AccountProfit").ToList();
@@ -65,7 +66,7 @@ namespace CESAPSCOREWEBAPP.Controllers
 
             //GL
 
-            var queryGL = "SELECT  Code as JobNo ,Name as LocationCode  FROM dbo.[C_E_S_ CO_, LTD_$Dimension Value] WHERE [Dimension Code]='JOB_GL'";
+            var queryGL = "SELECT  Code as JobNo ,Name as LocationCode  FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Dimension Value] WHERE [Dimension Code]='JOB_GL'";
             var jobNoGL = _navcontext.v_Job.FromSqlRaw(queryGL).ToList();
             ViewData["JobGL"] = jobNoGL;
             var AccountNoGL = _context.ConditionReports.Where(p => p.ReportDimension == "GLOpen" && p.ReportName == "AccountProfit").ToList();
@@ -107,26 +108,26 @@ namespace CESAPSCOREWEBAPP.Controllers
             /*Check Session */
 
 
-            var queryData = "SELECT dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Entry No_] as ID, " +
-                "CASE WHEN SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_],8,1)='M' THEN  SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_],1,1)+'999999M' " +
-                " ELSE SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_],1,1)+'9999999' END AS ACCLV4, " +
-                "CASE WHEN SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_],8,1)='M' THEN  SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_],1,2)+'99999M' " +
-                " ELSE SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_],1,2)+'99999' END AS ACCLV3, " +
-                "CASE WHEN SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_],8,1)='M' THEN  SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_],1,4)+'999M' " +
-                " ELSE SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_],1,5)+'999' END AS ACCLV2, " +
-                "dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_] AS ACCLV1, " +
-                "dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Global Dimension 1 Code]  AS JobGL, " +
-                "dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Posting Date] AS PostingDate, " +
-                "dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Job No_] AS JobNo, " +
-                "CASE WHEN CONVERT (varchar,dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Posting Date],8)='00:00:00' THEN '' " +
+            var queryData = "SELECT dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Entry No_] as ID, " +
+                "CASE WHEN SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_],8,1)='M' THEN  SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_],1,1)+'999999M' " +
+                " ELSE SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_],1,1)+'9999999' END AS ACCLV4, " +
+                "CASE WHEN SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_],8,1)='M' THEN  SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_],1,2)+'99999M' " +
+                " ELSE SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_],1,2)+'99999' END AS ACCLV3, " +
+                "CASE WHEN SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_],8,1)='M' THEN  SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_],1,4)+'999M' " +
+                " ELSE SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_],1,5)+'999' END AS ACCLV2, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_] AS ACCLV1, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Global Dimension 1 Code]  AS JobGL, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Posting Date] AS PostingDate, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Job No_] AS JobNo, " +
+                "CASE WHEN CONVERT (varchar,dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Posting Date],8)='00:00:00' THEN '' " +
                 "		ELSE 'Close' END AS CloseAcc, " +
-                "dbo.[C_E_S_ CO_, LTD_$G_L Entry].Amount, " +
-                "dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Global Dimension 2 Code] AS CostCode, " +
-                "dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Job Task No_] AS JobTaskNo," +
-                "dbo.[C_E_S_ CO_, LTD_$Dimension Value].Name +' ( '+dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Global Dimension 1 Code]+' )' as JobGLName  " +
-                "FROM [dbo].[C_E_S_ CO_, LTD_$G_L Entry] " +
-                "Left JOIN dbo.[C_E_S_ CO_, LTD_$Dimension Value] ON dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Global Dimension 1 Code] = dbo.[C_E_S_ CO_, LTD_$Dimension Value].Code " +
-                "WHERE [Dimension Code]='JOB_GL' and CONVERT(varchar,dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Posting Date],8)='00:00:00' ";
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].Amount, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Global Dimension 2 Code] AS CostCode, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Job Task No_] AS JobTaskNo," +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Dimension Value].Name +' ( '+dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Global Dimension 1 Code]+' )' as JobGLName  " +
+                "FROM [dbo]."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry] " +
+                "Left JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Dimension Value] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Global Dimension 1 Code] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Dimension Value].Code " +
+                "WHERE [Dimension Code]='JOB_GL' and CONVERT(varchar,dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Posting Date],8)='00:00:00' ";
 
 
             //ViewBag.sql = queryData;
@@ -250,14 +251,14 @@ namespace CESAPSCOREWEBAPP.Controllers
 
             var queryData = "SELECT " +
                 "ROW_NUMBER() OVER (ORDER BY No_) AS ID," +
-                "dbo.[C_E_S_ CO_, LTD_$G_L Account].No_ as AccNo, " +
-                "dbo.[C_E_S_ CO_, LTD_$G_L Account].Name as AccName," +
-                "dbo.[C_E_S_ CO_, LTD_$G_L Account].Totaling, " +
-                "CASE WHEN dbo.[C_E_S_ CO_, LTD_$G_L Account].[Account Type]=4 THEN  ' and (dbo.[C_E_S_ CO_, LTD_$G_L Account].No_ >='+LEFT(dbo.[C_E_S_ CO_, LTD_$G_L Account].Totaling,CHARINDEX('..',dbo.[C_E_S_ CO_, LTD_$G_L Account].Totaling)-1) " +
-                "+' and dbo.[C_E_S_ CO_, LTD_$G_L Account].No_ <='+ SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Account].Totaling, CHARINDEX('..',dbo.[C_E_S_ CO_, LTD_$G_L Account].Totaling)+2,11)+')' " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].No_ as AccNo, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].Name as AccName," +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].Totaling, " +
+                "CASE WHEN dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].[Account Type]=4 THEN  ' and (dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].No_ >='+LEFT(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].Totaling,CHARINDEX('..',dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].Totaling)-1) " +
+                "+' and dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].No_ <='+ SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].Totaling, CHARINDEX('..',dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].Totaling)+2,11)+')' " +
                 "ELSE '' END as QueryData " +
-                "FROM [dbo].[C_E_S_ CO_, LTD_$G_L Account]  " +
-                "Order by dbo.[C_E_S_ CO_, LTD_$G_L Account].No_ ";
+                "FROM [dbo]."+ Environment.GetEnvironmentVariable("Company") +"G_L Account]  " +
+                "Order by dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].No_ ";
 
 
             //ViewBag.sql = queryData;
@@ -307,14 +308,14 @@ namespace CESAPSCOREWEBAPP.Controllers
 
 
             //Account No
-            //var query = "SELECT DISTINCT [G_L Account No_] as LocationCode,[G_L Account No_] as JobNo FROM dbo.[C_E_S_ CO_, LTD_$G_L Entry] ORDER BY [G_L Account No_] asc";
+            //var query = "SELECT DISTINCT [G_L Account No_] as LocationCode,[G_L Account No_] as JobNo FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry] ORDER BY [G_L Account No_] asc";
 
             var query = "SELECT " +
 
-           "dbo.[C_E_S_ CO_, LTD_$G_L Account].No_ as LocationCode, " +
-           "dbo.[C_E_S_ CO_, LTD_$G_L Account].No_ as JobNo  " +
-           "FROM [dbo].[C_E_S_ CO_, LTD_$G_L Account]  " +
-           "Order by dbo.[C_E_S_ CO_, LTD_$G_L Account].No_ ";
+           "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].No_ as LocationCode, " +
+           "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].No_ as JobNo  " +
+           "FROM [dbo]."+ Environment.GetEnvironmentVariable("Company") +"G_L Account]  " +
+           "Order by dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].No_ ";
 
 
            var jobNo = _navcontext.v_Job.FromSqlRaw(query).ToList();
@@ -326,7 +327,7 @@ namespace CESAPSCOREWEBAPP.Controllers
 
             //GL
 
-            var queryGL = "SELECT  Code as JobNo ,Name as LocationCode  FROM dbo.[C_E_S_ CO_, LTD_$Dimension Value] WHERE [Dimension Code]='JOB_GL'";
+            var queryGL = "SELECT  Code as JobNo ,Name as LocationCode  FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Dimension Value] WHERE [Dimension Code]='JOB_GL'";
             var jobNoGL = _navcontext.v_Job.FromSqlRaw(queryGL).ToList();
             ViewData["JobGL"] = jobNoGL;
             var AccountNoGL = _context.ConditionReports.Where(p => p.ReportDimension == "GLOpen" && p.ReportName == "AccountProfit").ToList();
@@ -416,37 +417,37 @@ namespace CESAPSCOREWEBAPP.Controllers
 
             //var queryData = "SELECT " +
             //    "ROW_NUMBER() OVER (ORDER BY No_) AS ID," +
-            //    "dbo.[C_E_S_ CO_, LTD_$G_L Account].No_ as AccNo, " +
-            //    "dbo.[C_E_S_ CO_, LTD_$G_L Account].Name as AccName," +
-            //    "dbo.[C_E_S_ CO_, LTD_$G_L Account].Totaling, " +
-            //    "CASE WHEN dbo.[C_E_S_ CO_, LTD_$G_L Account].[Account Type]=4 THEN  ' and (dbo.[C_E_S_ CO_, LTD_$G_L Account].No_ >='+LEFT(dbo.[C_E_S_ CO_, LTD_$G_L Account].Totaling,CHARINDEX('..',dbo.[C_E_S_ CO_, LTD_$G_L Account].Totaling)-1) " +
-            //    "+' and dbo.[C_E_S_ CO_, LTD_$G_L Account].No_ <='+ SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Account].Totaling, CHARINDEX('..',dbo.[C_E_S_ CO_, LTD_$G_L Account].Totaling)+2,11)+')' " +
+            //    "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].No_ as AccNo, " +
+            //    "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].Name as AccName," +
+            //    "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].Totaling, " +
+            //    "CASE WHEN dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].[Account Type]=4 THEN  ' and (dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].No_ >='+LEFT(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].Totaling,CHARINDEX('..',dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].Totaling)-1) " +
+            //    "+' and dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].No_ <='+ SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].Totaling, CHARINDEX('..',dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].Totaling)+2,11)+')' " +
             //    "ELSE '' END as QueryData " +
-            //    "FROM [dbo].[C_E_S_ CO_, LTD_$G_L Account]  " +
-            //    "Order by dbo.[C_E_S_ CO_, LTD_$G_L Account].No_ ";
+            //    "FROM [dbo]."+ Environment.GetEnvironmentVariable("Company") +"G_L Account]  " +
+            //    "Order by dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Account].No_ ";
             //var chartOfAccounts = _navcontext.ChartOfAccounts.FromSqlRaw(queryData).ToList();
 
 
-            //var queryDataAll = "SELECT dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Entry No_] as ID, " +
-            //        "CASE WHEN SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_],8,1)='M' THEN  SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_],1,1)+'999999M' " +
-            //        " ELSE SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_],1,1)+'9999999' END AS ACCLV4, " +
-            //        "CASE WHEN SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_],8,1)='M' THEN  SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_],1,2)+'99999M' " +
-            //        " ELSE SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_],1,2)+'99999' END AS ACCLV3, " +
-            //        "CASE WHEN SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_],8,1)='M' THEN  SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_],1,4)+'999M' " +
-            //        " ELSE SUBSTRING(dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_],1,5)+'999' END AS ACCLV2, " +
-            //        "dbo.[C_E_S_ CO_, LTD_$G_L Entry].[G_L Account No_] AS ACCLV1, " +
-            //        "dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Global Dimension 1 Code]  AS JobGL, " +
-            //        "dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Posting Date] AS PostingDate, " +
-            //        "dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Job No_] AS JobNo, " +
-            //        "CASE WHEN CONVERT (varchar,dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Posting Date],8)='00:00:00' THEN '' " +
+            //var queryDataAll = "SELECT dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Entry No_] as ID, " +
+            //        "CASE WHEN SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_],8,1)='M' THEN  SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_],1,1)+'999999M' " +
+            //        " ELSE SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_],1,1)+'9999999' END AS ACCLV4, " +
+            //        "CASE WHEN SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_],8,1)='M' THEN  SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_],1,2)+'99999M' " +
+            //        " ELSE SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_],1,2)+'99999' END AS ACCLV3, " +
+            //        "CASE WHEN SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_],8,1)='M' THEN  SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_],1,4)+'999M' " +
+            //        " ELSE SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_],1,5)+'999' END AS ACCLV2, " +
+            //        "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[G_L Account No_] AS ACCLV1, " +
+            //        "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Global Dimension 1 Code]  AS JobGL, " +
+            //        "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Posting Date] AS PostingDate, " +
+            //        "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Job No_] AS JobNo, " +
+            //        "CASE WHEN CONVERT (varchar,dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Posting Date],8)='00:00:00' THEN '' " +
             //        "		ELSE 'Close' END AS CloseAcc, " +
-            //        "dbo.[C_E_S_ CO_, LTD_$G_L Entry].Amount, " +
-            //        "dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Global Dimension 2 Code] AS CostCode, " +
-            //        "dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Job Task No_] AS JobTaskNo," +
-            //        "dbo.[C_E_S_ CO_, LTD_$Dimension Value].Name +' ( '+dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Global Dimension 1 Code]+' )' as JobGLName  " +
-            //        "FROM [dbo].[C_E_S_ CO_, LTD_$G_L Entry] " +
-            //        "Left JOIN dbo.[C_E_S_ CO_, LTD_$Dimension Value] ON dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Global Dimension 1 Code] = dbo.[C_E_S_ CO_, LTD_$Dimension Value].Code " +
-            //        "WHERE [Dimension Code]='JOB_GL' and CONVERT(varchar,dbo.[C_E_S_ CO_, LTD_$G_L Entry].[Posting Date],8)='00:00:00' ";
+            //        "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].Amount, " +
+            //        "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Global Dimension 2 Code] AS CostCode, " +
+            //        "dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Job Task No_] AS JobTaskNo," +
+            //        "dbo."+ Environment.GetEnvironmentVariable("Company") +"Dimension Value].Name +' ( '+dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Global Dimension 1 Code]+' )' as JobGLName  " +
+            //        "FROM [dbo]."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry] " +
+            //        "Left JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Dimension Value] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Global Dimension 1 Code] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Dimension Value].Code " +
+            //        "WHERE [Dimension Code]='JOB_GL' and CONVERT(varchar,dbo."+ Environment.GetEnvironmentVariable("Company") +"G_L Entry].[Posting Date],8)='00:00:00' ";
 
 
             ////ViewBag.sql = queryData;

@@ -6,12 +6,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CESAPSCOREWEBAPP.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class InvoiceExcelController : Controller
     {
         private readonly DatabaseContext _context;

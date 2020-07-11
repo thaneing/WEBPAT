@@ -10,6 +10,7 @@ using CESAPSCOREWEBAPP.Helpers;
 using CESAPSCOREWEBAPP.Models;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,7 @@ using static CESAPSCOREWEBAPP.Models.Enums;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class JobLedgerNewsController : BaseController
     {
 
@@ -3538,54 +3540,54 @@ namespace CESAPSCOREWEBAPP.Controllers
             var queryData = "SELECT ROW_NUMBER() OVER (ORDER BY a.PostingDate) as ID," +
                 "a.PostingDate,a.DocumentNo," +
                 "(SELECT CASE  " +
-                "   WHEN dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task]=3 and dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job No_]<>dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[From Location] and dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[From Location]<>'' THEN a.FromLocation " +
+                "   WHEN dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task]=3 and dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job No_]<>dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[From Location] and dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[From Location]<>'' THEN a.FromLocation " +
                 " 	ELSE a.JobNo END " +
-                " FROM dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry]  " +
-                " WHERE dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Entry No_]=a.EntryNo )as JobNo " +
+                " FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry]  " +
+                " WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Entry No_]=a.EntryNo )as JobNo " +
                 ",a.JobMain,a.JobSub,a.JobLedgerEntry,a.JobLedgerEntry1,a.LineAmount,a.TotalCost,a.TypeOfTask,a.FromLocation,a.Document3," +
                 "(SELECT  " +
                 "CASE " +
-                "	WHEN SUBSTRING(dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job Task No_],1,1)='O' or SUBSTRING(dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job Task No_],1,1)='N' THEN a.TotalCost+a.LineAmount " +
-                "	WHEN dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task]=3 and dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job No_]<>dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[From Location] and  dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[From Location]<>'' THEN a.TotalCost*-1" +
-                "	WHEN dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task]=1 and SUBSTRING(dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Document No_],1,3)='CAL' THEN a.TotalCost " +
-                "	WHEN dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task]=0 THEN a.TotalCost " +
-                "   WHEN dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task]=2 THEN a.TotalCost " +
-                "   WHEN dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task]=3 THEN a.TotalCost " +
-                "	WHEN dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task]=1 THEN a.TotalCost*-1 " +
+                "	WHEN SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job Task No_],1,1)='O' or SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job Task No_],1,1)='N' THEN a.TotalCost+a.LineAmount " +
+                "	WHEN dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task]=3 and dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job No_]<>dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[From Location] and  dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[From Location]<>'' THEN a.TotalCost*-1" +
+                "	WHEN dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task]=1 and SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Document No_],1,3)='CAL' THEN a.TotalCost " +
+                "	WHEN dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task]=0 THEN a.TotalCost " +
+                "   WHEN dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task]=2 THEN a.TotalCost " +
+                "   WHEN dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task]=3 THEN a.TotalCost " +
+                "	WHEN dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task]=1 THEN a.TotalCost*-1 " +
                 "	ELSE 0 END " +
-                "FROM   dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry]   " +
-                "WHERE dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Entry No_]=a.EntryNo ) as Total, " +
+                "FROM   dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry]   " +
+                "WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Entry No_]=a.EntryNo ) as Total, " +
                 "(SELECT  " +
                 "CASE " +
-                "	WHEN dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task]=3 and dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job No_]<>dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[From Location] and dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[From Location]<>''  THEN a.Quantity*-1 " +
-                "	WHEN dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task]=1 and SUBSTRING(dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Document No_],1,3)='CAL' THEN a.Quantity " +
-                "	WHEN dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task]=0 THEN a.Quantity " +
-                "   WHEN dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task]=2 THEN a.Quantity " +
-                "   WHEN dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task]=3 THEN a.Quantity " +
-                "	WHEN dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task]=1 THEN a.Quantity*-1 " +
+                "	WHEN dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task]=3 and dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job No_]<>dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[From Location] and dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[From Location]<>''  THEN a.Quantity*-1 " +
+                "	WHEN dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task]=1 and SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Document No_],1,3)='CAL' THEN a.Quantity " +
+                "	WHEN dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task]=0 THEN a.Quantity " +
+                "   WHEN dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task]=2 THEN a.Quantity " +
+                "   WHEN dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task]=3 THEN a.Quantity " +
+                "	WHEN dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task]=1 THEN a.Quantity*-1 " +
                 "	ELSE 0 END " +
-                " FROM   dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry]   " +
-                " WHERE dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Entry No_]=a.EntryNo ) as Quantity " +
+                " FROM   dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry]   " +
+                " WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Entry No_]=a.EntryNo ) as Quantity " +
                 " FROM( " +
                 " SELECT  " +
-                " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Entry No_] AS EntryNo, " +
-                " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Posting Date] AS PostingDate, " +
-                " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Document No_] AS DocumentNo,  " +
-                " SUBSTRING(dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Document No_],1,3) as Document3, " +
-                " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job No_] AS JobNo," +
-                " CONCAT(SUBSTRING(dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job Task No_],1,1),'0000') AS JobMain,  " +
-                " CONCAT(SUBSTRING(dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job Task No_],1,3),'00') AS JobSub,  " +
-                //" SUBSTRING(dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job Task No_],1,5) AS JobLedgerEntry,  " +
-                " CONCAT(SUBSTRING(dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job Task No_],1,5),' ' ,(SELECT TOP 1 Description FROM [dbo].[C_E_S_ CO_, LTD_$Job Planning Line] WHERE dbo.[C_E_S_ CO_, LTD_$Job Planning Line].[Job Task No_]=SUBSTRING(dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job Task No_],1,5) and Description<>''))  AS JobLedgerEntry, "+
-                " SUBSTRING(dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job Task No_],1,1) AS JobLedgerEntry1, " +
-                " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Line Amount] AS LineAmount,  " +
-                " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].Quantity AS Quantity, " +
-                " CASE WHEN dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task]=0 and dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Original Total Cost]=0 THEN dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Total Cost] ELSE dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Original Total Cost] END AS TotalCost,  " +
-                " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Total Cost] AS Total,  " +
-                " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task] AS TypeOfTask,  " +
-                " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[From Location] AS FromLocation  " +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Entry No_] AS EntryNo, " +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Posting Date] AS PostingDate, " +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Document No_] AS DocumentNo,  " +
+                " SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Document No_],1,3) as Document3, " +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job No_] AS JobNo," +
+                " CONCAT(SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job Task No_],1,1),'0000') AS JobMain,  " +
+                " CONCAT(SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job Task No_],1,3),'00') AS JobSub,  " +
+                //" SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job Task No_],1,5) AS JobLedgerEntry,  " +
+                " CONCAT(SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job Task No_],1,5),' ' ,(SELECT TOP 1 Description FROM [dbo]."+ Environment.GetEnvironmentVariable("Company") +"Job Planning Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Planning Line].[Job Task No_]=SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job Task No_],1,5) and Description<>''))  AS JobLedgerEntry, "+
+                " SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job Task No_],1,1) AS JobLedgerEntry1, " +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Line Amount] AS LineAmount,  " +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].Quantity AS Quantity, " +
+                " CASE WHEN dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task]=0 and dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Original Total Cost]=0 THEN dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Total Cost] ELSE dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Original Total Cost] END AS TotalCost,  " +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Total Cost] AS Total,  " +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task] AS TypeOfTask,  " +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[From Location] AS FromLocation  " +
                 " FROM  " +
-                " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry]  " +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry]  " +
                 " )as a " +
                 " ORDER BY a.JobLedgerEntry ";
         
@@ -3609,23 +3611,23 @@ namespace CESAPSCOREWEBAPP.Controllers
             //    "a.Quantity*-1 as Quantity " +
             //     " FROM( " +
             //    " SELECT  " +
-            //    " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Entry No_] AS EntryNo, " +
-            //    " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Posting Date] AS PostingDate, " +
-            //    " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Document No_] AS DocumentNo,  " +
-            //    " SUBSTRING(dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Document No_],1,3) as Document3, " +
-            //    " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job No_] AS JobNo," +
-            //    " CONCAT(SUBSTRING(dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job Task No_],1,1),'0000') AS JobMain,  " +
-            //    " CONCAT(SUBSTRING(dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job Task No_],1,3),'00') AS JobSub,  " +
-            //    " SUBSTRING(dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job Task No_],1,5) AS JobLedgerEntry,  " +
-            //    " SUBSTRING(dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job Task No_],1,1) AS JobLedgerEntry1, " +
-            //    " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Line Amount] AS LineAmount,  " +
-            //    " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].Quantity AS Quantity, " +
-            //    " CASE WHEN dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task]=0 and dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Original Total Cost]=0 THEN dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Total Cost] ELSE dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Original Total Cost] END AS TotalCost,  " +
-            //    " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Total Cost] AS Total,  " +
-            //    " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task] AS TypeOfTask,  " +
-            //    " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[From Location] AS FromLocation  " +
+            //    " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Entry No_] AS EntryNo, " +
+            //    " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Posting Date] AS PostingDate, " +
+            //    " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Document No_] AS DocumentNo,  " +
+            //    " SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Document No_],1,3) as Document3, " +
+            //    " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job No_] AS JobNo," +
+            //    " CONCAT(SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job Task No_],1,1),'0000') AS JobMain,  " +
+            //    " CONCAT(SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job Task No_],1,3),'00') AS JobSub,  " +
+            //    " SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job Task No_],1,5) AS JobLedgerEntry,  " +
+            //    " SUBSTRING(dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job Task No_],1,1) AS JobLedgerEntry1, " +
+            //    " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Line Amount] AS LineAmount,  " +
+            //    " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].Quantity AS Quantity, " +
+            //    " CASE WHEN dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task]=0 and dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Original Total Cost]=0 THEN dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Total Cost] ELSE dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Original Total Cost] END AS TotalCost,  " +
+            //    " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Total Cost] AS Total,  " +
+            //    " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task] AS TypeOfTask,  " +
+            //    " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[From Location] AS FromLocation  " +
             //    " FROM  " +
-            //    " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry]  " +
+            //    " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry]  " +
             //    " )as a " +
             //    " ORDER BY a.JobLedgerEntry WHERE a.JobNo<>@job and a.FromLocation=@job and a.TypeOfTask=3 ";
 

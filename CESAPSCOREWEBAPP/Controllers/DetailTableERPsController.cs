@@ -12,9 +12,11 @@ using Newtonsoft.Json;
 using static CESAPSCOREWEBAPP.Models.Enums;
 using Microsoft.AspNetCore.Http;
 using CESAPSCOREWEBAPP.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class DetailTableERPsController : BaseController
     {
         private readonly DatabaseContext _context;

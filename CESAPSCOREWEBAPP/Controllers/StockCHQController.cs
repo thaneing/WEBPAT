@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CESAPSCOREWEBAPP.Helpers;
 using CESAPSCOREWEBAPP.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,6 +14,7 @@ using static CESAPSCOREWEBAPP.Models.Enums;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class StockCHQController : BaseController
     {
         private readonly NAVContext _navcontext;
@@ -512,15 +514,15 @@ namespace CESAPSCOREWEBAPP.Controllers
                 "ELSE '' END as MonthTH  " +
                 "FROM ( " +
                 "SELECT " +
-                "CONVERT(varchar,YEAR(dbo.[C_E_S_ CO_, LTD_$Bank Account Ledger Entry].[Posting Date]) +543) as YearData, " +
-                "CASE WHEN Month(dbo.[C_E_S_ CO_, LTD_$Bank Account Ledger Entry].[Posting Date])<'10' THEN CONCAT('0',Month(dbo.[C_E_S_ CO_, LTD_$Bank Account Ledger Entry].[Posting Date])) " +
-                "ELSE CONVERT(VARCHAR,Month(dbo.[C_E_S_ CO_, LTD_$Bank Account Ledger Entry].[Posting Date])) END as MonthDate, " +
-                "dbo.[C_E_S_ CO_, LTD_$Bank Account Ledger Entry].[Posting Date] as PostingDate, " +
-                "dbo.[C_E_S_ CO_, LTD_$Bank Account Ledger Entry].[Bank Account No_] as BankCode, " +
-                "dbo.[C_E_S_ CO_, LTD_$Bank Account Ledger Entry].[External Document No_] as CHQNo " +
+                "CONVERT(varchar,YEAR(dbo."+ Environment.GetEnvironmentVariable("Company") +"Bank Account Ledger Entry].[Posting Date]) +543) as YearData, " +
+                "CASE WHEN Month(dbo."+ Environment.GetEnvironmentVariable("Company") +"Bank Account Ledger Entry].[Posting Date])<'10' THEN CONCAT('0',Month(dbo."+ Environment.GetEnvironmentVariable("Company") +"Bank Account Ledger Entry].[Posting Date])) " +
+                "ELSE CONVERT(VARCHAR,Month(dbo."+ Environment.GetEnvironmentVariable("Company") +"Bank Account Ledger Entry].[Posting Date])) END as MonthDate, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Bank Account Ledger Entry].[Posting Date] as PostingDate, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Bank Account Ledger Entry].[Bank Account No_] as BankCode, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Bank Account Ledger Entry].[External Document No_] as CHQNo " +
                 "FROM " +
-                "dbo.[C_E_S_ CO_, LTD_$Bank Account Ledger Entry] " +
-                "WHERE dbo.[C_E_S_ CO_, LTD_$Bank Account Ledger Entry].[Print Check]=1 " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Bank Account Ledger Entry] " +
+                "WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Bank Account Ledger Entry].[Print Check]=1 " +
                 ")as a";
 
             var CHQCurrents = _navcontext.CHQCurrents.FromSqlRaw(query).ToList();

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CESAPSCOREWEBAPP.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Rotativa.AspNetCore;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class TestPDFController : Controller
     {
         private readonly DatabaseContext _context;

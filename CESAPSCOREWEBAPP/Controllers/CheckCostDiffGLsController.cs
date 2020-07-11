@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CESAPSCOREWEBAPP.Helpers;
 using CESAPSCOREWEBAPP.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,7 +17,7 @@ namespace CESAPSCOREWEBAPP.Controllers
 {
 
 
-
+    [Authorize]
     public class CheckCostDiffGLsController :BaseController
     {
 

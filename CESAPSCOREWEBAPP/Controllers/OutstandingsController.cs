@@ -17,9 +17,11 @@ using Microsoft.Extensions.Configuration;
 using System.Text;
 using Rotativa.AspNetCore;
 using DevExpress.XtraReports.UI;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class OutstandingsController : BaseController
     {
 
@@ -274,7 +276,7 @@ namespace CESAPSCOREWEBAPP.Controllers
             else
             {
                 jobFilter = Job.Replace("\'", "");
-                Site = " AND dbo.[C_E_S_ CO_, LTD_$Purchase Line].[Location Code] IN (" + Job + ")";
+                Site = " AND dbo."+ Environment.GetEnvironmentVariable("Company") +"Purchase Line].[Location Code] IN (" + Job + ")";
             }
 
             if (type =="3")

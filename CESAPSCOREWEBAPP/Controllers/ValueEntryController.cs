@@ -9,9 +9,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using static CESAPSCOREWEBAPP.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class ValueEntryController : BaseController
     {
         private readonly NAVContext _navcontext;

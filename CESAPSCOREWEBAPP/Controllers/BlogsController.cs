@@ -11,9 +11,11 @@ using System.IO;
 using CESAPSCOREWEBAPP.Helpers;
 using static CESAPSCOREWEBAPP.Models.Enums;
 using System.Globalization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class BlogsController : BaseController
     {
         private readonly DatabaseContext _context;

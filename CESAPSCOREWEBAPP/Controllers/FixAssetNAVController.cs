@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CESAPSCOREWEBAPP.Helpers;
 using CESAPSCOREWEBAPP.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ using static CESAPSCOREWEBAPP.Models.Enums;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class FixAssetNAVController : BaseController
     {
         private readonly DatabaseContext _context;
@@ -859,19 +861,19 @@ namespace CESAPSCOREWEBAPP.Controllers
                 "ISNULL(b.Diff,0) as Diff " +
                 " FROM( " +
                 "SELECT a.ItemNo,a.Description,a.LocationCode, " +
-                "(select sum(dbo.[C_E_S_ CO_, LTD_$Item Ledger Entry].Quantity) from dbo.[C_E_S_ CO_, LTD_$Item Ledger Entry] " +
-                "WHERE [Location Code] = a.LocationCode and [Item No_] = a.ItemNo AND dbo.[C_E_S_ CO_, LTD_$Item Ledger Entry].[Posting Date]>='2018-10-23 00:00:00' and dbo.[C_E_S_ CO_, LTD_$Item Ledger Entry].[Posting Date]<={0}) as StartDay, " +
-                "(select sum(dbo.[C_E_S_ CO_, LTD_$Item Ledger Entry].Quantity) from dbo.[C_E_S_ CO_, LTD_$Item Ledger Entry] " +
-                "WHERE [Location Code] = a.LocationCode and [Item No_] = a.ItemNo AND dbo.[C_E_S_ CO_, LTD_$Item Ledger Entry].[Posting Date]>='2018-10-23 00:00:00' and dbo.[C_E_S_ CO_, LTD_$Item Ledger Entry].[Posting Date]<={1}) as Cutoff, " +
-                "(select sum(dbo.[C_E_S_ CO_, LTD_$Item Ledger Entry].Quantity) from dbo.[C_E_S_ CO_, LTD_$Item Ledger Entry] " +
-                "WHERE [Location Code] = a.LocationCode and [Item No_] = a.ItemNo AND dbo.[C_E_S_ CO_, LTD_$Item Ledger Entry].[Posting Date]>={0} and dbo.[C_E_S_ CO_, LTD_$Item Ledger Entry].[Posting Date]<={1}) as Diff " +
+                "(select sum(dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Ledger Entry].Quantity) from dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Ledger Entry] " +
+                "WHERE [Location Code] = a.LocationCode and [Item No_] = a.ItemNo AND dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Ledger Entry].[Posting Date]>='2018-10-23 00:00:00' and dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Ledger Entry].[Posting Date]<={0}) as StartDay, " +
+                "(select sum(dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Ledger Entry].Quantity) from dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Ledger Entry] " +
+                "WHERE [Location Code] = a.LocationCode and [Item No_] = a.ItemNo AND dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Ledger Entry].[Posting Date]>='2018-10-23 00:00:00' and dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Ledger Entry].[Posting Date]<={1}) as Cutoff, " +
+                "(select sum(dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Ledger Entry].Quantity) from dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Ledger Entry] " +
+                "WHERE [Location Code] = a.LocationCode and [Item No_] = a.ItemNo AND dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Ledger Entry].[Posting Date]>={0} and dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Ledger Entry].[Posting Date]<={1}) as Diff " +
                 "FROM( SELECT DISTINCT  " +
-                "dbo.[C_E_S_ CO_, LTD_$Item Ledger Entry].[Item No_] AS ItemNo, " +
-                "dbo.[C_E_S_ CO_, LTD_$Item].Description AS Description, " +
-                "dbo.[C_E_S_ CO_, LTD_$Item Ledger Entry].[Location Code] AS LocationCode " +
-                "FROM dbo.[C_E_S_ CO_, LTD_$Item Ledger Entry] " +
-                "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Item] ON dbo.[C_E_S_ CO_, LTD_$Item Ledger Entry].[Item No_] = dbo.[C_E_S_ CO_, LTD_$Item].No_ " +
-                "WHERE  dbo.[C_E_S_ CO_, LTD_$Item Ledger Entry].[Posting Date]>='2018-10-23 00:00:00' and dbo.[C_E_S_ CO_, LTD_$Item Ledger Entry].[Posting Date]<={1} " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Ledger Entry].[Item No_] AS ItemNo, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].Description AS Description, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Ledger Entry].[Location Code] AS LocationCode " +
+                "FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Ledger Entry] " +
+                "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Item] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Ledger Entry].[Item No_] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].No_ " +
+                "WHERE  dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Ledger Entry].[Posting Date]>='2018-10-23 00:00:00' and dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Ledger Entry].[Posting Date]<={1} " +
                 ") as a " +
                 ") as b  WHERE (b.StartDay <>0 or b.Cutoff<>0 or b.Diff<>0) and b.LocationCode={2} "+
                 " Order by b.ItemNo asc ";

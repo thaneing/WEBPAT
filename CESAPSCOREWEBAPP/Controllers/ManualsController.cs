@@ -10,9 +10,11 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using CESAPSCOREWEBAPP.Helpers;
 using static CESAPSCOREWEBAPP.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class ManualsController : BaseController
     {
         private readonly DatabaseContext _context;

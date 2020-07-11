@@ -9,9 +9,11 @@ using CESAPSCOREWEBAPP.Models;
 using Microsoft.AspNetCore.Http;
 using CESAPSCOREWEBAPP.Helpers;
 using static CESAPSCOREWEBAPP.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class WebModulsController : BaseController
     {
         private readonly DatabaseContext _context;

@@ -9,9 +9,11 @@ using CESAPSCOREWEBAPP.Models;
 using CESAPSCOREWEBAPP.Helpers;
 using Microsoft.AspNetCore.Http;
 using static CESAPSCOREWEBAPP.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class NationalitiesController : BaseController
     {
         private readonly DatabaseContext _context;

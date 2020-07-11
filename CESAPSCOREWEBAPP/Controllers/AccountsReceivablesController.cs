@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using CESAPSCOREWEBAPP.Models;
 using Microsoft.AspNetCore.Http;
 using System.Globalization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class AccountsReceivablesController : Controller
     {
         private readonly NAVContext _navcontext;
@@ -42,27 +44,27 @@ namespace CESAPSCOREWEBAPP.Controllers
             IActionResult response = Unauthorized();
             var queryData = "SELECT " +
                 "ROW_NUMBER() OVER (ORDER BY a.Doc) AS ID," +
-                "(select top 1 convert(varchar,[Posting Date],23) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as PostingDate," +
+                "(select top 1 convert(varchar,[Posting Date],23) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as PostingDate," +
                 "a.Doc," +
-                "(select top 1 [Global Dimension 1 Code] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as JobNo, " +
-                "(select top 1  Description FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Description, " +
-                "(select top 1  [Customer Posting Group] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as CustomerGroup, " +
-                "((select isnull(SUM([Sales (LCY)]),0)*107/100 FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc)+ (select isnull(sum([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%')*7/100) as SumTotal," +
-                "(((select isnull(SUM([Sales (LCY)]),0)*107/100 FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc)+ (select isnull(sum([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%')*7/100) " +
-                "-(((select isnull(SUM([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc) +  " +
-                "(select isnull(sum([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%'))*3/100)) as SumTotalVat, " +
-                "(((select isnull(SUM([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc) +  " +
-                "(select isnull(sum([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%'))*107/100) as TotalNAV, " +
-                "(select isnull(sum([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%') as Retention " +
+                "(select top 1 [Global Dimension 1 Code] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as JobNo, " +
+                "(select top 1  Description FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Description, " +
+                "(select top 1  [Customer Posting Group] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as CustomerGroup, " +
+                "((select isnull(SUM([Sales (LCY)]),0)*107/100 FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc)+ (select isnull(sum([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%')*7/100) as SumTotal," +
+                "(((select isnull(SUM([Sales (LCY)]),0)*107/100 FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc)+ (select isnull(sum([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%')*7/100) " +
+                "-(((select isnull(SUM([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc) +  " +
+                "(select isnull(sum([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%'))*3/100)) as SumTotalVat, " +
+                "(((select isnull(SUM([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc) +  " +
+                "(select isnull(sum([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%'))*107/100) as TotalNAV, " +
+                "(select isnull(sum([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%') as Retention " +
 
                 "FROM( " +
                 "SELECT " +
-                "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[Document No_] as Doc " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[Document No_] as Doc " +
                 "FROM " +
-                "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] " +
                 "WHERE [Open]=1 and [Document Type]=2 and [Document No_] Not Like '%/R%' and [Customer No_] Not Like '%R%' AND [Customer Posting Group]<>'003' " +
                 "GROUP BY  " +
-                "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[Document No_]) as a order by PostingDate";
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[Document No_]) as a order by PostingDate";
 
             var AccountsReceivable = _navcontext.AccountsReceivables.FromSqlRaw(queryData).ToList();
             AccountsReceivable AccountsRec;
@@ -97,24 +99,24 @@ namespace CESAPSCOREWEBAPP.Controllers
 
             var queryData = "SELECT " +
                 "ROW_NUMBER() OVER (ORDER BY a.Doc) AS ID," +
-                "(select top 1 convert(varchar,[Posting Date],23) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as PostingDate," +
-                "(select top 1  dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[External Document No_] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Doc, " +
-                "(select top 1 [Global Dimension 1 Code] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as JobNo, " +
-                "(select top 1  Description FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Description, " +
-                "(select top 1  [Customer Posting Group] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as CustomerGroup, " +
+                "(select top 1 convert(varchar,[Posting Date],23) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as PostingDate," +
+                "(select top 1  dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[External Document No_] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Doc, " +
+                "(select top 1 [Global Dimension 1 Code] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as JobNo, " +
+                "(select top 1  Description FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Description, " +
+                "(select top 1  [Customer Posting Group] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as CustomerGroup, " +
                 "CONVERT(DECIMAL(16,4),0.00)  as SumTotal," +
                 "CONVERT(DECIMAL(16,4),0.00) as SumTotalVat, " +
                 "CONVERT(DECIMAL(16,4),0.00) as TotalNAV, " +
-                "(select isnull(SUM([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc)+(select isnull(sum([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%') as Retention " +
+                "(select isnull(SUM([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc)+(select isnull(sum([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%') as Retention " +
 
                 "FROM( " +
                 "SELECT " +
-                "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[Document No_] as Doc " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[Document No_] as Doc " +
                 "FROM " +
-                "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] " +
                 "WHERE [Open]=1 and [Document Type]=2 and [Document No_] Not Like '%/R%' and [Customer No_] Like '%R%' AND [Customer Posting Group]<>'003' " +
                 "GROUP BY  " +
-                "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[Document No_]) as a order by Description";
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[Document No_]) as a order by Description";
 
             var AccountsReceivable =  await _navcontext.AccountsReceivables.FromSqlRaw(queryData).ToListAsync();
 
@@ -180,24 +182,24 @@ namespace CESAPSCOREWEBAPP.Controllers
             IActionResult response = Unauthorized();
             var queryData = "SELECT " +
                 "ROW_NUMBER() OVER (ORDER BY a.Doc) AS ID," +
-                "(select top 1 convert(varchar,[Posting Date],23) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [External Document No_] LIKE '%'+a.Doc+'%') as PostingDate," +
+                "(select top 1 convert(varchar,[Posting Date],23) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [External Document No_] LIKE '%'+a.Doc+'%') as PostingDate," +
                 "a.Doc," +
-                "(select top 1 [Global Dimension 1 Code] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [External Document No_] LIKE '%'+a.Doc+'%') as JobNo, " +
-                "(select top 1  Description FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [External Document No_] LIKE '%'+a.Doc+'%') as Description,  " +
-                "(select top 1  [Customer Posting Group] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [External Document No_] LIKE '%'+a.Doc+'%') as CustomerGroup,  " +
+                "(select top 1 [Global Dimension 1 Code] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [External Document No_] LIKE '%'+a.Doc+'%') as JobNo, " +
+                "(select top 1  Description FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [External Document No_] LIKE '%'+a.Doc+'%') as Description,  " +
+                "(select top 1  [Customer Posting Group] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [External Document No_] LIKE '%'+a.Doc+'%') as CustomerGroup,  " +
                 "0.00  as SumTotal," +
                 "0.00 as SumTotalVat, " +
                 "0.00 as TotalNAV, " +
-                "(((select isnull(SUM([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [External Document No_] LIKE a.Doc)+(select isnull(sum([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [External Document No_] LIKE a.Doc+'/R%'))*107/100) as Retention " +
+                "(((select isnull(SUM([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [External Document No_] LIKE a.Doc)+(select isnull(sum([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [External Document No_] LIKE a.Doc+'/R%'))*107/100) as Retention " +
 
                 "FROM( " +
                 "SELECT " +
-                "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[External Document No_] as Doc " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[External Document No_] as Doc " +
                 "FROM " +
-                "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] " +
                 "WHERE [Open]=1 and [Document Type]=2 and [External Document No_] Like '%ข%'   AND [Customer Posting Group]='003' " +
                 "GROUP BY  " +
-                "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[External Document No_]) as a order by PostingDate";
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[External Document No_]) as a order by PostingDate";
 
             var AccountsReceivable = _navcontext.AccountsReceivables.FromSqlRaw(queryData).ToList();
 
@@ -225,24 +227,24 @@ namespace CESAPSCOREWEBAPP.Controllers
 
                 var queryData = "SELECT " +
                     "ROW_NUMBER() OVER (ORDER BY a.Doc) AS ID," +
-                    "(select top 1 convert(varchar,[Posting Date],23) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as PostingDate," +
-                    "(select top 1  dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[External Document No_] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Doc, " +
-                    "(select top 1 [Global Dimension 1 Code] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as JobNo, " +
-                    "(select top 1  Description FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Description, " +
-                    "(select top 1  [Customer Posting Group] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as CustomerGroup, " +
+                    "(select top 1 convert(varchar,[Posting Date],23) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as PostingDate," +
+                    "(select top 1  dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[External Document No_] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Doc, " +
+                    "(select top 1 [Global Dimension 1 Code] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as JobNo, " +
+                    "(select top 1  Description FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Description, " +
+                    "(select top 1  [Customer Posting Group] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as CustomerGroup, " +
                     "0.00  as SumTotal," +
                     "0.00 as SumTotalVat, " +
                     "0.00 as TotalNAV, " +
-                    "(select isnull(SUM([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc)+(select isnull(sum([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%') as Retention " +
+                    "(select isnull(SUM([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc)+(select isnull(sum([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%') as Retention " +
 
                     "FROM( " +
                     "SELECT " +
-                    "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[Document No_] as Doc " +
+                    "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[Document No_] as Doc " +
                     "FROM " +
-                    "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] " +
+                    "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] " +
                     "WHERE [Open]=1 and [Document Type]=2 and [Document No_] Not Like '%/R%' and [Customer No_] Like '%R%' AND [Customer Posting Group]<>'003' " +
                     "GROUP BY  " +
-                    "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[Document No_]) as a order by Description";
+                    "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[Document No_]) as a order by Description";
 
                 var AccountsReceivable = _navcontext.AccountsReceivables.FromSqlRaw(queryData).ToList();
 
@@ -276,24 +278,24 @@ namespace CESAPSCOREWEBAPP.Controllers
 
                 var queryData = "SELECT " +
                     "ROW_NUMBER() OVER (ORDER BY a.Doc) AS ID," +
-                    "(select top 1 convert(varchar,[Posting Date],23) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as PostingDate," +
-                    "(select top 1  dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[External Document No_] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Doc, " +
-                    "(select top 1 [Global Dimension 1 Code] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as JobNo, " +
-                    "(select top 1  Description FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Description, " +
-                    "(select top 1  [Customer Posting Group] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as CustomerGroup, " +
+                    "(select top 1 convert(varchar,[Posting Date],23) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as PostingDate," +
+                    "(select top 1  dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[External Document No_] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Doc, " +
+                    "(select top 1 [Global Dimension 1 Code] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as JobNo, " +
+                    "(select top 1  Description FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Description, " +
+                    "(select top 1  [Customer Posting Group] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as CustomerGroup, " +
                     "0.00  as SumTotal," +
                     "0.00 as SumTotalVat, " +
                     "0.00 as TotalNAV, " +
-                    "(select isnull(SUM([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc)+(select isnull(sum([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%') as Retention " +
+                    "(select isnull(SUM([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc)+(select isnull(sum([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%') as Retention " +
 
                     "FROM( " +
                     "SELECT " +
-                    "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[Document No_] as Doc " +
+                    "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[Document No_] as Doc " +
                     "FROM " +
-                    "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] " +
+                    "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] " +
                     "WHERE [Open]=1 and [Document Type]=2 and [Document No_] Not Like '%/R%' and [Customer No_] Like '%R%' AND [Customer Posting Group]<>'003' " +
                     "GROUP BY  " +
-                    "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[Document No_]) as a order by Description";
+                    "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[Document No_]) as a order by Description";
 
                 var AccountsReceivable = _navcontext.AccountsReceivables.FromSqlRaw(queryData).ToList();
 
@@ -432,24 +434,24 @@ namespace CESAPSCOREWEBAPP.Controllers
 
             var queryData = "SELECT " +
             "ROW_NUMBER() OVER (ORDER BY a.Doc) AS ID," +
-            "(select top 1 convert(varchar,[Posting Date],23) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as PostingDate," +
-            "(select top 1  dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[External Document No_] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Doc, " +
-            "(select top 1 [Global Dimension 1 Code] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as JobNo, " +
-            "(select top 1  Description FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Description, " +
-            "(select top 1  [Customer Posting Group] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as CustomerGroup, " +
+            "(select top 1 convert(varchar,[Posting Date],23) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as PostingDate," +
+            "(select top 1  dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[External Document No_] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Doc, " +
+            "(select top 1 [Global Dimension 1 Code] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as JobNo, " +
+            "(select top 1  Description FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Description, " +
+            "(select top 1  [Customer Posting Group] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as CustomerGroup, " +
             "0.00  as SumTotal," +
             "0.00 as SumTotalVat, " +
             "0.00 as TotalNAV, " +
-            "(select isnull(SUM([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc)+(select isnull(sum([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%') as Retention " +
+            "(select isnull(SUM([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc)+(select isnull(sum([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%') as Retention " +
 
             "FROM( " +
             "SELECT " +
-            "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[Document No_] as Doc " +
+            "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[Document No_] as Doc " +
             "FROM " +
-            "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] " +
+            "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] " +
             "WHERE [Open]=1 and [Document Type]=2 and [Document No_] Not Like '%/R%' and [Customer No_] Like '%R%' AND [Customer Posting Group]<>'003' " +
             "GROUP BY  " +
-            "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[Document No_]) as a order by Description";
+            "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[Document No_]) as a order by Description";
 
             var AccountsReceivables = await _navcontext.AccountsReceivables.FromSqlRaw(queryData).ToListAsync();
 
@@ -808,24 +810,24 @@ namespace CESAPSCOREWEBAPP.Controllers
 
             var queryData = "SELECT " +
              "ROW_NUMBER() OVER (ORDER BY a.Doc) AS ID," +
-             "(select top 1 convert(varchar,[Posting Date],23) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as PostingDate," +
-             "(select top 1  dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[External Document No_] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Doc, " +
-             "(select top 1 [Global Dimension 1 Code] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as JobNo, " +
-             "(select top 1  Description FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Description, " +
-             "(select top 1  [Customer Posting Group] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as CustomerGroup, " +
+             "(select top 1 convert(varchar,[Posting Date],23) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as PostingDate," +
+             "(select top 1  dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[External Document No_] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Doc, " +
+             "(select top 1 [Global Dimension 1 Code] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as JobNo, " +
+             "(select top 1  Description FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Description, " +
+             "(select top 1  [Customer Posting Group] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as CustomerGroup, " +
              "CONVERT(DECIMAL(16,4),0.00)  as SumTotal," +
              "CONVERT(DECIMAL(16,4),0.00) as SumTotalVat, " +
              "CONVERT(DECIMAL(16,4),0.00) as TotalNAV, " +
-             "(select isnull(SUM([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc)+(select isnull(sum([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%') as Retention " +
+             "(select isnull(SUM([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc)+(select isnull(sum([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%') as Retention " +
 
              "FROM( " +
              "SELECT " +
-             "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[Document No_] as Doc " +
+             "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[Document No_] as Doc " +
              "FROM " +
-             "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] " +
+             "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] " +
              "WHERE [Open]=1 and [Document Type]=2 and [Document No_] Not Like '%/R%' and [Customer No_] Like '%R%' AND [Customer Posting Group]<>'003' " +
              "GROUP BY  " +
-             "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[Document No_]) as a order by Description";
+             "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[Document No_]) as a order by Description";
 
             var AccountsReceivable = await _navcontext.AccountsReceivables.FromSqlRaw(queryData).ToListAsync();
 
@@ -902,24 +904,24 @@ namespace CESAPSCOREWEBAPP.Controllers
 
             var queryData = "SELECT " +
              "ROW_NUMBER() OVER (ORDER BY a.Doc) AS ID," +
-             "(select top 1 convert(varchar,[Posting Date],23) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as PostingDate," +
-             "(select top 1  dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[External Document No_] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Doc, " +
-             "(select top 1 [Global Dimension 1 Code] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as JobNo, " +
-             "(select top 1  Description FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Description, " +
-             "(select top 1  [Customer Posting Group] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as CustomerGroup, " +
+             "(select top 1 convert(varchar,[Posting Date],23) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as PostingDate," +
+             "(select top 1  dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[External Document No_] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Doc, " +
+             "(select top 1 [Global Dimension 1 Code] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as JobNo, " +
+             "(select top 1  Description FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Description, " +
+             "(select top 1  [Customer Posting Group] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as CustomerGroup, " +
              "CONVERT(DECIMAL(16,4),0.00)  as SumTotal," +
              "CONVERT(DECIMAL(16,4),0.00) as SumTotalVat, " +
              "CONVERT(DECIMAL(16,4),0.00) as TotalNAV, " +
-             "(select isnull(SUM([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc)+(select isnull(sum([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%') as Retention " +
+             "(select isnull(SUM([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc)+(select isnull(sum([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%') as Retention " +
 
              "FROM( " +
              "SELECT " +
-             "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[Document No_] as Doc " +
+             "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[Document No_] as Doc " +
              "FROM " +
-             "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] " +
+             "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] " +
              "WHERE [Open]=1 and [Document Type]=2 and [Document No_] Not Like '%/R%' and [Customer No_] Like '%R%' AND [Customer Posting Group]<>'003' " +
              "GROUP BY  " +
-             "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[Document No_]) as a order by Description";
+             "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[Document No_]) as a order by Description";
 
             var AccountsReceivable = await _navcontext.AccountsReceivables.FromSqlRaw(queryData).ToListAsync();
 
@@ -992,24 +994,24 @@ namespace CESAPSCOREWEBAPP.Controllers
 
             var queryData = "SELECT " +
                 "ROW_NUMBER() OVER (ORDER BY a.Doc) AS ID," +
-                "(select top 1 convert(varchar,[Posting Date],23) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as PostingDate," +
-                "(select top 1  dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[External Document No_] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Doc, " +
-                "(select top 1 [Global Dimension 1 Code] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as JobNo, " +
-                "(select top 1  Description FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Description, " +
-                "(select top 1  [Customer Posting Group] FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as CustomerGroup, " +
+                "(select top 1 convert(varchar,[Posting Date],23) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as PostingDate," +
+                "(select top 1  dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[External Document No_] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Doc, " +
+                "(select top 1 [Global Dimension 1 Code] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as JobNo, " +
+                "(select top 1  Description FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as Description, " +
+                "(select top 1  [Customer Posting Group] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE '%'+a.Doc+'%') as CustomerGroup, " +
                 "CONVERT(DECIMAL(16,4),0.00)  as SumTotal," +
                 "CONVERT(DECIMAL(16,4),0.00) as SumTotalVat, " +
                 "CONVERT(DECIMAL(16,4),0.00) as TotalNAV, " +
-                "(select isnull(SUM([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc)+(select isnull(sum([Sales (LCY)]),0) FROM dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%') as Retention " +
+                "(select isnull(SUM([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc)+(select isnull(sum([Sales (LCY)]),0) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] where [Document No_] LIKE a.Doc+'/R%') as Retention " +
 
                 "FROM( " +
                 "SELECT " +
-                "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[Document No_] as Doc " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[Document No_] as Doc " +
                 "FROM " +
-                "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry] " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry] " +
                 "WHERE [Open]=1 and [Document Type]=2 and [Document No_] Not Like '%/R%' and [Customer No_] Like '%R%' AND [Customer Posting Group]<>'003' " +
                 "GROUP BY  " +
-                "dbo.[C_E_S_ CO_, LTD_$Cust_ Ledger Entry].[Document No_]) as a order by Description";
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Cust_ Ledger Entry].[Document No_]) as a order by Description";
 
             var AccountsReceivable = await _navcontext.AccountsReceivables.FromSqlRaw(queryData).ToListAsync();
 

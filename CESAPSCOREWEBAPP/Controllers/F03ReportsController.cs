@@ -17,9 +17,11 @@ using Microsoft.Extensions.Configuration;
 using System.Text;
 using Rotativa.AspNetCore;
 using DevExpress.XtraReports.UI;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class F03ReportsController : BaseController
     {
         private readonly NAVContext _navcontext;
@@ -141,7 +143,7 @@ namespace CESAPSCOREWEBAPP.Controllers
             }
             else
             {
-                user = "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[User ID] = '" + user + "' AND ";
+                user = "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[User ID] = '" + user + "' AND ";
             }
 
 
@@ -152,33 +154,33 @@ namespace CESAPSCOREWEBAPP.Controllers
                 " FROM " +
                 " (SELECT *, b.AmountBase AS Amount " +
                 " From" +
-                " (SELECT * FROM(SELECT convert(varchar,dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Posting Date],23) AS ReceiptDate," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Buy-from Vendor Name] AS VendorName," +
-                " CONCAT(dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].Description," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Description 2]) AS Des," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_] AS NoGR," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Order No_] AS DocNo," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Ref_ PR No_] AS Ref," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Unit of Measure] AS Uom," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Direct Unit Cost] As UnitCost," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Line Discount _] AS Disc," +
-                " SUM(dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].Quantity) AS Qty," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Vendor Shipment No_] AS ShipmentNo," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Item Charge Base Amount] AS AmountBase" +
-                " FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header] INNER JOIN dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] ON dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].No_ = dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_] " +
-                " WHERE "+ user + " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Posting Date] BETWEEN {0} AND {1} AND dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Shortcut Dimension 1 Code] = {2}" +
-                " GROUP BY dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Posting Date]," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Buy-from Vendor Name]," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].Description," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_], " +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Order No_]," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Ref_ PR No_]," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Unit of Measure]," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Direct Unit Cost]," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Line Discount _]," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Description 2]," +
-                "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Vendor Shipment No_]," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Item Charge Base Amount]) as a" +
+                " (SELECT * FROM(SELECT convert(varchar,dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Posting Date],23) AS ReceiptDate," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Buy-from Vendor Name] AS VendorName," +
+                " CONCAT(dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].Description," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Description 2]) AS Des," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_] AS NoGR," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Order No_] AS DocNo," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Ref_ PR No_] AS Ref," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Unit of Measure] AS Uom," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Direct Unit Cost] As UnitCost," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Line Discount _] AS Disc," +
+                " SUM(dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].Quantity) AS Qty," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Vendor Shipment No_] AS ShipmentNo," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Item Charge Base Amount] AS AmountBase" +
+                " FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header] INNER JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].No_ = dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_] " +
+                " WHERE "+ user + " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Posting Date] BETWEEN {0} AND {1} AND dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Shortcut Dimension 1 Code] = {2}" +
+                " GROUP BY dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Posting Date]," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Buy-from Vendor Name]," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].Description," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_], " +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Order No_]," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Ref_ PR No_]," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Unit of Measure]," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Direct Unit Cost]," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Line Discount _]," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Description 2]," +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Vendor Shipment No_]," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Item Charge Base Amount]) as a" +
                 ") as b) as c WHERE c.Qty != 0 ORDER BY c.NoGR";
 
                 F03DATA = _navcontext.F03s.FromSqlRaw(query, StartDate, EndDate, site).ToList();
@@ -189,33 +191,33 @@ namespace CESAPSCOREWEBAPP.Controllers
                " FROM " +
                " (SELECT *, b.AmountBase AS Amount " +
                " From" +
-               " (SELECT * FROM(SELECT convert(varchar,dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Posting Date],23) AS ReceiptDate," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Buy-from Vendor Name] AS VendorName," +
-               " CONCAT(dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].Description," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Description 2]) AS Des," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_] AS NoGR," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Order No_] AS DocNo," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Ref_ PR No_] AS Ref," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Unit of Measure] AS Uom," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Direct Unit Cost] As UnitCost," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Line Discount _] AS Disc," +
-               " SUM(dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].Quantity) AS Qty," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Vendor Shipment No_] AS ShipmentNo," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Item Charge Base Amount] AS AmountBase" +
-               " FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header] INNER JOIN dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] ON dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].No_ = dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_] " +
-               " WHERE "+ user + " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Posting Date] BETWEEN {0} AND {1} AND dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Shortcut Dimension 1 Code] = {2} AND dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Job Document Type] = {3}" +
-               " GROUP BY dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Posting Date]," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Buy-from Vendor Name]," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].Description," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_], " +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Order No_]," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Ref_ PR No_]," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Unit of Measure]," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Direct Unit Cost]," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Line Discount _]," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Description 2]," +
-               "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Vendor Shipment No_]," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Item Charge Base Amount]) as a" +
+               " (SELECT * FROM(SELECT convert(varchar,dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Posting Date],23) AS ReceiptDate," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Buy-from Vendor Name] AS VendorName," +
+               " CONCAT(dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].Description," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Description 2]) AS Des," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_] AS NoGR," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Order No_] AS DocNo," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Ref_ PR No_] AS Ref," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Unit of Measure] AS Uom," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Direct Unit Cost] As UnitCost," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Line Discount _] AS Disc," +
+               " SUM(dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].Quantity) AS Qty," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Vendor Shipment No_] AS ShipmentNo," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Item Charge Base Amount] AS AmountBase" +
+               " FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header] INNER JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].No_ = dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_] " +
+               " WHERE "+ user + " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Posting Date] BETWEEN {0} AND {1} AND dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Shortcut Dimension 1 Code] = {2} AND dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Job Document Type] = {3}" +
+               " GROUP BY dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Posting Date]," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Buy-from Vendor Name]," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].Description," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_], " +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Order No_]," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Ref_ PR No_]," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Unit of Measure]," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Direct Unit Cost]," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Line Discount _]," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Description 2]," +
+               "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Vendor Shipment No_]," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Item Charge Base Amount]) as a" +
                ") as b) as c WHERE c.Qty != 0 ORDER BY c.NoGR";
 
                 F03DATA = _navcontext.F03s.FromSqlRaw(query, StartDate, EndDate, site, type).ToList();
@@ -273,7 +275,7 @@ namespace CESAPSCOREWEBAPP.Controllers
             }
             else
             {
-                user1 = "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[User ID] = '" + user + "' AND ";
+                user1 = "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[User ID] = '" + user + "' AND ";
             }
 
 
@@ -284,33 +286,33 @@ namespace CESAPSCOREWEBAPP.Controllers
                 " FROM " +
                 " (SELECT *, b.AmountBase  AS Amount " +
                 " From" +
-                " (SELECT * FROM(SELECT convert(varchar,dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Posting Date],23) AS ReceiptDate," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Buy-from Vendor Name] AS VendorName," +
-                " CONCAT(dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].Description," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Description 2]) AS Des," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_] AS NoGR," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Order No_] AS DocNo," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Ref_ PR No_] AS Ref," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Unit of Measure] AS Uom," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Direct Unit Cost] As UnitCost," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Line Discount _] AS Disc," +
-                " SUM(dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].Quantity) AS Qty," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Vendor Shipment No_] AS ShipmentNo," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Item Charge Base Amount] AS AmountBase" +
-                " FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header] INNER JOIN dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] ON dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].No_ = dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_] " +
-                " WHERE " + user1 + " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Posting Date] BETWEEN {0} AND {1} AND dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Shortcut Dimension 1 Code] = {2}" +
-                " GROUP BY dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Posting Date]," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Buy-from Vendor Name]," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].Description," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_], " +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Order No_]," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Ref_ PR No_]," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Unit of Measure]," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Direct Unit Cost]," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Line Discount _]," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Description 2]," +
-                "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Vendor Shipment No_]," +
-                " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Item Charge Base Amount]) as a" +
+                " (SELECT * FROM(SELECT convert(varchar,dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Posting Date],23) AS ReceiptDate," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Buy-from Vendor Name] AS VendorName," +
+                " CONCAT(dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].Description," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Description 2]) AS Des," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_] AS NoGR," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Order No_] AS DocNo," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Ref_ PR No_] AS Ref," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Unit of Measure] AS Uom," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Direct Unit Cost] As UnitCost," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Line Discount _] AS Disc," +
+                " SUM(dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].Quantity) AS Qty," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Vendor Shipment No_] AS ShipmentNo," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Item Charge Base Amount] AS AmountBase" +
+                " FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header] INNER JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].No_ = dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_] " +
+                " WHERE " + user1 + " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Posting Date] BETWEEN {0} AND {1} AND dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Shortcut Dimension 1 Code] = {2}" +
+                " GROUP BY dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Posting Date]," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Buy-from Vendor Name]," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].Description," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_], " +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Order No_]," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Ref_ PR No_]," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Unit of Measure]," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Direct Unit Cost]," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Line Discount _]," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Description 2]," +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Vendor Shipment No_]," +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Item Charge Base Amount]) as a" +
                 ") as b) as c WHERE c.Qty != 0 ORDER BY c.NoGR";
 
                 F03DATA = _navcontext.F03s.FromSqlRaw(query, StartDate, EndDate, site).ToList();
@@ -321,33 +323,33 @@ namespace CESAPSCOREWEBAPP.Controllers
                " FROM " +
                " (SELECT *, b.AmountBase AS Amount " +
                " From" +
-               " (SELECT * FROM(SELECT convert(varchar,dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Posting Date],23) AS ReceiptDate," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Buy-from Vendor Name] AS VendorName," +
-               " CONCAT(dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].Description," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Description 2]) AS Des," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_] AS NoGR," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Order No_] AS DocNo," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Ref_ PR No_] AS Ref," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Unit of Measure] AS Uom," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Direct Unit Cost] As UnitCost," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Line Discount _] AS Disc," +
-               " SUM(dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].Quantity) AS Qty," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Vendor Shipment No_] AS ShipmentNo," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Item Charge Base Amount] AS AmountBase" +
-               " FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header] INNER JOIN dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line] ON dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].No_ = dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_] " +
-               " WHERE " + user1 + " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Posting Date] BETWEEN {0} AND {1} AND dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Shortcut Dimension 1 Code] = {2} AND dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Job Document Type] = {3}" +
-               " GROUP BY dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Posting Date]," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Buy-from Vendor Name]," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].Description," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Document No_], " +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Order No_]," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Ref_ PR No_]," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Unit of Measure]," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Direct Unit Cost]," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Line Discount _]," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Description 2]," +
-               "dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Vendor Shipment No_]," +
-               " dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Line].[Item Charge Base Amount]) as a" +
+               " (SELECT * FROM(SELECT convert(varchar,dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Posting Date],23) AS ReceiptDate," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Buy-from Vendor Name] AS VendorName," +
+               " CONCAT(dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].Description," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Description 2]) AS Des," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_] AS NoGR," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Order No_] AS DocNo," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Ref_ PR No_] AS Ref," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Unit of Measure] AS Uom," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Direct Unit Cost] As UnitCost," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Line Discount _] AS Disc," +
+               " SUM(dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].Quantity) AS Qty," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Vendor Shipment No_] AS ShipmentNo," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Item Charge Base Amount] AS AmountBase" +
+               " FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header] INNER JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].No_ = dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_] " +
+               " WHERE " + user1 + " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Posting Date] BETWEEN {0} AND {1} AND dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Shortcut Dimension 1 Code] = {2} AND dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Job Document Type] = {3}" +
+               " GROUP BY dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Posting Date]," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Buy-from Vendor Name]," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].Description," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Document No_], " +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Order No_]," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Ref_ PR No_]," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Unit of Measure]," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Direct Unit Cost]," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Line Discount _]," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Description 2]," +
+               "dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Vendor Shipment No_]," +
+               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Line].[Item Charge Base Amount]) as a" +
                ") as b) as c WHERE c.Qty != 0 ORDER BY c.NoGR";
 
                 F03DATA = _navcontext.F03s.FromSqlRaw(query, StartDate, EndDate, site, type).ToList();

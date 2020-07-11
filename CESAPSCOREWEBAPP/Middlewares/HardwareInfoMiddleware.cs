@@ -130,7 +130,7 @@ namespace CESAPSCOREWEBAPP.Middlewares
                 }
                 else
                 {
-                    return "Please Regiter Licen";
+                    return "Please Regiter License";
                 }
                 if (Encryption.Decrypt(datalists[1], KeyOne) == GetMachineGuid())
                 {
@@ -138,7 +138,7 @@ namespace CESAPSCOREWEBAPP.Middlewares
                 }
                 else
                 {
-                    return "Please Regiter Licen";
+                    return "Please Regiter License";
                 }
                 //if(JavaTimeStamp.JavaTimeStampToDateTime(Convert.ToDouble(Encryption.Decrypt(datalists[2], KeyOne))) <= DateTime.Now)
                 // {
@@ -146,13 +146,13 @@ namespace CESAPSCOREWEBAPP.Middlewares
                 // }
                 // else
                 // {
-                //     return "Licen Expired";
+                //     return "License Expired";
                 // }
                 var a = JavaTimeStamp.JavaTimeStampToDateTime(Convert.ToDouble(Encryption.Decrypt(datalists[3], KeyOne)));
 
                 if (DateTime.Now>JavaTimeStamp.JavaTimeStampToDateTime(Convert.ToDouble(Encryption.Decrypt(datalists[3], KeyOne))))
                 {
-                    return "Licen Expired";
+                    return "License Expired";
                 }
                 else
                 {
@@ -164,7 +164,7 @@ namespace CESAPSCOREWEBAPP.Middlewares
             }
             catch
             {
-                return "Please Regiter Licen";
+                return "Please Regiter License";
             }
 
 

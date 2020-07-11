@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CESAPSCOREWEBAPP.Helpers;
 using CESAPSCOREWEBAPP.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using static CESAPSCOREWEBAPP.Models.Enums;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class IssueReportsController : BaseController
     {
         private readonly NAVContext _navcontext;
@@ -83,8 +85,8 @@ namespace CESAPSCOREWEBAPP.Controllers
                      " b.ItemNo As  ItemNo,b.Des,b.IssueQty AS IssueQty,b.ReturnQty AS ReturnQty,(b.IssueQty - b.ReturnQty) AS Diff,b.Site AS JobNo,b.UnitCosAvg As UnitCostAvg,(b.OIS_Total - b.OR_Total) as OTotal,b.unit AS UnitOfMesure " +
                      " FROM (SELECT *," +
                      "  (SELECT Top 1 dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].Description FROM dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry] WHERE dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].No_ = a.ItemNo) as Des," +
-                     "(SELECT Top 1  dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Unit of Measure Code] FROM dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry] WHERE dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].No_ =a.ItemNo) as unit," +
-                     " (SELECT ISNULL(SUM(dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].Quantity),0) FROM  dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry]  WHERE  dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].No_ = a.ItemNo and dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Type of task] = 3 AND dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Job No_] = a.Site) as IssueQty," +
+                     "(SELECT Top 1  dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Unit of Measure Code] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].No_ =a.ItemNo) as unit," +
+                     " (SELECT ISNULL(SUM(dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].Quantity),0) FROM  dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry]  WHERE  dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].No_ = a.ItemNo and dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Type of task] = 3 AND dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Job No_] = a.Site) as IssueQty," +
                      " (SELECT ISNULL(SUM(dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].Quantity), 0) FROM dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry] WHERE dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].No_ = a.ItemNo and  dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Type of task] = 1 AND dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Job No_] = a.Site) as ReturnQty," +
                      " (SELECT Avg(dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Unit Cost]) FROM dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry] WHERE dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].No_ = a.ItemNo) as UnitCosAvg," +
 
@@ -106,8 +108,8 @@ namespace CESAPSCOREWEBAPP.Controllers
                      " b.ItemNo As  ItemNo,b.Des AS Des,b.IssueQty AS IssueQty,b.ReturnQty AS ReturnQty,(b.IssueQty - b.ReturnQty) AS Diff,b.Site AS JobNo,b.UnitCosAvg As UnitCostAvg,(b.OIS_Total - b.OR_Total) as OTotal,b.unit AS UnitOfMesure " +
                     " FROM (SELECT *," +
                     "  (SELECT Top 1 dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].Description FROM dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry] WHERE dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].No_ = a.ItemNo) as Des," +
-                    "(SELECT Top 1  dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Unit of Measure Code] FROM dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry] WHERE dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].No_ =a.ItemNo) as unit," +
-                    " (SELECT ISNULL(SUM(dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].Quantity),0) FROM  dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry]  WHERE  dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].No_ = a.ItemNo and dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Type of task] = 3 AND dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Job No_] = a.Site) as IssueQty," +
+                    "(SELECT Top 1  dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Unit of Measure Code] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].No_ =a.ItemNo) as unit," +
+                    " (SELECT ISNULL(SUM(dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].Quantity),0) FROM  dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry]  WHERE  dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].No_ = a.ItemNo and dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Type of task] = 3 AND dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Job No_] = a.Site) as IssueQty," +
                     " (SELECT ISNULL(SUM(dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].Quantity), 0) FROM dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry] WHERE dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].No_ = a.ItemNo and  dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Type of task] = 1 AND dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Job No_] = a.Site) as ReturnQty," +
                     " (SELECT Avg(dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Unit Cost]) FROM dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry] WHERE dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].No_ = a.ItemNo) as UnitCosAvg," +
 
@@ -118,7 +120,7 @@ namespace CESAPSCOREWEBAPP.Controllers
                     " FROM" +
                     " (SELECT dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].No_ AS ItemNo, " +
                     " dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Job No_] AS Site" +
-                    " FROM dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry] WHERE (dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].No_ BETWEEN '010000000000' AND '129999999999') AND dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Posting Date] >='2018-10-23 00:00:00' AND dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job No_] = {0}" +
+                    " FROM dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry] WHERE (dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].No_ BETWEEN '010000000000' AND '129999999999') AND dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Posting Date] >='2018-10-23 00:00:00' AND dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job No_] = {0}" +
                     " GROUP BY  dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].No_, dbo." + Environment.GetEnvironmentVariable("Company") + "Job Ledger Entry].[Job No_]) as a) as b WHERE b.IssueQty !=0 OR b.ReturnQty !=0";
 
                 IssueDATA = _navcontext.IssueReports.FromSqlRaw(querydataIssue, sites).ToList();

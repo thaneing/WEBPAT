@@ -22,9 +22,11 @@ using System.Text;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class JobLedgerEntryController : BaseController
     {
         private readonly DatabaseContext _context;

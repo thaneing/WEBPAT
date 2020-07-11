@@ -23,6 +23,7 @@ using Tesseract;
 using OpenCvSharp;
 using System.Net;
 using CESAPSCOREWEBAPP.Middlewares;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CESAPSCOREWEBAPP.Models
 {
@@ -44,7 +45,7 @@ namespace CESAPSCOREWEBAPP.Models
 
 
 
-
+    
         public IActionResult Serial()
         {
             var data = HardwareInfoMiddleware.CheckRegitry();
@@ -56,7 +57,7 @@ namespace CESAPSCOREWEBAPP.Models
 
 
 
-
+        [Authorize]
         public IActionResult Index()
         {
 
@@ -90,7 +91,7 @@ namespace CESAPSCOREWEBAPP.Models
 
 
         }
-
+        [Authorize]
         public IActionResult testExport()
         {
             string pathImage = "/Images/";
@@ -141,7 +142,7 @@ namespace CESAPSCOREWEBAPP.Models
             response = Ok(text);
             return response;
         }
-
+        [Authorize]
         public IActionResult BlogNew(int? id)
         {
             if (id == null)
@@ -175,7 +176,7 @@ namespace CESAPSCOREWEBAPP.Models
             return View();
 
         }
-
+        [Authorize]
         public IActionResult test1()
         {
 
@@ -227,7 +228,7 @@ namespace CESAPSCOREWEBAPP.Models
 
         }
 
-
+        [Authorize]
         public IActionResult CreatePdf()
         {
 
@@ -237,7 +238,7 @@ namespace CESAPSCOREWEBAPP.Models
 
         }
 
-
+        [Authorize]
         public IActionResult Data()
         {
             IActionResult response1 = Unauthorized();
@@ -256,7 +257,7 @@ namespace CESAPSCOREWEBAPP.Models
             return response1;
         }
 
-
+        [Authorize]
         public IActionResult DataExcange()
         {
             IActionResult response1 = Unauthorized();
@@ -275,7 +276,7 @@ namespace CESAPSCOREWEBAPP.Models
             return response1;
         }
 
-
+        [Authorize]
         public IActionResult Datapr()
         {
             IActionResult response1 = Unauthorized();
@@ -295,7 +296,7 @@ namespace CESAPSCOREWEBAPP.Models
         }
 
 
-
+        [Authorize]
         public IActionResult Devexpress()
         {
             //var queryData = "" +
@@ -304,68 +305,68 @@ namespace CESAPSCOREWEBAPP.Models
             //    "SUM(b.OldTotal) as OldTotal, " +
             //    "SUM(b.SumTotal) as SumTotal " +
             //    "FROM (SELECT *, " +
-            //    "isnull((SELECT SUM([Original Total Cost]) FROM dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry]  " +
-            //    "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Resource] ON dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].No_ = dbo.[C_E_S_ CO_, LTD_$Resource].No_ " +
-            //    "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Item] ON dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_] = dbo.[C_E_S_ CO_, LTD_$Item].No_ " +
-            //    "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Item Category] ON dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code] = dbo.[C_E_S_ CO_, LTD_$Item Category].Code " +
+            //    "isnull((SELECT SUM([Original Total Cost]) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry]  " +
+            //    "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].No_ = dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].No_ " +
+            //    "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Item] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].No_ " +
+            //    "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Code " +
             //    "WHERE  " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job No_] =a.JobNo and  " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[From Location] =a.FromLocation and " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[To Location] = a.ToLocation and " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_] = a.ItemNo and " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code] =a.ItemCat and " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Item Category].Description  = a.Des and  " +
-            //    " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Posting Date]<= {1}),0) as SumTotal, " +
-            //    "isnull((SELECT SUM([Original Total Cost]) FROM dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry]  " +
-            //    "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Resource] ON dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].No_ = dbo.[C_E_S_ CO_, LTD_$Resource].No_ " +
-            //    "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Item] ON dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_] = dbo.[C_E_S_ CO_, LTD_$Item].No_ " +
-            //    "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Item Category] ON dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code] = dbo.[C_E_S_ CO_, LTD_$Item Category].Code " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job No_] =a.JobNo and  " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[From Location] =a.FromLocation and " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[To Location] = a.ToLocation and " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_] = a.ItemNo and " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code] =a.ItemCat and " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Description  = a.Des and  " +
+            //    " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Posting Date]<= {1}),0) as SumTotal, " +
+            //    "isnull((SELECT SUM([Original Total Cost]) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry]  " +
+            //    "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].No_ = dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].No_ " +
+            //    "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Item] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].No_ " +
+            //    "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Code " +
             //    "WHERE  " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job No_] =a.JobNo and  " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[From Location] =a.FromLocation and " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[To Location] = a.ToLocation and " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_] = a.ItemNo and " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code] =a.ItemCat and " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Item Category].Description  = a.Des and  " +
-            //    "   dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Posting Date]< {0}),0) as OldTotal, " +
-            //    " isnull((SELECT SUM([Original Total Cost]) FROM dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry] " +
-            //    "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Resource] ON dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].No_ = dbo.[C_E_S_ CO_, LTD_$Resource].No_ " +
-            //    "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Item] ON dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_] = dbo.[C_E_S_ CO_, LTD_$Item].No_ " +
-            //    "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Item Category] ON dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code] = dbo.[C_E_S_ CO_, LTD_$Item Category].Code " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job No_] =a.JobNo and  " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[From Location] =a.FromLocation and " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[To Location] = a.ToLocation and " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_] = a.ItemNo and " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code] =a.ItemCat and " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Description  = a.Des and  " +
+            //    "   dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Posting Date]< {0}),0) as OldTotal, " +
+            //    " isnull((SELECT SUM([Original Total Cost]) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry] " +
+            //    "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].No_ = dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].No_ " +
+            //    "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Item] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].No_ " +
+            //    "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Code " +
             //    "WHERE  " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job No_] =a.JobNo and  " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[From Location] =a.FromLocation and " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[To Location] = a.ToLocation and " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_] = a.ItemNo and " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code] =a.ItemCat and " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Item Category].Description  = a.Des and  " +
-            //    "   dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Posting Date]>= {0} and " +
-            //    "   dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Posting Date]<= {1} ),0) as NowTotal " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job No_] =a.JobNo and  " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[From Location] =a.FromLocation and " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[To Location] = a.ToLocation and " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_] = a.ItemNo and " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code] =a.ItemCat and " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Description  = a.Des and  " +
+            //    "   dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Posting Date]>= {0} and " +
+            //    "   dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Posting Date]<= {1} ),0) as NowTotal " +
             //    "  FROM( " +
             //    "	SELECT " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job No_] as JobNo, " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[From Location] as FromLocation, " +
-            //    " 	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[To Location] as ToLocation, " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_] as ItemNo, " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code] as ItemCat, " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Item Category].Description as Des " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job No_] as JobNo, " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[From Location] as FromLocation, " +
+            //    " 	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[To Location] as ToLocation, " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_] as ItemNo, " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code] as ItemCat, " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Description as Des " +
             //    "FROM " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry] " +
-            //    "	LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Resource] ON dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].No_ = dbo.[C_E_S_ CO_, LTD_$Resource].No_ " +
-            //    "	LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Item] ON dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_] = dbo.[C_E_S_ CO_, LTD_$Item].No_ " +
-            //    "	LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Item Category] ON dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code] = dbo.[C_E_S_ CO_, LTD_$Item Category].Code " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry] " +
+            //    "	LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].No_ = dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].No_ " +
+            //    "	LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Item] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].No_ " +
+            //    "	LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Code " +
             //    "	WHERE " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task] = 2 AND " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].Type = 0 AND " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Recurring Entry No_] = 0 AND " +
-            //    "   dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Posting Date]<= {1} " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task] = 2 AND " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].Type = 0 AND " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Recurring Entry No_] = 0 AND " +
+            //    "   dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Posting Date]<= {1} " +
             //    "	GROUP BY " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job No_], " +
-            //    " 	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[From Location], " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[To Location], " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_], " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code], " +
-            //    "	dbo.[C_E_S_ CO_, LTD_$Item Category].Description) " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job No_], " +
+            //    " 	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[From Location], " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[To Location], " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_], " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code], " +
+            //    "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Description) " +
             //    "as a  " +
             //    " WHERE a.ItemCat>='C01' " +
             //    ") as b " +
@@ -424,7 +425,7 @@ namespace CESAPSCOREWEBAPP.Models
 
         }
 
-
+        [Authorize]
         public IActionResult Devexpress1()
         {
             string date1 = "";
@@ -437,68 +438,68 @@ namespace CESAPSCOREWEBAPP.Models
                 "SUM(b.OldTotal) as OldTotal, " +
                 "SUM(b.SumTotal) as SumTotal " +
                 "FROM (SELECT *, " +
-                "isnull((SELECT SUM([Original Total Cost]) FROM dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry]  " +
-                "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Resource] ON dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].No_ = dbo.[C_E_S_ CO_, LTD_$Resource].No_ " +
-                "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Item] ON dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_] = dbo.[C_E_S_ CO_, LTD_$Item].No_ " +
-                "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Item Category] ON dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code] = dbo.[C_E_S_ CO_, LTD_$Item Category].Code " +
+                "isnull((SELECT SUM([Original Total Cost]) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry]  " +
+                "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].No_ = dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].No_ " +
+                "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Item] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].No_ " +
+                "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Code " +
                 "WHERE  " +
-                "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job No_] =a.JobNo and  " +
-                "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[From Location] =a.FromLocation and " +
-                "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[To Location] = a.ToLocation and " +
-                "	dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_] = a.ItemNo and " +
-                "	dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code] =a.ItemCat and " +
-                "	dbo.[C_E_S_ CO_, LTD_$Item Category].Description  = a.Des and  " +
-                " dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Posting Date]<= {1}),0) as SumTotal, " +
-                "isnull((SELECT SUM([Original Total Cost]) FROM dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry]  " +
-                "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Resource] ON dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].No_ = dbo.[C_E_S_ CO_, LTD_$Resource].No_ " +
-                "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Item] ON dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_] = dbo.[C_E_S_ CO_, LTD_$Item].No_ " +
-                "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Item Category] ON dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code] = dbo.[C_E_S_ CO_, LTD_$Item Category].Code " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job No_] =a.JobNo and  " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[From Location] =a.FromLocation and " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[To Location] = a.ToLocation and " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_] = a.ItemNo and " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code] =a.ItemCat and " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Description  = a.Des and  " +
+                " dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Posting Date]<= {1}),0) as SumTotal, " +
+                "isnull((SELECT SUM([Original Total Cost]) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry]  " +
+                "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].No_ = dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].No_ " +
+                "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Item] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].No_ " +
+                "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Code " +
                 "WHERE  " +
-                "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job No_] =a.JobNo and  " +
-                "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[From Location] =a.FromLocation and " +
-                "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[To Location] = a.ToLocation and " +
-                "	dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_] = a.ItemNo and " +
-                "	dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code] =a.ItemCat and " +
-                "	dbo.[C_E_S_ CO_, LTD_$Item Category].Description  = a.Des and  " +
-                "   dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Posting Date]< {0}),0) as OldTotal, " +
-                " isnull((SELECT SUM([Original Total Cost]) FROM dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry] " +
-                "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Resource] ON dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].No_ = dbo.[C_E_S_ CO_, LTD_$Resource].No_ " +
-                "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Item] ON dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_] = dbo.[C_E_S_ CO_, LTD_$Item].No_ " +
-                "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Item Category] ON dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code] = dbo.[C_E_S_ CO_, LTD_$Item Category].Code " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job No_] =a.JobNo and  " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[From Location] =a.FromLocation and " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[To Location] = a.ToLocation and " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_] = a.ItemNo and " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code] =a.ItemCat and " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Description  = a.Des and  " +
+                "   dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Posting Date]< {0}),0) as OldTotal, " +
+                " isnull((SELECT SUM([Original Total Cost]) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry] " +
+                "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].No_ = dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].No_ " +
+                "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Item] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].No_ " +
+                "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Code " +
                 "WHERE  " +
-                "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job No_] =a.JobNo and  " +
-                "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[From Location] =a.FromLocation and " +
-                "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[To Location] = a.ToLocation and " +
-                "	dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_] = a.ItemNo and " +
-                "	dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code] =a.ItemCat and " +
-                "	dbo.[C_E_S_ CO_, LTD_$Item Category].Description  = a.Des and  " +
-                "   dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Posting Date]>= {0} and " +
-                "   dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Posting Date]<= {1} ),0) as NowTotal " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job No_] =a.JobNo and  " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[From Location] =a.FromLocation and " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[To Location] = a.ToLocation and " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_] = a.ItemNo and " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code] =a.ItemCat and " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Description  = a.Des and  " +
+                "   dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Posting Date]>= {0} and " +
+                "   dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Posting Date]<= {1} ),0) as NowTotal " +
                 "  FROM( " +
                 "	SELECT " +
-                "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job No_] as JobNo, " +
-                "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[From Location] as FromLocation, " +
-                " 	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[To Location] as ToLocation, " +
-                "	dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_] as ItemNo, " +
-                "	dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code] as ItemCat, " +
-                "	dbo.[C_E_S_ CO_, LTD_$Item Category].Description as Des " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job No_] as JobNo, " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[From Location] as FromLocation, " +
+                " 	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[To Location] as ToLocation, " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_] as ItemNo, " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code] as ItemCat, " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Description as Des " +
                 "FROM " +
-                "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry] " +
-                "	LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Resource] ON dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].No_ = dbo.[C_E_S_ CO_, LTD_$Resource].No_ " +
-                "	LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Item] ON dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_] = dbo.[C_E_S_ CO_, LTD_$Item].No_ " +
-                "	LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Item Category] ON dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code] = dbo.[C_E_S_ CO_, LTD_$Item Category].Code " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry] " +
+                "	LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].No_ = dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].No_ " +
+                "	LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Item] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].No_ " +
+                "	LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Code " +
                 "	WHERE " +
-                "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task] = 2 AND " +
-                "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].Type = 0 AND " +
-                "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Recurring Entry No_] = 0 AND " +
-                "   dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Posting Date]<= {1} " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task] = 2 AND " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].Type = 0 AND " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Recurring Entry No_] = 0 AND " +
+                "   dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Posting Date]<= {1} " +
                 "	GROUP BY " +
-                "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job No_], " +
-                " 	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[From Location], " +
-                "	dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[To Location], " +
-                "	dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_], " +
-                "	dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code], " +
-                "	dbo.[C_E_S_ CO_, LTD_$Item Category].Description) " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job No_], " +
+                " 	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[From Location], " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[To Location], " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_], " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code], " +
+                "	dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Description) " +
                 "as a  " +
                 " WHERE a.ItemCat>='C01' " +
                 ") as b " +
@@ -538,31 +539,31 @@ namespace CESAPSCOREWEBAPP.Models
 
         }
 
-
+        [Authorize]
         public IActionResult AllRental()
         {
 
 
             IActionResult response = Unauthorized();
             var queryData = "" +
-                "SELECT ROW_NUMBER() OVER (ORDER BY dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Posting Date]) as ID," +
-                "dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Posting Date] as PostingDate, " +
-                "dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Job No_] as JobNo, " +
-                "dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[From Location] as FromLocation, " +
-                "dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[To Location] as ToLocation, " +
-                "dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_] as ItemNo, " +
-                "dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code] as ItemCat, " +
-                "dbo.[C_E_S_ CO_, LTD_$Item Category].Description as Des, " +
-                "dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Original Total Cost] as TotalCost " +
+                "SELECT ROW_NUMBER() OVER (ORDER BY dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Posting Date]) as ID," +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Posting Date] as PostingDate, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Job No_] as JobNo, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[From Location] as FromLocation, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[To Location] as ToLocation, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_] as ItemNo, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code] as ItemCat, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Description as Des, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Original Total Cost] as TotalCost " +
                 "FROM " +
-                "dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry] " +
-                "INNER JOIN dbo.[C_E_S_ CO_, LTD_$Resource] ON dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].No_ = dbo.[C_E_S_ CO_, LTD_$Resource].No_ " +
-                "INNER JOIN dbo.[C_E_S_ CO_, LTD_$Item] ON dbo.[C_E_S_ CO_, LTD_$Resource].[Link to Item No_] = dbo.[C_E_S_ CO_, LTD_$Item].No_ " +
-                "INNER JOIN dbo.[C_E_S_ CO_, LTD_$Item Category] ON dbo.[C_E_S_ CO_, LTD_$Item].[Item Category Code] = dbo.[C_E_S_ CO_, LTD_$Item Category].Code " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry] " +
+                "INNER JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].No_ = dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].No_ " +
+                "INNER JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Item] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Resource].[Link to Item No_] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].No_ " +
+                "INNER JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"Item].[Item Category Code] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Item Category].Code " +
                 "WHERE " +
-                "dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Type of task] = 2 AND " +
-                "dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].Type = 0 AND " +
-                "dbo.[C_E_S_ CO_, LTD_$Job Ledger Entry].[Recurring Entry No_] = 0 ";
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Type of task] = 2 AND " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].Type = 0 AND " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"Job Ledger Entry].[Recurring Entry No_] = 0 ";
                
 
 
@@ -595,7 +596,7 @@ namespace CESAPSCOREWEBAPP.Models
 
         }
 
-
+         [Authorize]
         public async Task<IActionResult> HouseReport()
         {
 
@@ -643,7 +644,9 @@ namespace CESAPSCOREWEBAPP.Models
 
         }
         ///data Dashboard Home
-       public IActionResult GendataHome()
+        ///
+        [Authorize]
+        public IActionResult GendataHome()
         {
             IActionResult response = Unauthorized();
             

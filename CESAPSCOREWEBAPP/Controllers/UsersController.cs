@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Hosting;
 using static CESAPSCOREWEBAPP.Models.Enums;
 using System.Globalization;
 using Rotativa.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CES.Controllers
 {
@@ -30,8 +31,7 @@ namespace CES.Controllers
             _navcontext = navcontext;
         }
 
-
-        // GET: Users
+        [Authorize]
         public async Task<IActionResult> Index()
         {
 
@@ -153,6 +153,7 @@ namespace CES.Controllers
             return View();
         }
 
+        [Authorize]
         // GET: Users/Create
         public IActionResult Create()
         {
@@ -196,6 +197,7 @@ namespace CES.Controllers
         // POST: Users/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UserId,TitleOfUserId,Firstname,Lastname,EFirstName,ELastname,Nickname,BirthName,Pic,EmailContact,ExtTel,MobileTel,BranchId,StatusUserId,EmpId,UserCreateDate,BloodId,TypeCongrateId,CongrateDetail,NationalityId,PovinceId,Certificate,Reference,ReferenceTel,ResignationDate,TypeOfEmployeeId,ReligionId,Reletion")] User users, IFormFile uploadPic,string birth,string startwork,string endwork)
@@ -341,6 +343,7 @@ namespace CES.Controllers
         }
 
         // GET: Users/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -460,6 +463,7 @@ namespace CES.Controllers
         // POST: Users/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("UserId,TitleOfUserId,Firstname,Lastname,EFirstName,ELastname,Nickname,BirthName,Pic,EmailContact,ExtTel,MobileTel,BranchId,StatusUserId,EmpId,UserCreateDate,BloodId,TypeCongrateId,CongrateDetail,NationalityId,PovinceId,Weight,Height,Waistline,Certificate,Reference,ReferenceTel,ResignationDate,TypeOfEmployeeId,ReligionId,Reletion")] User users, IFormFile Pic, string PicDB, string birth, string startwork, string endwork)
@@ -784,7 +788,7 @@ namespace CES.Controllers
         //    await _context.SaveChangesAsync();
         //    return RedirectToAction(nameof(Index));
         //}
-
+        [Authorize]
         public IActionResult Search()
         {
             /*Check Session */
@@ -964,6 +968,7 @@ namespace CES.Controllers
 
 
         // GET: Users/EditUsername/5
+        [Authorize]
         public async Task<IActionResult> EditUsername(int? id)
         {
             /*Check Session */
@@ -1112,6 +1117,7 @@ namespace CES.Controllers
         // POST: Users/AddUsername
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditUsername(int id, string Username, int PermisionId, int TypeOfUserId, int CheckUserId, int UserId, string passwordold, string passwordnew, string passwordnew1)
@@ -1209,6 +1215,7 @@ namespace CES.Controllers
         }
 
         // POST: Users/Delete/5
+        [Authorize]
         [HttpPost, ActionName("remove")]
 
         public async Task<IActionResult> remove(int id)

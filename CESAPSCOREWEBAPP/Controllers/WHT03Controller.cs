@@ -10,11 +10,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using static CESAPSCOREWEBAPP.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
-  
- 
+    [Authorize]
+
     public class WHT03Controller : BaseController
     {
 
@@ -99,7 +100,7 @@ namespace CESAPSCOREWEBAPP.Controllers
             + " WHEN (b.SumBase>1800000) THEN '<span class=''label label-danger''>Danger</span>' "
             + " END )as SumData"
             + " FROM(SELECT a.WHTno," 
-            + " (SELECT TOP 1 [WHT Name] FROM dbo.[C_E_S_ CO_, LTD_$WHT Entry] WHERE [WHT Registration No_]=a.WHTno) as WHTName, "
+            + " (SELECT TOP 1 [WHT Name] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"WHT Entry] WHERE [WHT Registration No_]=a.WHTno) as WHTName, "
             + " (SELECT isnull(SUM(dbo."+ Environment.GetEnvironmentVariable("Company") +"WHT Entry].Amount),0) FROM [dbo]."+ Environment.GetEnvironmentVariable("Company") +"WHT Entry] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"WHT Entry].[WHT Registration No_]=a.WHTno AND (dbo."+ Environment.GetEnvironmentVariable("Company") +"WHT Entry].[WHT Bus_ Posting Group]='CES-WHT03' or dbo."+ Environment.GetEnvironmentVariable("Company") +"WHT Entry].[WHT Bus_ Posting Group]='BANK-WHT03') AND  dbo."+ Environment.GetEnvironmentVariable("Company") + "WHT Entry].[Posting Date]>={0} and dbo." + Environment.GetEnvironmentVariable("Company") + "WHT Entry].[Posting Date]<={1}) as SumAmount, "
             + " (SELECT isnull(SUM(dbo."+ Environment.GetEnvironmentVariable("Company") +"WHT Entry].Base),0) FROM [dbo]."+ Environment.GetEnvironmentVariable("Company") +"WHT Entry] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"WHT Entry].[WHT Registration No_]=a.WHTno AND (dbo."+ Environment.GetEnvironmentVariable("Company") +"WHT Entry].[WHT Bus_ Posting Group]='CES-WHT03' or dbo."+ Environment.GetEnvironmentVariable("Company") +"WHT Entry].[WHT Bus_ Posting Group]='BANK-WHT03') AND  dbo."+ Environment.GetEnvironmentVariable("Company") + "WHT Entry].[Posting Date]>={0} and dbo." + Environment.GetEnvironmentVariable("Company") + "WHT Entry].[Posting Date]<={1}) as SumBase"
             + " FROM (SELECT DISTINCT "

@@ -48,10 +48,10 @@ namespace CESAPSCOREWEBAPP
             services.Configure<IISServerOptions>(options =>
             {
                 options.AutomaticAuthentication = false;
-          
+
             });
 
-    
+
 
 
             //Connect DB SQL Server
@@ -59,15 +59,7 @@ namespace CESAPSCOREWEBAPP
               options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection_sql_server")));
             services.AddDbContext<NAVContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("Nav")));
-            //Connect DB SQL Server
-            services.AddDbContext<UpdateContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection_sql_server")));
 
-
-
-            services.AddDbContext<NAVSuperContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("NavSuper")));
-         
 
             // Create Database when Database not found
             //var serviceProvider = services.BuildServiceProvider();
@@ -80,7 +72,7 @@ namespace CESAPSCOREWEBAPP
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
 
-         
+
 
 
             //JWT
@@ -103,12 +95,12 @@ namespace CESAPSCOREWEBAPP
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-       
+
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-           
+
 
             //services.AddCors(options => {
             //    options.AddPolicy(MyAllowSpecificOrigins, builder => builder
@@ -124,10 +116,10 @@ namespace CESAPSCOREWEBAPP
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
 
-       
 
 
- 
+
+
 
 
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
@@ -208,12 +200,12 @@ namespace CESAPSCOREWEBAPP
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Microsoft.AspNetCore.Hosting.IHostingEnvironment envHost)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-             
+
             }
             else
             {
@@ -225,11 +217,11 @@ namespace CESAPSCOREWEBAPP
 
 
             // Middleware that run after routing occurs. Usually the following appear here:
-            app.UseAuthentication();
-            //app.UseAuthorization();
+     
+
             //app.UseCors(MyAllowSpecificOrigins);
 
-    
+
             app.UseStaticFiles();
 
 
@@ -252,30 +244,10 @@ namespace CESAPSCOREWEBAPP
 
 
 
-
-            //app.UseFileServer(new FileServerOptions
-            //{
-            //    FileProvider = new PhysicalFileProvider(
-            //    Path.Combine("\\\\192.168.18.9\\erp")),
-            //    RequestPath = "/erp",
-            //    EnableDirectoryBrowsing = true
-               
-
-            //});
-
-            
-
-
-
             var reportDirectory = Path.Combine(env.ContentRootPath, "Reports");
             DevExpress.XtraReports.Web.Extensions.ReportStorageWebExtension.RegisterExtensionGlobal(new ReportStorageWebExtension1(reportDirectory));
             DevExpress.XtraReports.Configuration.Settings.Default.UserDesignerOptions.DataBindingMode = DevExpress.XtraReports.UI.DataBindingMode.Expressions;
             app.UseDevExpressControls();
-
-
-
-
-
 
 
 
@@ -286,15 +258,6 @@ namespace CESAPSCOREWEBAPP
             app.UseCookiePolicy();
             app.UseSession();
 
-
-            if (HardwareInfoMiddleware.CheckRegitry() != "true")
-            {
-                app.UseMiddleware<SerialMiddleware>();
-
-            }
-
-
-
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
@@ -304,7 +267,33 @@ namespace CESAPSCOREWEBAPP
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
-     
+
+
+            if (HardwareInfoMiddleware.CheckRegitry() != "true")
+            {
+                app.UseMiddleware<SerialMiddleware>();
+
+            }
+
+
+
+            //Add JWToken to all incoming HTTP Request Header
+            app.Use(async (context, next) =>
+            {
+                var JWToken = context.Session.GetString("JWToken");
+                if (!string.IsNullOrEmpty(JWToken))
+                {
+                    context.Request.Headers.Add("Authorization", "Bearer " + JWToken);
+                }
+                await next();
+            });
+            //Add JWToken Authentication service
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -314,14 +303,14 @@ namespace CESAPSCOREWEBAPP
                     name: "default",
                     pattern: "{controller=Accounts}/{action=Login}/{id?}");
                 endpoints.MapHub<ChatHub>("/chatHub");
-     
+
 
             });
 
 
 
-            RotativaConfiguration.Setup(envHost);
-            
+
+
         }
     }
 }

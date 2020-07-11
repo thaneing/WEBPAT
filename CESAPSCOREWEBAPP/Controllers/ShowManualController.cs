@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using CESAPSCOREWEBAPP.Models;
 using DevExpress.Data.Linq.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class ShowManualController : BaseController
     {
 

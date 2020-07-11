@@ -7,6 +7,7 @@ using CESAPSCOREWEBAPP.Helpers;
 using CESAPSCOREWEBAPP.Models;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ using static CESAPSCOREWEBAPP.Models.Enums;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class ItemCodesController : BaseController
     {
         private readonly NAVContext _navcontext;
@@ -525,7 +527,7 @@ namespace CESAPSCOREWEBAPP.Controllers
                           + " LEFT JOIN dbo." + Environment.GetEnvironmentVariable("Company") + "Item] ON dbo." + Environment.GetEnvironmentVariable("Company") + "Purchase Line].No_ = dbo." + Environment.GetEnvironmentVariable("Company") + "Item].No_ "
                           + " LEFT JOIN dbo." + Environment.GetEnvironmentVariable("Company") + "Inventory Posting Group] ON dbo." + Environment.GetEnvironmentVariable("Company") + "Item].[Inventory Posting Group] = dbo." + Environment.GetEnvironmentVariable("Company") + "Inventory Posting Group].Code "
 
-                            + " WHERE dbo.[C_E_S_ CO_, LTD_$Purchase Line].Description !='' and dbo.[C_E_S_ CO_, LTD_$Purchase Line].[Description 2]!='' and dbo.[C_E_S_ CO_, LTD_$Purchase Line].[Document No_]!='' "
+                            + " WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purchase Line].Description !='' and dbo."+ Environment.GetEnvironmentVariable("Company") +"Purchase Line].[Description 2]!='' and dbo."+ Environment.GetEnvironmentVariable("Company") +"Purchase Line].[Document No_]!='' "
                             + " ORDER BY dbo." + Environment.GetEnvironmentVariable("Company") + "Vendor].[timestamp] DESC";
 
             //SqlParameter parameterItem = new SqlParameter("@item", Item);

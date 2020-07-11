@@ -19,9 +19,11 @@ using OfficeOpenXml;
 using System.Net;
 using System.Drawing;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class CheckLedgersController : BaseController
     {
         private readonly NAVContext _navcontext;

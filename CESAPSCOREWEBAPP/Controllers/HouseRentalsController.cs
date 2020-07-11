@@ -17,9 +17,11 @@ using Microsoft.Extensions.Configuration;
 using System.Text;
 using Rotativa.AspNetCore;
 using DevExpress.XtraReports.UI;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class HouseRentalsController : BaseController
     {
         private readonly DatabaseContext _context;

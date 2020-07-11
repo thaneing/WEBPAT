@@ -1,31 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using CESAPSCOREWEBAPP.Models;
 using Microsoft.AspNetCore.Http;
 using CESAPSCOREWEBAPP.Helpers;
 using System.Text;
 using static CESAPSCOREWEBAPP.Models.Enums;
 using CESAPSCOREWEBAPP.Controllers;
-using System.Net.NetworkInformation;
-using System.Runtime.InteropServices;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Configuration;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+
 namespace CESAPSCOREWEBAPP.Models
 {
-    
+
     public class AccountsController : BaseController
     {
+
         private readonly DatabaseContext _context;
         private IHttpContextAccessor _accessor;
+        private IConfiguration _Config { get; }
 
-        public AccountsController(DatabaseContext context, IHttpContextAccessor accessor)
+        public AccountsController(DatabaseContext context, IHttpContextAccessor accessor, IConfiguration Config)
         {
             _accessor = accessor;
             _context = context;
+            _Config = Config;
         }
 
         public IActionResult Index()
@@ -78,24 +80,15 @@ namespace CESAPSCOREWEBAPP.Models
 
 
 
-
-            //ViewBag.MacAddress = MacAddress;
-            //ViewBag.OS = ua.OS.Name;
-            //ViewBag.Browser = ua.Browser.Name;
-            //ViewBag.BrowserVersion = ua.Browser.Version;
-            //ViewBag.IPAddress = ip;
-            //ViewBag.LoginDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-
-
-            if ( Request.Cookies["user"] != null )
+            if (Request.Cookies["user"] != null)
             {
-                ViewBag.user= Request.Cookies["user"];
-                ViewBag.pass=Request.Cookies["pass"];
-                ViewBag.remember=Request.Cookies["remember"];
-               
+                ViewBag.user = Request.Cookies["user"];
+                ViewBag.pass = Request.Cookies["pass"];
+                ViewBag.remember = Request.Cookies["remember"];
+
             }
 
-       
+
 
             return View(ua);
 
@@ -107,10 +100,10 @@ namespace CESAPSCOREWEBAPP.Models
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(string username, string password,bool remember, string Latitude, string Longitude)
+        public IActionResult Login(string username, string password, bool remember, string Latitude, string Longitude)
         {
 
-          
+
 
 
             if (username != null && password != null)
@@ -120,13 +113,14 @@ namespace CESAPSCOREWEBAPP.Models
 
                 //IQueryable<User> query = _context.Users;
                 var login = _context.Logins
-                    .Include(p=>p.Users)
-     
+                    .Include(p => p.Users)
                     .Include(p => p.Users.TitleOfUsers)
-                    .Include(p=>p.TypeOfUsers)
-                    .Include(p=>p.Permisions)
-                    .Include(p=>p.CheckUsers)
-                    .FirstOrDefault( p => p.Username.Equals(username) && p.Password.Equals(hash));
+                    .Include(p => p.TypeOfUsers)
+                    .Include(p => p.Permisions)
+                    .Include(p => p.CheckUsers)
+                    .FirstOrDefault(p => p.Username.Equals(username) && p.Password.Equals(hash));
+
+
                 if (login == null)
                 {
                     Alert("รหัสผ่านผิดพลาด", NotificationType.error);
@@ -149,7 +143,7 @@ namespace CESAPSCOREWEBAPP.Models
                     }
                     else
                     {
-
+                        var token = BuildToken(login);
                         HttpContext.Session.SetInt32("Userid", login.UserId);
                         HttpContext.Session.SetString("Username", login.Username);
                         HttpContext.Session.SetString("Firstname", login.Users.Firstname);
@@ -161,26 +155,30 @@ namespace CESAPSCOREWEBAPP.Models
                         HttpContext.Session.SetString("CheckUserName", login.CheckUsers.CheckUserName);
                         HttpContext.Session.SetString("PermisionName", login.Permisions.PermisionName);
                         HttpContext.Session.SetString("PermisionAction", login.Permisions.PermisionAction);
+                        HttpContext.Session.SetString("JWToken", token);
 
                         CookieOptions option = new CookieOptions();
-                        int? expireTime=600000;
+                        int? expireTime = 600000;
 
                         if (expireTime.HasValue)
                             option.Expires = DateTime.Now.AddMinutes(expireTime.Value);
                         else
                             option.Expires = DateTime.Now.AddMilliseconds(600000);
 
-                        if(remember==true){
+                        if (remember == true)
+                        {
                             Response.Cookies.Append("user", username, option);
-                            Response.Cookies.Append("pass",password, option);
-                            Response.Cookies.Append("remember","true", option);
-                        }else{
-                           Response.Cookies.Delete("user");
+                            Response.Cookies.Append("pass", password, option);
+                            Response.Cookies.Append("remember", "true", option);
+                        }
+                        else
+                        {
+                            Response.Cookies.Delete("user");
                             Response.Cookies.Delete("pass");
                             Response.Cookies.Delete("remember");
                         }
 
-                       
+
 
                         var ip = _accessor.HttpContext.Connection.RemoteIpAddress?.ToString();
                         var MacAddress = GetClientData.GetMACAddress();
@@ -206,7 +204,7 @@ namespace CESAPSCOREWEBAPP.Models
 
                         //LineAlert.LineNotify(username+" เข้าระบบเมื่อ  :" +DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
                         Alert("Login", NotificationType.success);
-                  
+
                     }
 
                     return RedirectToAction("Index", "Home");
@@ -238,6 +236,7 @@ namespace CESAPSCOREWEBAPP.Models
             HttpContext.Session.Remove("LevelName");
             HttpContext.Session.Remove("CheckUserName");
             HttpContext.Session.Remove("PermisionAction");
+            HttpContext.Session.Remove("JWToken");
 
             //Detail Data
             HttpContext.Session.Remove("Macaddress");
@@ -251,6 +250,30 @@ namespace CESAPSCOREWEBAPP.Models
 
             return RedirectToAction("Login", "Accounts");
         }
+
+        private string BuildToken(Login login)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Config["Jwt:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var expires = DateTime.Now.AddMinutes(Convert.ToDouble(_Config["Jwt:Expires"]));
+
+            var claims = new[] {
+                new Claim(JwtRegisteredClaimNames.Sub, login.Username),
+                new Claim(JwtRegisteredClaimNames.Email,login.Password),
+                new Claim("Foglight","ZaniimzOxide"),
+                new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
+            };
+
+            var token = new JwtSecurityToken(
+                _Config["Jwt:Issuer"],
+                _Config["Jwt:Issuer"],
+                claims,
+                expires: expires,
+                signingCredentials: creds
+            );
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
 
 
 

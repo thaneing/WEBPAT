@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CESAPSCOREWEBAPP.Helpers;
 using CESAPSCOREWEBAPP.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ using static CESAPSCOREWEBAPP.Models.Enums;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class PostedPurchaseInvoicesController : BaseController
     {
         private readonly NAVContext _navcontext;
@@ -242,20 +244,20 @@ namespace CESAPSCOREWEBAPP.Controllers
             if (site == null)
             {
                 var querydata = "SELECT *," +
-                    " (SELECT SUM(dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].Amount) FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].[Document No_] = a.DocumentNo) AS Amount, " +
-                      " (SELECT Top 1 dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Order No_] FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[No_]=a.RefReceiptNo) as OrderNo" +
+                    " (SELECT SUM(dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].Amount) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].[Document No_] = a.DocumentNo) AS Amount, " +
+                      " (SELECT Top 1 dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Order No_] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[No_]=a.RefReceiptNo) as OrderNo" +
                     " From( " +
-                    " SELECT convert(varchar,dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[Posting Date],23) AS PostingDate," +
-                               " dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[No_] AS DocumentNo," +
-                               " dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[Ref_ Receipt No_] AS RefReceiptNo," +
-                               " dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[Buy-from Vendor Name] AS VendorName," +
-                               " dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[Ref_ Job Order No_] AS JobOrderNo," +
-                               " dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[Vendor Invoice No_] AS VendorInvoiceNo ," +
+                    " SELECT convert(varchar,dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[Posting Date],23) AS PostingDate," +
+                               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[No_] AS DocumentNo," +
+                               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[Ref_ Receipt No_] AS RefReceiptNo," +
+                               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[Buy-from Vendor Name] AS VendorName," +
+                               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[Ref_ Job Order No_] AS JobOrderNo," +
+                               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[Vendor Invoice No_] AS VendorInvoiceNo ," +
 
-                               " dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[Progress Term] AS ProgressTerm" +
+                               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[Progress Term] AS ProgressTerm" +
                                " FROM" +
-                               " dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header] " +
-                               " WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[Posting Date] >= {0} AND dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[Posting Date] <= {1} AND  dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[No_] NOT LIKE 'APA%'" +
+                               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header] " +
+                               " WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[Posting Date] >= {0} AND dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[Posting Date] <= {1} AND  dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[No_] NOT LIKE 'APA%'" +
                                ") AS a ";
 
                 //SqlParameter parameterStartdate = new SqlParameter("@startdate", StartDate);
@@ -266,20 +268,20 @@ namespace CESAPSCOREWEBAPP.Controllers
             else
             {
                 var querydata = "SELECT *," +
-                    " (SELECT SUM(dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].Amount) FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Line] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Line].[Document No_] = a.DocumentNo) AS Amount ," +
-                    " (SELECT Top 1 dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[Order No_] FROM dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header] WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Rcpt_ Header].[No_]=a.RefReceiptNo) as OrderNo" +
+                    " (SELECT SUM(dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].Amount) FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Line].[Document No_] = a.DocumentNo) AS Amount ," +
+                    " (SELECT Top 1 dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[Order No_] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header] WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Rcpt_ Header].[No_]=a.RefReceiptNo) as OrderNo" +
                     " From( " +
-                    " SELECT convert(varchar,dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[Posting Date],23) AS PostingDate," +
-                               " dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[No_] AS DocumentNo," +
-                               " dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[Ref_ Receipt No_] AS RefReceiptNo," +
-                               " dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[Buy-from Vendor Name] AS VendorName," +
-                               " dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[Ref_ Job Order No_] AS JobOrderNo," +
-                               " dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[Vendor Invoice No_] AS VendorInvoiceNo ," +
+                    " SELECT convert(varchar,dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[Posting Date],23) AS PostingDate," +
+                               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[No_] AS DocumentNo," +
+                               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[Ref_ Receipt No_] AS RefReceiptNo," +
+                               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[Buy-from Vendor Name] AS VendorName," +
+                               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[Ref_ Job Order No_] AS JobOrderNo," +
+                               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[Vendor Invoice No_] AS VendorInvoiceNo ," +
 
-                               " dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[Progress Term] AS ProgressTerm" +
+                               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[Progress Term] AS ProgressTerm" +
                                " FROM" +
-                               " dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header] " +
-                               " WHERE dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[Posting Date] >= {0} AND dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[Posting Date] <= {1} AND dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[Location Code] = {2} AND  dbo.[C_E_S_ CO_, LTD_$Purch_ Inv_ Header].[No_] NOT LIKE 'APA%'" +
+                               " dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header] " +
+                               " WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[Posting Date] >= {0} AND dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[Posting Date] <= {1} AND dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[Location Code] = {2} AND  dbo."+ Environment.GetEnvironmentVariable("Company") +"Purch_ Inv_ Header].[No_] NOT LIKE 'APA%'" +
                                " ) AS a";
 
                 //SqlParameter parameterStartdate = new SqlParameter("@startdate", StartDate);

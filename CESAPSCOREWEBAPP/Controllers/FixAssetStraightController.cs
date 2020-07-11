@@ -10,6 +10,7 @@ using DevExpress.Compatibility.System.Web;
 using DevExpress.XtraReports.UI;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ using static CESAPSCOREWEBAPP.Models.Enums;
 
 namespace CESAPSCOREWEBAPP.Controllers
 {
+    [Authorize]
     public class FixAssetStraightController : BaseController
     {
         private readonly DatabaseContext _context;
@@ -105,23 +107,23 @@ namespace CESAPSCOREWEBAPP.Controllers
             List<FixAssetStraightLine> Straights = new List<FixAssetStraightLine>();
 
             var querydata = "SELECT  " +
-                "ROW_NUMBER() OVER (ORDER BY dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA No_]) AS ID, " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA No_] as FANO, " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].Description, " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA Posting Date] as StartDate, " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA Posting Group] AS FAPostingGroup, " +
-                "sum(dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].Amount) as Amount, " +
-                "sum(dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].Qty_) as Quantity " +
+                "ROW_NUMBER() OVER (ORDER BY dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA No_]) AS ID, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA No_] as FANO, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].Description, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA Posting Date] as StartDate, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA Posting Group] AS FAPostingGroup, " +
+                "sum(dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].Amount) as Amount, " +
+                "sum(dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].Qty_) as Quantity " +
                 "FROM " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry] " +
-                "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Fixed Asset] ON dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA No_] = dbo.[C_E_S_ CO_, LTD_$Fixed Asset].No_ " +
-                "WHERE dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA Posting Type]=0 and [Reason Code] in('AC DISP','AC DONATIO','AC LOST')   " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry] " +
+                "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Fixed Asset] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA No_] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Fixed Asset].No_ " +
+                "WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA Posting Type]=0 and [Reason Code] in('AC DISP','AC DONATIO','AC LOST')   " +
                 "GROUP BY  " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA No_], " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].Description, " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA Posting Date], " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA Posting Group] " +
-                "order by dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA No_]  ";
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA No_], " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].Description, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA Posting Date], " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA Posting Group] " +
+                "order by dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA No_]  ";
 
             var FixAssetMisses = await _navcontext.FixAssetMisses.FromSqlRaw(querydata).ToListAsync();
 
@@ -401,24 +403,24 @@ namespace CESAPSCOREWEBAPP.Controllers
 
             IActionResult response = Unauthorized();
             var querydata = "SELECT ROW_NUMBER() OVER (ORDER BY a.FANO) AS ID,*, " +
-                "(SELECT top 1 Amount FROM dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry] WHERE [FA Posting Type]=7 and [FA No_]=a.FANO and Amount<0 and [FA No_]!='' ORDER BY [Entry No_] DESC) as PriceEnd, " +
-                "isnull((SELECT top 1 [FA Posting Category] FROM dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry] WHERE [FA Posting Category]=1 and [FA No_]=a.FANO  ORDER BY [Entry No_] DESC),0) as Sale, " +
-                "(SELECT top 1 [FA Posting Date] FROM dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry] WHERE [FA Posting Category]=1 and [FA No_]=a.FANO   ORDER BY [Entry No_] DESC) as SaleDate, " +
-                "(SELECT top 1 dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[Straight-Line _] FROM dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry] WHERE  [FA No_]=a.FANO and [Straight-Line _]<>0 ORDER BY [Entry No_] DESC) as Percen, " +
-                "(100/(SELECT top 1 dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[Straight-Line _] FROM dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry] WHERE  [FA No_]=a.FANO and [Straight-Line _]<>0 ORDER BY [Entry No_] DESC)) as Life, " +
-                "DATEADD(year,100/(SELECT top 1 dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[Straight-Line _] FROM dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry] WHERE  [FA No_]=a.FANO and [Straight-Line _]<>0 ORDER BY [Entry No_] DESC),a.StartDate) as EndDate," +
+                "(SELECT top 1 Amount FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry] WHERE [FA Posting Type]=7 and [FA No_]=a.FANO and Amount<0 and [FA No_]!='' ORDER BY [Entry No_] DESC) as PriceEnd, " +
+                "isnull((SELECT top 1 [FA Posting Category] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry] WHERE [FA Posting Category]=1 and [FA No_]=a.FANO  ORDER BY [Entry No_] DESC),0) as Sale, " +
+                "(SELECT top 1 [FA Posting Date] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry] WHERE [FA Posting Category]=1 and [FA No_]=a.FANO   ORDER BY [Entry No_] DESC) as SaleDate, " +
+                "(SELECT top 1 dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[Straight-Line _] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry] WHERE  [FA No_]=a.FANO and [Straight-Line _]<>0 ORDER BY [Entry No_] DESC) as Percen, " +
+                "(100/(SELECT top 1 dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[Straight-Line _] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry] WHERE  [FA No_]=a.FANO and [Straight-Line _]<>0 ORDER BY [Entry No_] DESC)) as Life, " +
+                "DATEADD(year,100/(SELECT top 1 dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[Straight-Line _] FROM dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry] WHERE  [FA No_]=a.FANO and [Straight-Line _]<>0 ORDER BY [Entry No_] DESC),a.StartDate) as EndDate," +
                 "0.00 as StraightLine " +
                 " FROM( " +
                 "SELECT  " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA No_] as FANO, " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].Description, " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA Posting Date] as StartDate, " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].Amount, " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA Posting Group] AS FAPostingGroup," +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].Qty_ as Quantity " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA No_] as FANO, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].Description, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA Posting Date] as StartDate, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].Amount, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA Posting Group] AS FAPostingGroup," +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].Qty_ as Quantity " +
                 "FROM " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry] " +
-                "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Fixed Asset] ON dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA No_] = dbo.[C_E_S_ CO_, LTD_$Fixed Asset].No_ " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry] " +
+                "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Fixed Asset] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA No_] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Fixed Asset].No_ " +
                 "WHERE [FA Posting Type]=0 and Amount>=0   " +
                 ")as a ";
 
@@ -515,23 +517,23 @@ namespace CESAPSCOREWEBAPP.Controllers
 
 
             var querydata = "SELECT  " +
-                "ROW_NUMBER() OVER (ORDER BY dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA No_]) AS ID, " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA No_] as FANO, " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].Description, " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA Posting Date] as StartDate, " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA Posting Group] AS FAPostingGroup, " +
-                "sum(dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].Amount) as Amount, " +
-                "sum(dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].Qty_) as Quantity " +
+                "ROW_NUMBER() OVER (ORDER BY dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA No_]) AS ID, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA No_] as FANO, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].Description, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA Posting Date] as StartDate, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA Posting Group] AS FAPostingGroup, " +
+                "sum(dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].Amount) as Amount, " +
+                "sum(dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].Qty_) as Quantity " +
                 "FROM " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry] " +
-                "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Fixed Asset] ON dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA No_] = dbo.[C_E_S_ CO_, LTD_$Fixed Asset].No_ " +
-                "WHERE dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA Posting Type]=0 and [Reason Code] in('AC DISP','AC DONATIO','AC LOST')   " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry] " +
+                "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Fixed Asset] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA No_] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Fixed Asset].No_ " +
+                "WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA Posting Type]=0 and [Reason Code] in('AC DISP','AC DONATIO','AC LOST')   " +
                 "GROUP BY  " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA No_], " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].Description, " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA Posting Date], " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA Posting Group] " +
-                "order by dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA No_]  ";
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA No_], " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].Description, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA Posting Date], " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA Posting Group] " +
+                "order by dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA No_]  ";
             var FixAssetMisses = await _navcontext.FixAssetMisses.FromSqlRaw(querydata).ToListAsync();
 
 
@@ -760,23 +762,23 @@ namespace CESAPSCOREWEBAPP.Controllers
 
 
             var querydata = "SELECT  " +
-                "ROW_NUMBER() OVER (ORDER BY dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA No_]) AS ID, " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA No_] as FANO, " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].Description, " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA Posting Date] as StartDate, " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA Posting Group] AS FAPostingGroup, " +
-                "sum(dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].Amount) as Amount, " +
-                "sum(dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].Qty_) as Quantity " +
+                "ROW_NUMBER() OVER (ORDER BY dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA No_]) AS ID, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA No_] as FANO, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].Description, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA Posting Date] as StartDate, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA Posting Group] AS FAPostingGroup, " +
+                "sum(dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].Amount) as Amount, " +
+                "sum(dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].Qty_) as Quantity " +
                 "FROM " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry] " +
-                "LEFT JOIN dbo.[C_E_S_ CO_, LTD_$Fixed Asset] ON dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA No_] = dbo.[C_E_S_ CO_, LTD_$Fixed Asset].No_ " +
-                "WHERE dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA Posting Type]=0 and [Reason Code] in('AC DISP','AC DONATIO','AC LOST')   " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry] " +
+                "LEFT JOIN dbo."+ Environment.GetEnvironmentVariable("Company") +"Fixed Asset] ON dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA No_] = dbo."+ Environment.GetEnvironmentVariable("Company") +"Fixed Asset].No_ " +
+                "WHERE dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA Posting Type]=0 and [Reason Code] in('AC DISP','AC DONATIO','AC LOST')   " +
                 "GROUP BY  " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA No_], " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].Description, " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA Posting Date], " +
-                "dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA Posting Group] " +
-                "order by dbo.[C_E_S_ CO_, LTD_$FA Ledger Entry].[FA No_]  ";
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA No_], " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].Description, " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA Posting Date], " +
+                "dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA Posting Group] " +
+                "order by dbo."+ Environment.GetEnvironmentVariable("Company") +"FA Ledger Entry].[FA No_]  ";
             var FixAssetMisses = await _navcontext.FixAssetMisses.FromSqlRaw(querydata).ToListAsync();
 
 
